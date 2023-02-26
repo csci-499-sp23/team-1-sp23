@@ -11,8 +11,8 @@ import "./navbarStyling.css"
 
 const Navbar = () => {
   return (
-    <Box sx={{ flexGrow: 1, width: 1}}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1}}>
+      <AppBar position="fixed" style={{ background: '#2b2d42' }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -25,7 +25,9 @@ const Navbar = () => {
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             SchoolsDB
+            <Button color="inherit">Map</Button>
           </Typography>
+          
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
