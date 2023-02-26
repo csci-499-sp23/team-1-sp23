@@ -11,8 +11,8 @@ import "./navbarStyling.css"
 
 const Navbar = () => {
   return (
-    <Box sx={{ flexGrow: 1}}>
-      <AppBar position="fixed" style={{ background: '#2b2d42' }}>
+    <Box sx={{ width: "100vw" }}>
+      <AppBar position="sticky" style={{ background: '#2b2d42' }}>
         <Toolbar>
           {/* <IconButton */}
           {/*   size="large" */}
@@ -23,13 +23,13 @@ const Navbar = () => {
           {/* > */}
           {/*   <MenuIcon /> */}
           {/* </IconButton> */}
-          <Typography variant="h1" component="div"  sx={{ flexGrow: 1, fontSize: "1.5rem", fontWeight:"bold", ml: "2rem" }}>
+          <Typography variant="h6" component="p"  sx={{ flexGrow: 1, fontSize: "1.5rem", fontWeight:"bold", ml: "2rem" }}>
             SchoolsDB
           </Typography>
-          <div>
+          <Box>
             <Button color="inherit">Map</Button>
             <Button color="inherit">Login</Button>
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
