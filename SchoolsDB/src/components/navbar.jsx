@@ -14,21 +14,22 @@ const Navbar = () => {
     <Box sx={{ flexGrow: 1}}>
       <AppBar position="fixed" style={{ background: '#2b2d42' }}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          {/* <IconButton */}
+          {/*   size="large" */}
+          {/*   edge="start" */}
+          {/*   color="inherit" */}
+          {/*   aria-label="menu" */}
+          {/*   sx={{ mr: 2 }} */}
+          {/* > */}
+          {/*   <MenuIcon /> */}
+          {/* </IconButton> */}
+          <Typography variant="h1" component="div"  sx={{ flexGrow: 1, fontSize: "1.5rem", fontWeight:"bold", ml: "2rem" }}>
             SchoolsDB
-            <Button color="inherit">Map</Button>
           </Typography>
-          
-          <Button color="inherit">Login</Button>
+          <div>
+            <Button color="inherit">Map</Button>
+            <Button color="inherit">Login</Button>
+          </div>
         </Toolbar>
       </AppBar>
     </Box>

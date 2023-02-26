@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function SignupvView() {
+export default function SignupView() {
   return (
     <div>signupvView</div>
   )
