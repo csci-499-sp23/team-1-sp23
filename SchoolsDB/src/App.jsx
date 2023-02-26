@@ -1,19 +1,21 @@
 import { useState } from 'react'
-import {Switch, Route} from "react-router-dom"
+import {Routes, Route} from "react-router-dom"
 
+import { HomepageContainer, SignupContainer } from './components/containers'
 import Navbar from './components/navbar'
+
 import './App.css'
 
 const App = () => {
   return (
     <div className="App">
       <Navbar />
-      
-      <Switch>
+
+      <Routes>
+        <Route exact path = "/" component = {HomepageContainer}/>
+        <Route exact path="/signup" component={SignupContainer}/>
         <Route />
-        <Route />
-        <Route />
-      </Switch>
+      </Routes>
     </div>
   )
 }
