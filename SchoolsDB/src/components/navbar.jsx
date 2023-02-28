@@ -12,19 +12,22 @@ const Navbar = () => {
     <Box sx={{ flexGrow: 1, width: "100%", position: "absolute", top: 0, left: 0}}>
       <AppBar position="static" sx= {{background: "#2B2D42"}}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          {/* <IconButton */}
+          {/*   size="large" */}
+          {/*   edge="start" */}
+          {/*   color="inherit" */}
+          {/*   aria-label="menu" */}
+          {/*   sx={{ mr: 2 }} */}
+          {/* > */}
+          {/*   <MenuIcon /> */}
+          {/* </IconButton> */}
+          <Typography variant="h6" component="p"  sx={{ flexGrow: 1, fontSize: "1.5rem", fontWeight:"bold", ml: "2rem" }}>
             SchoolsDB
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Box>
+            <Button color="inherit">Map</Button>
+            <Button color="inherit">Login</Button>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>

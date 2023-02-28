@@ -1,4 +1,4 @@
-import SignupvView from "../views/signupView"
+import SignupView from "../views/SignupView"
 
 export default function SignupContainer() {
   return (
