@@ -5,7 +5,7 @@ const HomepageContainer = () => {
     <div>
         <HomepageView />
     </div>
-  )
-}
+  );
+};
 
 export default HomepageContainer

@@ -6,13 +6,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import "./navbarStyling.css"
-
 
 const Navbar = () => {
   return (
-    <Box sx={{ flexGrow: 1, width: 1}}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, width: "100%", position: "absolute", top: 0, left: 0}}>
+      <AppBar position="static" sx= {{background: "#2B2D42"}}>
         <Toolbar>
           <IconButton
             size="large"
