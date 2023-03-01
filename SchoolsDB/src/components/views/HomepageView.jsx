@@ -12,7 +12,7 @@ export default function HomepageView() {
         </Box>
        
         <Box sx={{ mt: "5rem", width: "50%" }}>
-          <TextField id="outlined-basic" label="Search" variant="outlined" sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}} />
+          <TextField id="outlined-basic" label="Search for schools" variant="outlined" sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}} />
         </Box>
       </Box>
     </>

@@ -1,7 +1,8 @@
 import SignupView from "../views/SignupView"
 
-export default function SignupContainer() {
+const SignupContainer = () => {
   return (
-    <div>signupContainer</div>
+    <SignupView />
   )
 }
+export default SignupContainer
