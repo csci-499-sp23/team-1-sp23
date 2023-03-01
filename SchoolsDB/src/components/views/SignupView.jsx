@@ -1,7 +1,10 @@
+import {Box, Button, Checkbox, FormControl, FormControlLabel} from '@mui/material'
 import React from 'react'
 
-export default function SignupView() {
+const SignupView = () =>{
   return (
     <div>signupvView</div>
   )
 }
+
+export default SignupView

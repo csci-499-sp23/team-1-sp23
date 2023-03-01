@@ -7,6 +7,10 @@ export const Box = styled.div`
     bottom: 0;
     left: 0;
     width: 100%;
+    
+    @media (max-width: 1100px) {
+      position: relative;
+    }
 `;
 
 export const Container = styled.div`
@@ -27,11 +31,10 @@ export const Column = styled.div`
    
 export const Row = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, 
-                         minmax(185px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
   grid-gap: 20px;
 
-  @media (max-width: 1010px) {
+  @media (max-width: 1100px) {
     display: flex;
     flex-direction: column;
   }
