@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "SchoolsDB",
+    "public": "SchoolsDB/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
