@@ -1,10 +1,128 @@
-import {Box, Button, Checkbox, FormControl, FormControlLabel} from '@mui/material'
+import { CssVarsProvider, useColorScheme } from '@mui/joy/styles'
+import {Box, Button, Checkbox, CssBaseline, FormControl, FormControlLabel, Input, Typography} from '@mui/material'
+import FormLabel, { formLabelClasses } from '@mui/joy/FormLabel'
+import Link from '@mui/joy/Link'
+
+import GoogleIcon from '../../assets/GoogleIcon'
+
 import React from 'react'
 
-const SignupView = () =>{
-  return (
-    <div>signupvView</div>
-  )
-}
+// interface FormElements extends HTMLFormControlsCollection {
+//   email: HTMLInputElement;
+//   password: HTMLInputElement;
+//   persistent: HTMLInputElement;
+// }
 
-export default SignupView
+// interface SignInFormElement extends HTMLFormElement {
+//   readonly elements: formElements
+// }
+
+export default function SignupView() {
+  return (
+    <Box sx = {{
+      width: 'clamp(100vw - 40vww), ((769px - 100vw) * 999), 100vw',
+      transition: 'width 0.4s',
+      transitionDelay: 'calc(0.4s + 0.1s)',
+      position: 'relative',
+      zIndex: 1,
+      display: 'flex',
+      justifyContent: 'flex-end',
+      backdropFilter: 'blur(4px)',
+      backgroundColor: 'rgba(19, 19, 24, 0.4)',
+    }}>
+      <Box sx = {{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100dvh',
+        width: 'clamp(700px, ((769px-100vw) * 999), 100%)',
+        maxWidth: '100%',
+        px: 2,
+      }}>
+        <Box component="header" sx= {{
+          py: 3,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <Typography 
+            fontWeight="lg"
+            startDecorator = {
+              <Box component="span" sx = {{
+                width: 24,
+                height: 24,
+              }}
+              />
+            }>
+            SchoolsDB
+          </Typography>
+        </Box>
+        <Box component="main" sx = {{
+          my: "auto",
+          py: 2,
+          px: 5, 
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: 400,
+          maxWidth: "100%",
+          mx: 'auto',
+          borderRadius: 'sm',
+          '& form': {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          },
+          [`& .${formLabelClasses.asterisk}`]: {
+            visibility: 'hidden',
+          },
+        }}>
+          <div>
+            <Typography component="h2" fontSize="xl2" fontWeight="lg">
+              Welcome back
+            </Typography>
+            <Typography level="body2" sx={{ my: 1, mb: 3 }}>
+              Let&apos;s get started! Please enter your details.
+            </Typography>
+          </div>
+          <form onSubmit={(event) => {
+            event.preventDefault();
+            const formElements = event.currentTarget.elements;
+            const data = {
+              email: formElements.email.value,
+              password: formElements.password.value,
+              persistent: formElements.persistent.checked,
+            };
+            alert(JSON.stringify(data, null, 2));
+          }}>
+            <FormControl required>
+              <FormLabel>Email</FormLabel>
+              <Input placeholder='Enter your email' type='email' name='email' />
+            </FormControl>
+            <FormControl required>
+              <FormLabel>Password</FormLabel>
+              <Input placeholder='•••••••' type='password' name='password' />
+            </FormControl>
+            <Box sx = {{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <Checkbox size='sm' label='Remember me' name='persistent'/>
+              <Link fontSize="sm" href="#temp-link" fontWeight='lg'>
+              </Link>
+            </Box>
+            <Button type = "submit" fullWidth>
+              Sign In
+            </Button>
+          </form>
+          <Button 
+            startdecorator = {<GoogleIcon />}
+            fullWidth>
+            Sign In with Google
+          </Button>
+        </Box>
+      </Box>
+      <Box sx ={{}} />
+    </Box>
+  );
+}
