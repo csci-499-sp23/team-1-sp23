@@ -1,9 +1,9 @@
-import HomepageView from "../views/HomepageView"
+import LoginView from "../views/LoginView"
 
 const LoginContainer = () => {
   return (
     <> 
-      <HomepageView />
+      <LoginView />
     </>
   )
 }

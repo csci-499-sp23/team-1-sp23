@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Link from '@mui/material/Link'
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -25,8 +26,9 @@ const Navbar = () => {
             SchoolsDB
           </Typography>
           <Box>
-            <Button color="inherit">Map</Button>
-            <Button color="inherit">Login</Button>
+            <Button color="inherit"><Link href="#">Map</Link></Button>
+            <Button color="inherit"><Link href="/login">Login</Link></Button>
+            <Button color="inherit"><Link href="/signup">Sign Up</Link></Button>
           </Box>
         </Toolbar>
       </AppBar>
