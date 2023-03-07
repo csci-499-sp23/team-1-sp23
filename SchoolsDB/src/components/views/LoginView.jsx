@@ -107,6 +107,9 @@ export default function SignupView() {
                   persistent: formElements.persistent.checked,
                 };
                 alert(JSON.stringify(data, null, 2));
+
+                //TEST LOG TO SEE IF EVENT LISTENER WORKS
+                console.log(email, password);
               }}>
                 <FormControl required>
                   <FormLabel>Email</FormLabel>

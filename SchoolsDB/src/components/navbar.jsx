@@ -26,7 +26,7 @@ const Navbar = () => {
             SchoolsDB
           </Typography>
           <Box>
-            <Button color="inherit"><Link href="#">Map</Link></Button>
+            <Button color="inherit"><Link href="/map">Map</Link></Button>
             <Button color="inherit"><Link href="/login">Login</Link></Button>
             <Button color="inherit"><Link href="/signup">Sign Up</Link></Button>
           </Box>
