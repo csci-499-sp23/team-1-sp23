@@ -130,18 +130,19 @@ export default function SignupView() {
                   Let&apos;s get started! Please enter your details.
                 </Typography>
               </div>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const formElements = event.currentTarget.elements;
-                  const data = {
-                    email: formElements.email.value,
-                    password: formElements.password.value,
-                    persistent: formElements.persistent.checked,
-                  };
-                  alert(JSON.stringify(data, null, 2));
-                }}
-              >
+              <form onSubmit={(event) => {
+                event.preventDefault();
+                const formElements = event.currentTarget.elements;
+                const data = {
+                  email: formElements.email.value,
+                  password: formElements.password.value,
+                  persistent: formElements.persistent.checked,
+                };
+                alert(JSON.stringify(data, null, 2));
+
+                //TEST LOG TO SEE IF EVENT LISTENER WORKS
+                console.log(email, password);
+              }}>
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
                   <Input

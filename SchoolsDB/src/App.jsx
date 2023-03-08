@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom"
-import { HomepageContainer, LoginContainer, SignupContainer } from './components/containers'
+import { HomepageContainer, LoginContainer, SignupContainer, MapContainer } from './components/containers'
 import './App.css'
 
 const App = () => {
@@ -9,6 +9,7 @@ const App = () => {
         <Route path="/" element={<HomepageContainer />} />
         <Route path="/signup" element={<SignupContainer />} />
         <Route path="/login" element={<LoginContainer />} />
+        <Route path="/map" element={<MapContainer />} />
       </Routes>
     </div>
   )
