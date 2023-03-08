@@ -35,21 +35,14 @@ const Navbar = () => {
             SchoolsDB
           </Typography>
           <Box>
-
-            <Button color="inherit">
-              <Link color="white" underline="none" href="#">
-                Map
-              </Link>
+            <Button color="inherit" href="#">
+              Map
             </Button>
-            <Button color="inherit">
-              <Link color="white" underline="none" href="/login">
-                Login
-              </Link>
+            <Button color="inherit" href="/login">
+              Login
             </Button>
-            <Button color="inherit">
-              <Link color="white" underline="none" href="/signup">
-                Sign Up
-              </Link>
+            <Button color="inherit" href="/signup">
+              Sign Up
             </Button>
           </Box>
         </Toolbar>
