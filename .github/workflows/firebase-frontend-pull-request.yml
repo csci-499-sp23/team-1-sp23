@@ -15,3 +15,4 @@ jobs:
           repoToken: "${{ secrets.ORIGIN_GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SCHOOLSDB_BE6EA }}"
           projectId: schoolsdb-be6ea
+          entryPoint: "frontend/"

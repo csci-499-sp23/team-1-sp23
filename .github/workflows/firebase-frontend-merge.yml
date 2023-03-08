@@ -18,3 +18,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SCHOOLSDB_BE6EA }}'
           channelId: live
           projectId: schoolsdb-be6ea
+          entryPoint: "frontend/"
