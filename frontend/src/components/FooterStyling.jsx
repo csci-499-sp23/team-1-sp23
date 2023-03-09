@@ -1,12 +1,13 @@
 import styled from "styled-components"
 
-export const Box = styled.div`
+export const FooterBox = styled.div`
     padding: 80px 0 60px 0;
     background: #2B2D42; 
     position: absolute; 
     bottom: 0;
     left: 0;
     width: 100%;
+    height: 0;
     
     @media (max-width: 1100px) {
       position: relative;
@@ -19,6 +20,7 @@ export const Container = styled.div`
     justify-content: center;
     max-width: 1100px;
     margin: 0 auto;
+    overflowY: scroll;
 `;
    
 export const Column = styled.div`

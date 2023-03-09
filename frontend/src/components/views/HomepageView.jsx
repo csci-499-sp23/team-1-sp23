@@ -8,6 +8,11 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+
+import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../FooterStyling';
+
+import Schools from "../../assets/schools.json";
+
 import React from 'react'
 
 export default function HomepageView() {
@@ -40,11 +45,14 @@ export default function HomepageView() {
           <TextField id="outlined-basic" label="Search for schools" variant="filled" sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}} />
         </Box>
         <div>
-          <Button onClick={handleClickOpen} style={{ background: "#2b2d42" }}>Advance Search</Button>
+          <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#2b2d42", color:"white"  }}>Advance Search</Button>
           <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-            <DialogTitle>Filter your Search</DialogTitle>
+            <DialogTitle >Filter your Search</DialogTitle>
             <DialogContent>
-              <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
+              <Box component="form" sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+              }}>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel htmlFor="dialog-native">Borough</InputLabel>
                   <Select
@@ -70,6 +78,66 @@ export default function HomepageView() {
           </Dialog>
         </div>
       </Box>
+
+      <FooterBox>
+        <Container>
+          <Row>
+            <Column>
+              <Heading>Queens</Heading>
+              <FooterLink href="#"></FooterLink>
+              <FooterLink href="#"></FooterLink>
+              <FooterLink href="#"></FooterLink>
+              {Schools.map((school, key) => {
+                if(school.borocode === "Q") {
+                  return(
+                    <p key = {key}>{school.neighborhood}</p>
+                  )
+                }
+              })}
+            </Column>
+            <Column>
+              <Heading>Brooklyn</Heading>
+              {Schools.map((school, key) => {
+                if(school.borocode === "K") {
+                  return(
+                    <p key = {key}>{school.neighborhood}</p>
+                  )
+                }
+              })}
+            </Column>
+            <Column>
+              <Heading>Bronx</Heading>
+              {Schools.map((school, key) => {
+                if(school.borocode === "X") {
+                  return(
+                    <p key = {key}>{school.neighborhood}</p>
+                  )
+                }
+              })}
+            </Column>
+            <Column>
+              <Heading>Manhattan</Heading>
+              {Schools.map((school, key) => {
+                if(school.borocode === "M") {
+                  return(
+                    <p key = {key}>{school.neighborhood}</p>
+                  )
+                }
+              })}
+            </Column>
+            <Column>
+              <Heading>Staten Island</Heading>
+              {Schools.map((school, key) => {
+                if(school.borocode === "R") {
+                  return(
+                    <p key = {key}>{school.neighborhood}</p>
+                  )
+                }
+              })}
+            </Column>
+          </Row>
+        </Container>
+      </FooterBox>
     </>
   )
 }

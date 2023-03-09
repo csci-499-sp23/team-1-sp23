@@ -35,7 +35,7 @@ const Navbar = () => {
             SchoolsDB
           </Typography>
           <Box>
-            <Button color="inherit" href="#">
+            <Button color="inherit" href="/map">
               Map
             </Button>
             <Button color="inherit" href="/login">
