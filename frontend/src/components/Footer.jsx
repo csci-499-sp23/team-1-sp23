@@ -1,11 +1,11 @@
 import React from 'react'
-import { Box, Container, Row, Column, FooterLink, Heading } from './FooterStyling';
+import { FooterBox, Container, Row, Column, FooterLink, Heading } from './FooterStyling';
 
 import Schools from "../assets/schools.json";
 
 const Footer = () => {
   return (
-    <Box>
+    <FooterBox>
       <Container>
         <Row>
           <Column>
@@ -33,7 +33,7 @@ const Footer = () => {
           </Column>
         </Row>
       </Container>
-  </Box>
+  </FooterBox>
   )
 }
 
