@@ -18,10 +18,9 @@ const center = {
 };
 
 export default function Map() {
-  const [schoolsData, setSchool] = React.useState([schools])
   return (
     <LoadScript
-      googleMapsApiKey="ENTER_API_KEY_HERE "
+      googleMapsApiKey = ""
       libraries={["places"]}
     >
       <GoogleMap
@@ -54,12 +53,15 @@ export default function Map() {
               }}
             />
             </Autocomplete>
-            {schoolsData && schoolsData.map((school_name) => {
-              <Marker position={{
-                lat: school_name.latitude,
-                lng: school_name.longitude
-              }}>{school_name}</Marker>
-            })}
+            {schools.map((school, key) => {
+              return(
+                <Marker key = {key} position={{
+                  lat: Number(school.latitude),
+                  lng: Number(school.longitude)
+                }}>
+                </Marker>
+              )
+              })}
             <MediaCard />
       </GoogleMap>
     </LoadScript>

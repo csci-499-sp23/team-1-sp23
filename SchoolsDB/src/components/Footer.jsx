@@ -1,6 +1,8 @@
 import React from 'react'
 import { Box, Container, Row, Column, FooterLink, Heading } from './FooterStyling';
 
+import Schools from "../assets/schools.json";
+
 const Footer = () => {
   return (
     <Box>
@@ -17,7 +19,11 @@ const Footer = () => {
           </Column>
           <Column>
             <Heading>Bronx</Heading>
-
+            {Schools.map((school, key) => {
+              return(
+                <p key={key}>{school.neighborhood}</p>
+              )
+            })}
           </Column>
           <Column>
             <Heading>Manhattan</Heading>

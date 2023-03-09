@@ -143,7 +143,7 @@ export default function SignupView() {
                   alignItems: "center"
                 }}>
                   <Checkbox size="sm" label="Remember Me" sx={{ color: "#454545" }} name="persistent" />
-                  <Link fontsize="sm" fontWeight="500" href="#">Forgot Password</Link>
+                  <Link fontSize="sm" fontWeight="500" href="#">Forgot Password</Link>
                 </Box>
                 <Button type="submit" fullWidth variant="contained">
                   Sign Up
@@ -151,7 +151,7 @@ export default function SignupView() {
               </form>
               <Button
                 variant="outlined"
-                startdecorator={<GoogleIcon />}
+                startDecorator={<GoogleIcon />}
                 fullWidth>
                 Sign in with Google
               </Button>

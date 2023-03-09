@@ -7,7 +7,7 @@ const HomepageContainer = () => {
     <> 
       <Navbar />
       <HomepageView />
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
