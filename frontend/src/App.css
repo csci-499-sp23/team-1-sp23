@@ -3,7 +3,7 @@
 }
 
 .home-banner {
-  background-image: url("src/assets/highschool.png");
+  background-image: url("./assets/highschool.png");
   background-repeat: no-repeat;
   background-size: cover; 
   background-position: 50% 75%;
