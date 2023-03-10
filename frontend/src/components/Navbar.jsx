@@ -10,7 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 const Navbar = () => {
   return (
-    <Box sx={{ width: "100vw" }}>
+    <Box sx={{ width: "100%" }}>
       <AppBar position="sticky" style={{ background: "#2b2d42" }}>
         <Toolbar>
           {/* <IconButton */}
