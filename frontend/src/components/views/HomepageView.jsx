@@ -15,7 +15,11 @@ import Schools from "../../assets/schools.json";
 
 import React from 'react'
 
-export default function HomepageView() { const [open, setOpen] = React.useState(false); const [age, setAge] = React.useState('');
+export default function HomepageView() { 
+
+  const [open, setOpen] = React.useState(false); 
+
+  const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
     setAge(Number(event.target.value) || '');
