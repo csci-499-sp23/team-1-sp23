@@ -15,9 +15,7 @@ import Schools from "../../assets/schools.json";
 
 import React from 'react'
 
-export default function HomepageView() {
-  const [open, setOpen] = React.useState(false);
-  const [age, setAge] = React.useState('');
+export default function HomepageView() { const [open, setOpen] = React.useState(false); const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
     setAge(Number(event.target.value) || '');
@@ -45,7 +43,7 @@ export default function HomepageView() {
           <TextField id="outlined-basic" label="Search for schools" variant="filled" sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}} />
         </Box>
         <div>
-          <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#2b2d42", color:"white"  }}>Advance Search</Button>
+          <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#60a5fa", color:"white"  }}>Advance Search</Button>
           <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
             <DialogTitle >Filter your Search</DialogTitle>
             <DialogContent>
