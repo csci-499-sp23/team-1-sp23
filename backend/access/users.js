@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { dbName, dbURI } from "../utils/environment.js";
 
 export default class UsersAO {
   #dbUsers;
@@ -8,11 +9,10 @@ export default class UsersAO {
   }
 
   static async init() {
-    const client = new MongoClient(process.env.DB_URI);
-
+    const client = new MongoClient(dbURI);
     try {
       const conn = await client.connect();
-      const db = conn.db(process.env.DB_NAME).collection("users");
+      const db = conn.db(dbName).collection("users");
       return new UsersAO(db);
     } catch (err) {
       console.error(err);
@@ -29,3 +29,7 @@ export default class UsersAO {
     }
   }
 }
+
+const usersAo = await UsersAO.init().catch((err) => console.error(err));
+
+export { usersAo };

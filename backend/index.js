@@ -1,6 +1,13 @@
-import UsersAO from "./access/users.js";
-import server from "./server.js";
+import express from "express";
+import cors from "cors";
+import userRoutes from "./routes/users.js";
+import { port } from "./utils/environment.js";
 
-const usersAO = await UsersAO.init().catch((err) => console.error(err));
+const server = express();
 
-export { usersAO };
+server.use(cors());
+server.use("/api/schoolsdb/user", userRoutes);
+server.use("*", (req, res) => res.status(404).json("Not Found"));
+
+server.listen(port, () => console.log(`Listening on port: ${port}`));
+
