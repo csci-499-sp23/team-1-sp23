@@ -6,27 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import Schools from "../assets/schools.json"
-
-const renderData = () => {
-    const latLong = {
-        lat: null,
-        lng: null,
-    }
-
-    const lat = Schools.map(schoolLocationLat => schoolLocationLat.latitude)
-    const lng = Schools.map(schoolLocationLnd => schoolLocationLnd.longitude)
-
-    lat.forEach(function(latitude) {
-        latLong.lat = latitude
-    })
-    lng.forEach(function(longitude) {
-        latLong.lng = longitude
-    })
-}
-
-export default function MediaCard() {
-    const [schoolsData, setSchoolsState] = React.useState(Schools);
+export default function MediaCard(school) {    
     return (
         <Card sx={{
             maxWidth: 440,
@@ -47,9 +27,9 @@ export default function MediaCard() {
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                    School
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
+                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo eligendi dolorem dolorum corporis doloremque quas quis, blanditiis autem dolore cupiditate asperiores temporibus vitae nihil illo? Beatae consequatur libero hic omnis.
                     {/* {Schools.map((school, id) => {
                         console.log(JSON.parse(JSON.stringify(school)));
                         <p key = {id}>{JSON.parse(JSON.stringify(school.school_name))}</p>
