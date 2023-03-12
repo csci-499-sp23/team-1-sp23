@@ -1,4 +1,4 @@
-import { Box, Typography, TextField } from '@mui/material'
+import { Box, Typography, TextField, CardActions } from '@mui/material'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,6 +14,16 @@ import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../Foote
 import Schools from "../../assets/schools.json";
 
 import React from 'react'
+
+
+const filteredArr = Schools.reduce((acc, current) => {
+  const x = acc.find(item => item.neighborhood === current.neighborhood);
+  if (!x) {
+    return acc.concat([current]);
+  } else {
+    return acc;
+  }
+}, []);
 
 export default function HomepageView() { 
 
@@ -89,7 +99,7 @@ export default function HomepageView() {
               <FooterLink href="#"></FooterLink>
               <FooterLink href="#"></FooterLink>
               <FooterLink href="#"></FooterLink>
-              {Schools.map((school, key) => {
+              {filteredArr.map((school, key) => {
                 if(school.borocode === "Q") {
                   return(
                     <p key = {key}>{school.neighborhood}</p>
@@ -99,7 +109,7 @@ export default function HomepageView() {
             </Column>
             <Column>
               <Heading>Brooklyn</Heading>
-              {Schools.map((school, key) => {
+              {filteredArr.map((school, key) => {
                 if(school.borocode === "K") {
                   return(
                     <p key = {key}>{school.neighborhood}</p>
@@ -109,7 +119,7 @@ export default function HomepageView() {
             </Column>
             <Column>
               <Heading>Bronx</Heading>
-              {Schools.map((school, key) => {
+              {filteredArr.map((school, key) => {
                 if(school.borocode === "X") {
                   return(
                     <p key = {key}>{school.neighborhood}</p>
@@ -119,7 +129,7 @@ export default function HomepageView() {
             </Column>
             <Column>
               <Heading>Manhattan</Heading>
-              {Schools.map((school, key) => {
+              {filteredArr.map((school, key) => {
                 if(school.borocode === "M") {
                   return(
                     <p key = {key}>{school.neighborhood}</p>
@@ -129,7 +139,7 @@ export default function HomepageView() {
             </Column>
             <Column>
               <Heading>Staten Island</Heading>
-              {Schools.map((school, key) => {
+              {filteredArr.map((school, key) => {
                 if(school.borocode === "R") {
                   return(
                     <p key = {key}>{school.neighborhood}</p>
