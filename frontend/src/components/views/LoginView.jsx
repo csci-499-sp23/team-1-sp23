@@ -157,6 +157,7 @@ export default function SignupView() {
                       borderRadius: "6px",
                       outline: "1px solid #454545",
                     }}
+                    autoComplete="off"
                   />
                 </FormControl>
                 <FormControl required>
