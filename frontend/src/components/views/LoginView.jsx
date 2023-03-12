@@ -36,7 +36,6 @@ export default function SignupView() {
         sm={4}
         md={7}
         sx={{
-          backgroundImage: "url(../../assets/register-banner.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -45,6 +44,7 @@ export default function SignupView() {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
+        className="school-banner"
       />
       <Grid item xs={12} sm={8} md={5} elevation={6}>
         <Box
@@ -200,7 +200,7 @@ export default function SignupView() {
                     />
                     <Typography>Remember Me</Typography>
                   </Box>
-                  <Link fontsize="sm" fontWeight="500" href="#">
+                  <Link fontSize="sm" fontWeight="500" href="#">
                     Forgot Password
                   </Link>
                 </Box>
