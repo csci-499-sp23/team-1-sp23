@@ -104,8 +104,6 @@ class Map extends Component {
                     type="text"
                     placeholder="Search for a school"
                     style={{
-                      position: `relative`,
-                      boxSizing: `border-box`,
                       border: `1px solid transparent`,
                       height: `2.8rem`,
                       padding: `0 12px`,

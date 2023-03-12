@@ -36,8 +36,7 @@ export default function SignupView() {
         sm={4}
         md={7}
         sx={{
-          backgroundImage:
-            "url(https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_12/2793201/190320-stuyvesant-high-school-ew-304p.jpg)",
+          backgroundImage: "url(src/assets/register-banner.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -130,19 +129,21 @@ export default function SignupView() {
                   Let&apos;s get started! Please enter your details.
                 </Typography>
               </div>
-              <form onSubmit={(event) => {
-                event.preventDefault();
-                const formElements = event.currentTarget.elements;
-                const data = {
-                  email: formElements.email.value,
-                  password: formElements.password.value,
-                  persistent: formElements.persistent.checked,
-                };
-                alert(JSON.stringify(data, null, 2));
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const formElements = event.currentTarget.elements;
+                  const data = {
+                    email: formElements.email.value,
+                    password: formElements.password.value,
+                    persistent: formElements.persistent.checked,
+                  };
+                  alert(JSON.stringify(data, null, 2));
 
-                //TEST LOG TO SEE IF EVENT LISTENER WORKS
-                console.log(email, password);
-              }}>
+                  //TEST LOG TO SEE IF EVENT LISTENER WORKS
+                  console.log(email, password);
+                }}
+              >
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
                   <Input
