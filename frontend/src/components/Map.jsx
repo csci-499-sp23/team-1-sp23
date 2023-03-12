@@ -6,9 +6,6 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip'
 
 import schools from "../assets/schools.json"
 
@@ -121,8 +118,6 @@ class Map extends Component {
                       backgroundColor: "#F8F9FA",
                       fontSize: `1rem`,
                       marginLeft: ".3rem",
-                    }}
-                    sx={{
                       position: {
                         xs: 'fixed',
                         md: 'relative',

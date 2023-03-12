@@ -15,7 +15,6 @@ import Link from '@mui/material/Link'
 import './ScrollbarStyle.css'
 
 export default function MediaCard(school) { 
-    console.log(school.school)
     return (
         <Card sx={{
             maxWidth: {xs: "100vw", md: 400},
