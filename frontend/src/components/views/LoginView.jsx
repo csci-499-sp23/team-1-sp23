@@ -36,7 +36,7 @@ export default function SignupView() {
         sm={4}
         md={7}
         sx={{
-          backgroundImage: "url(src/assets/register-banner.jpg)",
+          backgroundImage: "url(../../assets/register-banner.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
