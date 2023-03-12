@@ -6,8 +6,6 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 
 import schools from "../assets/schools.json"
 
@@ -78,7 +76,7 @@ class Map extends Component {
           center={center}
           zoom={11}
           clickableIcons={false}
-          onclick={this.showCard.bind(null, false)}
+          onClick={this.showCard.bind(null, false)}
         >
           { /* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
@@ -109,7 +107,6 @@ class Map extends Component {
                       position: `relative`,
                       boxSizing: `border-box`,
                       border: `1px solid transparent`,
-                      width: `388px`,
                       height: `2.8rem`,
                       padding: `0 12px`,
                       borderRadius: `5px`,
@@ -121,27 +118,53 @@ class Map extends Component {
                       backgroundColor: "#F8F9FA",
                       fontSize: `1rem`,
                       marginLeft: ".3rem",
+                      position: {
+                        xs: 'fixed',
+                        md: 'relative',
+                      },
                     }}
                   />
                 </Autocomplete>
                 <Box sx={{
-                  flexGrow: 1,
+                  position: {
+                    xs: 'fixed',
+                    md: 'relative',
+                  },
+                  top: 0,
+                  left: 0,
                   display: {
                     xs: 'flex',
                     md: 'flex'
                   },
+                  justifyContent: {
+                    xs: "space-evenly",
+                    md: "flex-start"
+                  },
                   width: "100%",
                   zIndex: 100,
-                  ml: 2,
+                  ml: {
+                    xs: 0,
+                    md: 2
+                  },
                 }}>
                   {boroughs.map((borough) => (
                     <Button
                       key={borough}
                       onClick={this.handleFilter(borough)}
                       sx={{
-                        my: 2,
+                        my: {
+                          xs: 8,
+                          md: 2
+                        },
                         display: 'block',
-                        ml: 2,
+                        ml: {
+                          xs: 0,
+                          md: 2
+                        },
+                        padding: {
+                          xs: "2px 10px 2px 10px",
+                          md: "6px 16px 6px 16px"
+                        },
                         backgroundColor: "#F8F9FA",
                         color: "#1E1E1E",
                       }}

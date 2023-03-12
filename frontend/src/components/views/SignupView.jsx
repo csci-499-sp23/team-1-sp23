@@ -116,7 +116,7 @@ export default function SignupView() {
               const data = {
                 email: formElements.email.value,
                 password: formElements.password.value,
-                persistent: formElements.persistent.checked,
+                role: formElements.role.value
               };
               alert(JSON.stringify(data, null, 2));
             }}>
@@ -133,7 +133,9 @@ export default function SignupView() {
                     py: .5,
                     borderRadius: '6px',
                     outline: '1px solid #454545',
+                    
                   }}
+                  autoComplete="off"
                 />
               </FormControl>
               <FormControl required>
@@ -157,7 +159,7 @@ export default function SignupView() {
                 <FormLabel id="demo-row-radio-buttons-group-label">I am a: </FormLabel>
                 <RadioGroup row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group" >
+                  name="row-radio-buttons-group" type="role">
                   <FormControlLabel value="student" control={<Radio />} label="Student" />
                   <FormControlLabel value="teacher" control={<Radio />} label="Teacher" />
                   <FormControlLabel value="parent" control={<Radio />} label="Parent" />
