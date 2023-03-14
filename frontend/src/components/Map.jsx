@@ -2,10 +2,18 @@ import React, { Component, useState } from 'react'
 import { GoogleMap, useJsApiLoader, LoadScript } from '@react-google-maps/api';
 import { Autocomplete } from '@react-google-maps/api';
 import { Marker } from '@react-google-maps/api'
-import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider'
 
 import schools from "../assets/schools.json"
 
@@ -22,15 +30,6 @@ const center = {
 };
 
 const boroughs =["Queens", "Manhattan", "Bronx", "Brooklyn", "Staten Island"]
-
-// class Map extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.school = {
-//       school: "",
-//     }
-//   }
-// }
 
 class Map extends Component {
   constructor() {
@@ -81,99 +80,87 @@ class Map extends Component {
           { /* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
             <AppBar position='static'>
-              <Toolbar sx={{
-                display: {
-                  xs: 'flex',
-                  md: 'flex'
-                },
-                flexDirection: {
-                  xs: "column",
-                  md: "row",
-                },
-                justifyContent: {
-                  xs: "center",
-                  md: "flex-start"
-                },
-                alignItems: {
-                  xs: "center",
-                  md: "center"
-                },
-              }} disableGutters>
-                <Autocomplete>
-                  <input
-                    type="text"
-                    placeholder="Search for a school"
-                    style={{
-                      position: `relative`,
-                      boxSizing: `border-box`,
-                      border: `1px solid transparent`,
-                      height: `2.8rem`,
-                      padding: `0 12px`,
-                      borderRadius: `5px`,
-                      boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-                      outline: `none`,
-                      zIndex: `100`,
-                      textOverflow: `ellipses`,
-                      color: "#1E1E1E",
-                      backgroundColor: "#F8F9FA",
-                      fontSize: `1rem`,
-                      marginLeft: ".3rem",
-                      position: {
-                        xs: 'fixed',
-                        md: 'relative',
-                      },
-                    }}
-                  />
-                </Autocomplete>
-                <Box sx={{
-                  position: {
-                    xs: 'fixed',
-                    md: 'relative',
-                  },
-                  top: 0,
-                  left: 0,
-                  display: {
-                    xs: 'flex',
-                    md: 'flex'
-                  },
-                  justifyContent: {
-                    xs: "space-evenly",
-                    md: "flex-start"
-                  },
-                  width: "100%",
-                  zIndex: 100,
-                  ml: {
-                    xs: 0,
-                    md: 2
-                  },
-                }}>
-                  {boroughs.map((borough) => (
-                    <Button
-                      key={borough}
-                      onClick={this.handleFilter(borough)}
-                      sx={{
-                        my: {
-                          xs: 8,
-                          md: 2
+              <Toolbar sx={{zIndex: `100`}} disableGutters>
+                <Stack 
+                  direction={{xs: "column", sm: "column", md: "row"}}
+                  spacing={{xs: 2, sm: 2, md: 5}} 
+                  sx={{
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: {
+                      xs: "flex-start",
+                      md: "center",
+                    }
+                  }}>
+                  <Autocomplete>
+                    <Paper
+                      component="form"
+                      sx={{ 
+                        p: {
+                          md: '2px 4px'}, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        width: {
+                          xs: 410,
+                          sm: 410,
+                          md: 370
                         },
-                        display: 'block',
-                        ml: {
-                          xs: 0,
-                          md: 2
-                        },
-                        padding: {
-                          xs: "2px 10px 2px 10px",
-                          md: "6px 16px 6px 16px"
-                        },
-                        backgroundColor: "#F8F9FA",
-                        color: "#1E1E1E",
-                      }}
-                      variant="contained"
-                    >
-                      {borough}
-                    </Button>
-                  ))}
-                </Box>
+                        ml: 1,
+                        mt: { xs: 1, sm: 1, md: 0, },
+                      }}>
+                      <IconButton sx={{ p: '10px' }} aria-label="menu">
+                        <MenuIcon />
+                      </IconButton>
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search For A School"
+                        inputProps={{ 'aria-label': 'search google maps' }}
+                      />
+                      <IconButton type="button" sx={{p:'10px'}} aria-label="search">
+                        <SearchIcon />
+                      </IconButton>
+                      <Divider sx={{height: 28, m: 0.5}} orientation="vertical" />
+                      <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+                        <DirectionsIcon />
+                      </IconButton>
+                    </Paper>
+                  </Autocomplete>
+                  <Box sx={{
+                    position: {
+                      md: 'relative',
+                    },
+                    display: {
+                      xs: 'flex',
+                      md: 'flex'
+                    },
+                    justifyContent: {
+                      xs: "space-evenly",
+                      md: "flex-start"
+                    },
+                    width: "100%",
+                    ml: {
+                      xs: 0,
+                      md: 2
+                    }
+                  }}>
+                    <Stack direction="row" spacing={2}>
+                      {boroughs.map((borough) => {
+                        return (<Chip
+                          label={borough}
+                          key={borough}
+                          sx={{
+                            backgroundColor: "#F8F9FA",
+                            color: "#1E1E1E",
+                            fontWeight: 500,
+                            padding: '2px 6px 2px 6px',
+                            cursor: "pointer"
+                          }}
+                          onClick={this.handleFilter(borough)}
+                        />)
+                      })}
+                    </Stack>
+                  </Box>
+                </Stack>
               </Toolbar>
             </AppBar>
           </Box>
