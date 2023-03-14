@@ -36,8 +36,6 @@ export default function SignupView() {
         sm={4}
         md={7}
         sx={{
-          backgroundImage:
-            "url(https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_12/2793201/190320-stuyvesant-high-school-ew-304p.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -46,6 +44,7 @@ export default function SignupView() {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
+        className="school-banner"
       />
       <Grid item xs={12} sm={8} md={5} elevation={6}>
         <Box
@@ -130,19 +129,21 @@ export default function SignupView() {
                   Let&apos;s get started! Please enter your details.
                 </Typography>
               </div>
-              <form onSubmit={(event) => {
-                event.preventDefault();
-                const formElements = event.currentTarget.elements;
-                const data = {
-                  email: formElements.email.value,
-                  password: formElements.password.value,
-                  persistent: formElements.persistent.checked,
-                };
-                alert(JSON.stringify(data, null, 2));
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const formElements = event.currentTarget.elements;
+                  const data = {
+                    email: formElements.email.value,
+                    password: formElements.password.value,
+                    persistent: formElements.persistent.checked,
+                  };
+                  alert(JSON.stringify(data, null, 2));
 
-                //TEST LOG TO SEE IF EVENT LISTENER WORKS
-                console.log(email, password);
-              }}>
+                  //TEST LOG TO SEE IF EVENT LISTENER WORKS
+                  console.log(email, password);
+                }}
+              >
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -199,7 +200,7 @@ export default function SignupView() {
                     />
                     <Typography>Remember Me</Typography>
                   </Box>
-                  <Link fontsize="sm" fontWeight="500" href="#">
+                  <Link fontSize="sm" fontWeight="500" href="#">
                     Forgot Password
                   </Link>
                 </Box>
