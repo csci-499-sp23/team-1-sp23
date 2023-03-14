@@ -17,7 +17,7 @@ import './ScrollbarStyle.css'
 export default function MediaCard(school) { 
     return (
         <Card sx={{
-            maxWidth: {xs: "100vw", md: 400},
+            maxWidth: {xs: "100vw", sm: 400, md: 400},
             maxHeight: "100%",
             zIndex: 1,
             position: "absolute",
