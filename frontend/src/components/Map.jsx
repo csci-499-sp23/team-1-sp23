@@ -17,7 +17,7 @@ import Divider from '@mui/material/Divider'
 
 import schools from "../assets/schools.json"
 
-import MediaCard from './Card';
+import InfoCard from './Card';
 
 const containerStyle = {
   width: '100%',
@@ -173,7 +173,7 @@ class Map extends Component {
               </Marker>
             )
           })}
-          {this.state.card && (<MediaCard school = {this.state.school}/>)}
+          {this.state.card && (<InfoCard school = {this.state.school}/>)}
         </GoogleMap>
       </LoadScript>
     )
