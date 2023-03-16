@@ -13,6 +13,7 @@ import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import LanguageIcon from '@mui/icons-material/Language';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -29,6 +30,10 @@ class InfoCard extends Component {
         };
         console.log(props)
     };
+
+    handleTab() {
+
+    }
 
     render() {
         return (
@@ -53,7 +58,7 @@ class InfoCard extends Component {
                         {this.props.school.school_name}
                     </Typography>
                     <Typography gutterBottom variant="body2" component="div">
-                        {this.props.school.neighborhood}, {this.props.school.borough}
+                        {this.props.school.neighborhood}, {this.props.school.borough === "STATEN IS" ? this.props.school.city : this.props.school.borough}
                     </Typography>
 
                     <Box sx={{
@@ -65,8 +70,8 @@ class InfoCard extends Component {
                         {/* <Button>Overview</Button>
                         <Button>Reviews</Button>
                         <Button>About</Button> */}
-                        <Tabs defaultValue={0}>
-                            <TabList>
+                        <Tabs>
+                            <TabList variant='plain'>
                                 <Tab sx = {{fontWeight: "500"}}>Overview</Tab>
                                 <Tab sx = {{fontWeight: "500"}}>Reviews</Tab>
                                 <Tab sx = {{fontWeight: "500"}}>About</Tab>
@@ -130,18 +135,20 @@ class InfoCard extends Component {
                             {/* ABOUT TAB */}
                             <TabPanel value={2} sx={{ p: 2 }}>
                                 <Box>
+
+                                    {/* ACADEMICS */}
                                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 8 }}>
                                         <Grid item xs={16} sm={4} md={8} >
-                                            <Typography variant="body" color="text.primary" fontWeight="500">
+                                            <Typography variant="body1" color="text.primary" fontWeight="500">
                                                 Academics
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={16} sm={4} md={8} >
-                                            <Typography variant="body2" color="text.primary" fontWeight="500">AP Courses</Typography>
+                                            <Typography variant="body2" color="text.primary" fontWeight="600">AP Courses</Typography>
                                             {this.props.school.advancedplacement_courses != null ? this.props.school.advancedplacement_courses : "N/A"}
                                         </Grid>
                                         <Grid item xs={16} sm={4} md={8} >
-                                            <Typography variant="body2" color="text.primary" fontWeight="500">Language Courses</Typography>
+                                            <Typography variant="body2" color="text.primary" fontWeight="600">Language Courses</Typography>
                                             {this.props.school.language_classes}
                                         </Grid>
                                     </Grid>
@@ -149,15 +156,21 @@ class InfoCard extends Component {
                                         mt: 3,
                                         mb: 2,
                                     }} />
+
+                                    {/* SPORTS AND EXTRACURRICULAR */}
                                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 8 }}>
                                         <Grid item xs={16} sm={4} md={8} >
-                                            <Typography variant="body" color="text.primary" fontWeight="500">
+                                            <Typography variant="body1" color="text.primary" fontWeight="500">
                                                 Sports & Extracurricular Activities
                                             </Typography>                                       
                                         </Grid>
                                         <Grid item xs={16} sm={4} md={8} >
                                             <Typography variant="body2" color="text.primary" fontWeight="500">Boys</Typography>
                                             {this.props.school.psal_sports_boys}
+                                        </Grid>
+                                        <Grid item xs={16} sm={4} md={8} >
+                                        <Typography variant="body2" color="text.primary" fontWeight="500">Coed</Typography>
+                                            {this.props.school.psal_sports_coed != null ? this.props.school.psal_sports_coed : "No Coed Sports"}
                                         </Grid>
                                         <Grid item xs={16} sm={4} md={8} >
                                             <Typography variant="body2" color="text.primary" fontWeight="500">Girls</Typography>
@@ -174,7 +187,7 @@ class InfoCard extends Component {
                                     }} />
                                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 8 }}>
                                         <Grid item xs={16} sm={4} md={8} >
-                                            <Typography variant="body" color="text.primary" fontWeight="500">
+                                            <Typography variant="body1" color="text.primary" fontWeight="500">
                                             Accessibility
                                             </Typography>
                                         </Grid>
@@ -186,9 +199,11 @@ class InfoCard extends Component {
                                         mt: 3,
                                         mb: 2,
                                     }} />
-                                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 8 }}>
+
+                                    {/* STATISTICS */}
+                                    <Grid container spacing={{ xs: 2, md: 3 }} columnSpacing={{ xs: 2, sm: 2, md: 2 }} columns={{ xs: 16, sm: 8, md: 8 }}>
                                         <Grid item xs={16} sm={4} md={8} >
-                                            <Typography variant="body" color="text.primary" fontWeight="500">
+                                            <Typography variant="body1" color="text.primary" fontWeight="500">
                                             Statistics
                                             </Typography>
                                         </Grid>
@@ -202,7 +217,15 @@ class InfoCard extends Component {
                                         </Grid>
                                         <Grid item xs={16} sm={4} md={8}>
                                             <Typography variant="body2" color="text.primary" fontWeight="500">College Career Rate</Typography>
-                                            {Number(this.props.school.college_career_rate) * 100 + "%"}
+                                            {Math.round(Number(this.props.school.college_career_rate) * 100) + "%"}
+                                        </Grid>
+                                        <Grid item xs={16} sm={4} md={8}>
+                                            <Typography variant="body2" color="text.primary" fontWeight="500">Saftey</Typography>
+                                            {Math.round(Number(this.props.school.pct_stu_safe) * 100) + "%"}
+                                        </Grid>
+                                        <Grid item xs={16} sm={4} md={8}>
+                                            <Typography variant="body2" color="text.primary" fontWeight="500">Diversity</Typography>
+                                            {Math.round(Number(this.props.school.pct_stu_enough_variety) * 100) + "%"}
                                         </Grid>
                                     </Grid>
                                 </Box>
