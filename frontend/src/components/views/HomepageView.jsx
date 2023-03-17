@@ -11,9 +11,15 @@ import Select from '@mui/material/Select';
 
 import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../FooterStyling';
 
-import Schools from "../../assets/schools.json";
 
+import Schools from "../../assets/schools.json";
 import React from 'react'
+
+
+import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+//import TextField from "@mui/material/TextField";
 
 
 const filteredArr = Schools.reduce((acc, current) => {
@@ -24,6 +30,35 @@ const filteredArr = Schools.reduce((acc, current) => {
     return acc;
   }
 }, []);
+
+const SearchBar = ({setSearchQuery}) => (
+  <form>
+    <TextField
+      id="search-bar"
+      className="text"
+      onInput={(e) => {
+        setSearchQuery(e.target.value);
+      }}
+      label="Search for schools"
+      variant="filled"
+      sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}}
+      />
+
+      <IconButton type ="submit" aria-label="search">
+        <SearchIcon style={{ fill: "blue"}} />
+      </IconButton>
+   </form>
+  );
+
+const filterData = (query, data) => {
+  if(!query){
+    return data;
+  }else{
+    return data.filter((d) => d.toLowerCase().includes(query));
+  }
+};
+
+
 
 export default function HomepageView() { 
 
@@ -43,6 +78,11 @@ export default function HomepageView() {
     if (reason !== 'backdropClick') {
       setOpen(false);
     }
+
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const dataFiltered = filterData(searchQuery, Schools);
+
   };
   return (
     <> 
@@ -54,7 +94,7 @@ export default function HomepageView() {
         </Box>
        
         <Box sx={{ mt: "5rem", width: "50%" }}>
-          <TextField id="outlined-basic" label="Search for schools" variant="filled" sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}} />
+         <SearchBar />
         </Box>
         <div>
           <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#60a5fa", color:"white"  }}>Advance Search</Button>
