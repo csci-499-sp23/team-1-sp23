@@ -13,14 +13,21 @@ import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import Collapse from '@mui/material/Collapse';
+import Chip from '@mui/material/Chip'
+
 
 import LanguageIcon from '@mui/icons-material/Language';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import StarIcon from '@mui/icons-material/Star';
 
 import './ScrollbarStyle.css'
+import RateReview from '@mui/icons-material/RateReview';
+import { display } from '@mui/system';
 
 class InfoCard extends Component {
     constructor(props) {
@@ -32,6 +39,10 @@ class InfoCard extends Component {
     };
 
     handleTab() {
+
+    }
+
+    handlePopup() {
 
     }
 
@@ -129,7 +140,70 @@ class InfoCard extends Component {
                             
                             {/* REVIEWS TAB */}
                             <TabPanel value={1} sx={{ p: 2 }}>
-
+                                <Grid container spacing={1} justifyContent="center">
+                                    <Grid item xs={12} sm container>
+                                        <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{mr: 1}}>5</Typography>
+                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                        </Grid>
+                                        <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{mr: 1}}>4</Typography>
+                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                        </Grid>
+                                        <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{mr: 1}}>3</Typography>
+                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                        </Grid>
+                                        <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{mr: 1}}>2</Typography>
+                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                        </Grid>
+                                        <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{mr: 1}}>1</Typography>
+                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item>
+                                        <Grid item sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            flexDirection: "column",
+                                            height: "100%",
+                                        }}>
+                                            <Typography variant="body2" fontSize="3.6rem" component="div">
+                                                4.1
+                                            </Typography>
+                                            <Grid item>
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} sx= {{
+                                        display: "flex",
+                                        justifyContent: "center"
+                                    }}>
+                                        <Chip label="Write A Review"
+                                            icon={<RateReviewIcon/>}
+                                            variant="outlined"
+                                            sx={{
+                                                color: "#1E1E1E",
+                                                fontWeight: 500,
+                                                padding: '9px',
+                                                cursor: "pointer",
+                                            }}
+                                            >
+                                            </Chip>
+                                    </Grid>
+                                </Grid>
+                                <Divider sx={{
+                                            mt: 3,
+                                            mb: 2,
+                                        }} />
                             </TabPanel>
                                 
                             {/* ABOUT TAB */}
@@ -137,17 +211,17 @@ class InfoCard extends Component {
                                 <Box>
 
                                     {/* ACADEMICS */}
-                                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 8 }}>
-                                        <Grid item xs={16} sm={4} md={8} >
+                                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 16 }}>
+                                        <Grid item xs={16} sm={4} md={16} >
                                             <Typography variant="body1" color="text.primary" fontWeight="500">
                                                 Academics
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={16} sm={4} md={8} >
+                                        <Grid item xs={16} sm={4} md={16} >
                                             <Typography variant="body2" color="text.primary" fontWeight="600">AP Courses</Typography>
                                             {this.props.school.advancedplacement_courses != null ? this.props.school.advancedplacement_courses : "N/A"}
                                         </Grid>
-                                        <Grid item xs={16} sm={4} md={8} >
+                                        <Grid item xs={16} sm={4} md={16} >
                                             <Typography variant="body2" color="text.primary" fontWeight="600">Language Courses</Typography>
                                             {this.props.school.language_classes}
                                         </Grid>
@@ -201,8 +275,8 @@ class InfoCard extends Component {
                                     }} />
 
                                     {/* STATISTICS */}
-                                    <Grid container spacing={{ xs: 2, md: 3 }} columnSpacing={{ xs: 2, sm: 2, md: 2 }} columns={{ xs: 16, sm: 8, md: 8 }}>
-                                        <Grid item xs={16} sm={4} md={8} >
+                                    <Grid container spacing={{ xs: 2, md: 3 }} columnSpacing={{ xs: 2, sm: 2, md: 2 }} columns={{ xs: 16, sm: 8, md: 16 }}>
+                                        <Grid item xs={16} sm={4} md={16} >
                                             <Typography variant="body1" color="text.primary" fontWeight="500">
                                             Statistics
                                             </Typography>
