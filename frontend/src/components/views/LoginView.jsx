@@ -1,4 +1,3 @@
-import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 import {
   Box,
   Button,
@@ -21,14 +20,13 @@ import React from "react";
 import { initializeApp } from 'firebase/app'
 import { 
   getAuth, 
-  signInWithEmailAndPassword, 
-  connectAuthEmulator, 
-  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,  
   onAuthStateChanged,
-  signOut,
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth'
+
+import HomepageView from "./HomepageView"
 
 const firebaseApp = initializeApp({
   apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
@@ -40,8 +38,7 @@ const firebaseApp = initializeApp({
   measurementId: "G-EQQ5QDVJWG"
 });
 
-const auth = getAuth(firebaseApp);
-
+const auth = getAuth(firebaseApp)
 
 export default function SignupView() {
   const [email, setEmail] = React.useState('');
@@ -58,27 +55,24 @@ export default function SignupView() {
     try {
       await signInWithEmailAndPassword(auth, email, password).then(cred => {
         console.log(cred.user)
+        document.querySelector("form").reset();
       });
     }
     catch (error) {
-      alert(error.code)
+      console.log(error.code)
     }
   }
+  
+  auth.onAuthStateChanged( user => {
+    if(user) {
+      navigate("/")
+    }
+    else {
+      console.log("error")
+    }
+  })
+  
 
-  const monitorAuthState = async () => {
-    onAuthStateChanged(auth, user => {
-      if(user) {
-        console.log(user)
-    
-        navigate("/")
-      }
-      else {
-        alert("failed")
-      }
-    })
-  }
-
-  monitorAuthState()
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
