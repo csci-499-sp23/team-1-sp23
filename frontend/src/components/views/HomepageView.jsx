@@ -20,13 +20,7 @@ import React from 'react'
 import { initializeApp } from 'firebase/app'
 import { 
   getAuth, 
-  signInWithEmailAndPassword, 
-  connectAuthEmulator, 
-  createUserWithEmailAndPassword, 
-  onAuthStateChanged,
   signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
 } from 'firebase/auth'
 
 const firebaseApp = initializeApp({
@@ -50,6 +44,10 @@ const filteredArr = Schools.reduce((acc, current) => {
   }
 }, []);
 
+const getLoggedInLinks = document.querySelectorAll(".logged-in");
+const getLoggedOutLinks = document.querySelectorAll(".logged-out");
+
+
 export default function HomepageView() { 
   const [open, setOpen] = React.useState(false); 
   const [age, setAge] = React.useState('');
@@ -70,8 +68,17 @@ export default function HomepageView() {
       setOpen(false);
     }
   };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    signOut(auth).then(() => {
+      console.log("signed out")
+    });
+  }
+
   return (
     <> 
+      {/* NAVBAR */}
       <Box sx={{ width: "100%" }}>
         <AppBar position="sticky" style={{ background: "#2b2d42" }}>
           <Toolbar>
@@ -91,16 +98,24 @@ export default function HomepageView() {
               <Button color="inherit" href="/map">
                 Map
               </Button>
-              <Button color="inherit" href="/login">
+              <Button className = "logged-out" color="inherit" href="/login">
                 Login
               </Button>
-              <Button color="inherit" href="/signup">
+              <Button className = "logged-out" color="inherit" href="/signup">
                 Sign Up
+              </Button>
+              <Button className = "logged-in" color="inherit" onClick={handleLogout}>
+                Sign Out
+              </Button>
+              <Button className = "logged-in" color="inherit" href="/profile">
+                Profile
               </Button>
             </Box>
           </Toolbar>
         </AppBar>
       </Box>
+      {/* END OF NAVBAR */}
+
       <Box className="home-banner">
         <Box sx={{ mt: "10%"}}>
           <Typography variant="h1" component="h1" sx={{ textAlign: "center", fontSize: "2.25rem", filter: "drop-shadow(1px 1px 5px black)"}}> 

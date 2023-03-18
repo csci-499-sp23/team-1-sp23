@@ -13,15 +13,13 @@ import React, { Component } from 'react'
 
 import { initializeApp } from 'firebase/app'
 import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  connectAuthEmulator, 
+  getAuth,  
   createUserWithEmailAndPassword, 
   onAuthStateChanged,
-  signOut,
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth'
+import { getFirestore, collection, doc, setDoc, addDoc } from 'firebase/firestore'
 
 const firebaseApp = initializeApp({
   apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
@@ -33,7 +31,9 @@ const firebaseApp = initializeApp({
   measurementId: "G-EQQ5QDVJWG"
 });
 
+// initialize authentication and database
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 export default function SignupView() {
   const [email, setEmail] = React.useState('');
@@ -47,26 +47,29 @@ export default function SignupView() {
     signInWithPopup(auth, provider)
   }
 
-  const createAccount = async(e) => {
+  const createAccount = async (e) => {
     e.preventDefault();
-    try {
-     await createUserWithEmailAndPassword(auth, email, password, role);
-    }
-    catch(error) {
-      alert(error.code)
-    }
+
+    await createUserWithEmailAndPassword(auth, email, password).then(cred => {
+      console.log(cred);
+      return addDoc(collection(db, "users"), {
+        username: email,
+        role: role,
+        reviews: null,
+        saved_schools: null
+      })
+    })
+
   }
   
-  const monitorAuthState = async () => {
-    onAuthStateChanged(auth, user => {
-      if(user != null) {
-        console.log(user);
-      }
-      else {
-        alert("Failed to make an account");
-      }
-    })
-  }
+  auth.onAuthStateChanged(user => {
+    if(user) {
+      navigate("/")
+    }
+    else {
+      console.log("Failed to make an account");
+    }
+  })
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>

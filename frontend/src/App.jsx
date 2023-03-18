@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom"
-import { HomepageContainer, LoginContainer, SignupContainer, MapContainer } from './components/containers'
+import { HomepageContainer, LoginContainer, SignupContainer, MapContainer, ProfileContainer } from './components/containers'
 import './App.css'
 
 const App = () => {
@@ -10,6 +10,7 @@ const App = () => {
         <Route path="/signup" element={<SignupContainer />} />
         <Route path="/login" element={<LoginContainer />} />
         <Route path="/map" element={<MapContainer />} />
+        <Route path="/profile" element={<ProfileContainer />} />
       </Routes>
     </div>
   )
