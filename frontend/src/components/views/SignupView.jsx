@@ -1,8 +1,6 @@
 import { CssVarsProvider, useColorScheme } from '@mui/joy/styles'
 import { Box, Button, Checkbox, CssBaseline, FormControl, FormControlLabel, Input, Typography } from '@mui/material'
 import FormLabel, { formLabelClasses } from '@mui/joy/FormLabel'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Link from '@mui/joy/Link';
@@ -10,27 +8,50 @@ import Grid from '@mui/material/Grid'
 
 import GoogleIcon from '../../assets/GoogleIcon'
 
-import React from 'react'
+import React, { Component } from 'react'
 
-// interface FormElements extends HTMLFormControlsCollection {
-//   email: HTMLInputElement;
-//   password: HTMLInputElement;
-//   persistent: HTMLInputElement;
-// }
+import { initializeApp } from 'firebase/app'
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  connectAuthEmulator, 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth'
 
-// interface SignInFormElement extends HTMLFormElement {
-//   readonly elements: formElements
-// }
+import 'firebase/firestore';
+
+const firebaseApp = initializeApp({
+  
+});
+
+const auth = getAuth(firebaseApp);
 
 export default function SignupView() {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [role, setRole] = React.useState('');
 
-  const handleSubmit = (e) => {
+  const signInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+  }
+
+  const createAccount = async(e) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
+    try {
+     const userCredentials = await createUserWithEmailAndPassword(auth, email, password, role);
+     console.log(userCredentials.user)
+    }
+    catch(error) {
+      alert(error.code)
+    }
+    email=""
+    password=""
+    role=""
   }
 
   return (
@@ -43,7 +64,7 @@ export default function SignupView() {
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-        }} className="school-banner"/>
+        }} className="school-banner" />
       <Grid item xs={12} sm={8} md={5} elevation={6}>
         <Box sx={{
           transition: 'width 0.4s',
@@ -70,14 +91,7 @@ export default function SignupView() {
               justifyContent: 'space-between',
             }}>
               <Typography
-                fontWeight="lg"
-                startDecorator={
-                  <Box component="span" sx={{
-                    width: 24,
-                    height: 24,
-                  }}
-                  />
-                }>
+                fontWeight="lg">
                 SchoolsDB
               </Typography>
             </Box>
@@ -109,16 +123,7 @@ export default function SignupView() {
                   Let&apos;s get started! Please enter your details.
                 </Typography>
               </div>
-              <form onSubmit={(event) => {
-                event.preventDefault();
-                const formElements = event.currentTarget.elements;
-                const data = {
-                  email: formElements.email.value,
-                  password: formElements.password.value,
-                  role: formElements.role.value
-                };
-                alert(JSON.stringify(data, null, 2));
-              }}>
+              <form>
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -135,6 +140,7 @@ export default function SignupView() {
 
                     }}
                     autoComplete="off"
+                    onChange={(e) => {setEmail(e.target.value)}}
                   />
                 </FormControl>
                 <FormControl required>
@@ -152,27 +158,34 @@ export default function SignupView() {
                       borderRadius: '6px',
                       outline: '1px solid #454545'
                     }}
+                    onChange={(e) => {setPassword(e.target.value)}}
                   />
                 </FormControl>
                 <FormControl>
                   <FormLabel id="demo-row-radio-buttons-group-label">I am a: </FormLabel>
-                  <RadioGroup row
+                  <RadioGroup
+                    row
                     aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group" type="role">
+                    name="row-radio-buttons-group"
+                    type="role"
+                    onChange={(e) => {setRole(e.target.value)}}
+                  >
                     <FormControlLabel value="student" control={<Radio />} label="Student" />
                     <FormControlLabel value="teacher" control={<Radio />} label="Teacher" />
                     <FormControlLabel value="parent" control={<Radio />} label="Parent" />
                     <FormControlLabel value="alumni" control={<Radio />} label="Alumni" />
                   </RadioGroup>
                 </FormControl>
-                <Button type="submit" fullWidth variant="contained">
+                <Button type="submit" fullWidth variant="contained" onClick={createAccount}>
                   Sign Up
                 </Button>
               </form>
               <Button
                 variant="outlined"
                 startdecorator={<GoogleIcon />}
-                fullWidth>
+                fullWidth
+                onClick={signInWithGoogle}
+              >
                 Sign Up with Google
               </Button>
               <Box component="footer" sx={{ py: 3 }}>
