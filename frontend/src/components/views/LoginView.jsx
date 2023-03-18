@@ -17,15 +17,19 @@ import GoogleIcon from "../../assets/GoogleIcon";
 
 import React from "react";
 
-// interface FormElements extends HTMLFormControlsCollection {
-//   email: HTMLInputElement;
-//   password: HTMLInputElement;
-//   persistent: HTMLInputElement;
-// }
+import { initializeApp } from 'firebase/app'
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  connectAuthEmulator, 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth'
 
-// interface SignInFormElement extends HTMLFormElement {
-//   readonly elements: formElements
-// }
+import 'firebase/firestore';
 
 export default function SignupView() {
   return (

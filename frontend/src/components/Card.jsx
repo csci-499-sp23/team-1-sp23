@@ -26,8 +26,6 @@ import RateReviewIcon from '@mui/icons-material/RateReview';
 import StarIcon from '@mui/icons-material/Star';
 
 import './ScrollbarStyle.css'
-import RateReview from '@mui/icons-material/RateReview';
-import { display } from '@mui/system';
 
 class InfoCard extends Component {
     constructor(props) {
@@ -78,19 +76,16 @@ class InfoCard extends Component {
                         justifyContent: "space-between",
                         mt: 3,
                     }}>
-                        {/* <Button>Overview</Button>
-                        <Button>Reviews</Button>
-                        <Button>About</Button> */}
                         <Tabs>
                             <TabList variant='plain'>
-                                <Tab sx = {{fontWeight: "500"}}>Overview</Tab>
-                                <Tab sx = {{fontWeight: "500"}}>Reviews</Tab>
-                                <Tab sx = {{fontWeight: "500"}}>About</Tab>
+                                <Tab sx={{ fontWeight: "500" }}>Overview</Tab>
+                                <Tab sx={{ fontWeight: "500" }}>Reviews</Tab>
+                                <Tab sx={{ fontWeight: "500" }}>About</Tab>
                             </TabList>
                             <Divider sx={{
-                                    mt: 1,
-                                    mb: 2,
-                                }} />
+                                mt: 1,
+                                mb: 2,
+                            }} />
                             <TabPanel value={0} sx={{ p: 2 }}>
                                 <Typography variant="body2" color="text.secondary">
                                     {this.props.school.overview_paragraph}
@@ -130,37 +125,157 @@ class InfoCard extends Component {
                                     mb: 2,
                                 }} />
                                 <Typography variant="h6" color="text.primary">
-                                    Reviews
+                                    Reviews Overview
                                 </Typography>
+
+                                <Grid container spacing={1} justifyContent="center">
+                                    <Grid item xs={12} sm container>
+                                        <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{ mr: 1 }}>5</Typography>
+                                            <LinearProgress variant='determinate' value={100} sx={{
+                                                height: 10,
+                                                borderRadius: 5,
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                }
+                                            }}>
+                                            </LinearProgress>
+                                        </Grid>
+                                        <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{ mr: 1 }}>4</Typography>
+                                            <LinearProgress variant='determinate' value={75} sx={{
+                                                height: 10,
+                                                borderRadius: 5,
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                }
+                                            }}>
+                                            </LinearProgress>
+                                        </Grid>
+                                        <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{ mr: 1 }}>3</Typography>
+                                            <LinearProgress variant='determinate' value={50} sx={{
+                                                height: 10,
+                                                borderRadius: 5,
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                },
+                                            }}>
+                                            </LinearProgress>                                        </Grid>
+                                        <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{ mr: 1 }}>2</Typography>
+                                            <LinearProgress variant='determinate' value={25} sx={{
+                                                height: 10,
+                                                borderRadius: 5,
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                }
+                                            }}>
+                                            </LinearProgress>                                        </Grid>
+                                        <Grid item xs={12} display="flex" flexDirection="row" alignItems="center">
+                                            <Typography sx={{ mr: 1 }}>1</Typography>
+                                            <LinearProgress variant='determinate' value={0} sx={{
+                                                height: 10,
+                                                borderRadius: 5,
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                }
+                                            }}>
+                                            </LinearProgress>                                        
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item>
+                                        <Grid item sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            flexDirection: "column",
+                                            height: "100%",
+                                        }}>
+                                            <Typography variant="body2" fontSize="3.6rem" component="div">
+                                                4.1
+                                            </Typography>
+                                            <Grid item>
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                                <StarIcon fontSize='.8rem' sx={{ backgroundColor: "#F8F9FA" }} />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+
                                 <Divider sx={{
                                     mt: 2,
                                     mb: 3,
                                 }} />
                             </TabPanel>
-                            
+
                             {/* REVIEWS TAB */}
                             <TabPanel value={1} sx={{ p: 2 }}>
                                 <Grid container spacing={1} justifyContent="center">
                                     <Grid item xs={12} sm container>
                                         <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
                                             <Typography sx={{mr: 1}}>5</Typography>
-                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                            <LinearProgress variant='determinate' value={100} sx={{
+                                                height: 10, 
+                                                borderRadius: 5, 
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                    }}}>        
+                                            </LinearProgress>
                                         </Grid>
                                         <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
                                             <Typography sx={{mr: 1}}>4</Typography>
-                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                            <LinearProgress variant='determinate' value={75} sx={{
+                                                height: 10, 
+                                                borderRadius: 5, 
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                    }}}>        
+                                            </LinearProgress>                                        
                                         </Grid>
                                         <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
                                             <Typography sx={{mr: 1}}>3</Typography>
-                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                            <LinearProgress variant='determinate' value={50} sx={{
+                                                height: 10, 
+                                                borderRadius: 5, 
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                    },
+                                                }}>        
+                                            </LinearProgress>                                        
                                         </Grid>
                                         <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
                                             <Typography sx={{mr: 1}}>2</Typography>
-                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                            <LinearProgress variant='determinate' value={25} sx={{
+                                                height: 10, 
+                                                borderRadius: 5, 
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                    }}}>        
+                                            </LinearProgress>                                        
                                         </Grid>
                                         <Grid item xs = {12} display="flex" flexDirection="row" alignItems="center">
                                             <Typography sx={{mr: 1}}>1</Typography>
-                                            <LinearProgress variant='determinante' sx={{height: 10, borderRadius: 5, width: {xs: "100%",md: 220}}}></LinearProgress>
+                                            <LinearProgress variant='determinate' value={0} sx={{
+                                                height: 10, 
+                                                borderRadius: 5, 
+                                                width: {
+                                                    xs: "100%",
+                                                    md: 220
+                                                    }}}>        
+                                            </LinearProgress>                                        
                                         </Grid>
                                     </Grid>
                                     <Grid item>
@@ -188,22 +303,26 @@ class InfoCard extends Component {
                                         justifyContent: "center"
                                     }}>
                                         <Chip label="Write A Review"
-                                            icon={<RateReviewIcon/>}
+                                            icon={<RateReviewIcon />}
                                             variant="outlined"
                                             sx={{
                                                 color: "#1E1E1E",
                                                 fontWeight: 500,
                                                 padding: '9px',
                                                 cursor: "pointer",
-                                            }}
-                                            >
-                                            </Chip>
+                                            }}>
+                                        </Chip>
                                     </Grid>
                                 </Grid>
                                 <Divider sx={{
-                                            mt: 3,
-                                            mb: 2,
-                                        }} />
+                                    mt: 3,
+                                    mb: 2,
+                                }} />
+
+                                {/* PUT REVIEW CARD CODE HERE */}
+                                <Box>
+
+                                </Box>
                             </TabPanel>
                                 
                             {/* ABOUT TAB */}
