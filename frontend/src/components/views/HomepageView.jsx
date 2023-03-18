@@ -8,6 +8,8 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
 
 import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../FooterStyling';
 
@@ -15,6 +17,29 @@ import Schools from "../../assets/schools.json";
 
 import React from 'react'
 
+import { initializeApp } from 'firebase/app'
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  connectAuthEmulator, 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth'
+
+const firebaseApp = initializeApp({
+  apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
+  authDomain: "schoolsdb-be6ea.firebaseapp.com",
+  projectId: "schoolsdb-be6ea",
+  storageBucket: "schoolsdb-be6ea.appspot.com",
+  messagingSenderId: "214316542823",
+  appId: "1:214316542823:web:2e1ac5bcb5b0fe64465dc2",
+  measurementId: "G-EQQ5QDVJWG"
+});
+
+const auth = getAuth(firebaseApp);
 
 const filteredArr = Schools.reduce((acc, current) => {
   const x = acc.find(item => item.neighborhood === current.neighborhood);
@@ -26,10 +51,11 @@ const filteredArr = Schools.reduce((acc, current) => {
 }, []);
 
 export default function HomepageView() { 
-
   const [open, setOpen] = React.useState(false); 
-
   const [age, setAge] = React.useState('');
+
+  const user = auth.currentUser;
+  console.log(user);
 
   const handleChange = (event) => {
     setAge(Number(event.target.value) || '');
@@ -46,6 +72,35 @@ export default function HomepageView() {
   };
   return (
     <> 
+      <Box sx={{ width: "100%" }}>
+        <AppBar position="sticky" style={{ background: "#2b2d42" }}>
+          <Toolbar>
+            <Typography
+              variant="h6"
+              component="p"
+              sx={{
+                flexGrow: 1,
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                ml: "2rem",
+              }}
+            >
+              SchoolsDB
+            </Typography>
+            <Box>
+              <Button color="inherit" href="/map">
+                Map
+              </Button>
+              <Button color="inherit" href="/login">
+                Login
+              </Button>
+              <Button color="inherit" href="/signup">
+                Sign Up
+              </Button>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Box>
       <Box className="home-banner">
         <Box sx={{ mt: "10%"}}>
           <Typography variant="h1" component="h1" sx={{ textAlign: "center", fontSize: "2.25rem", filter: "drop-shadow(1px 1px 5px black)"}}> 

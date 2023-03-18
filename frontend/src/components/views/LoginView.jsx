@@ -12,6 +12,7 @@ import {
 import FormLabel, { formLabelClasses } from "@mui/joy/FormLabel";
 import Link from "@mui/joy/Link";
 import Grid from "@mui/material/Grid";
+import { useNavigate } from "react-router-dom"
 
 import GoogleIcon from "../../assets/GoogleIcon";
 
@@ -29,9 +30,55 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 
-import 'firebase/firestore';
+const firebaseApp = initializeApp({
+  apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
+  authDomain: "schoolsdb-be6ea.firebaseapp.com",
+  projectId: "schoolsdb-be6ea",
+  storageBucket: "schoolsdb-be6ea.appspot.com",
+  messagingSenderId: "214316542823",
+  appId: "1:214316542823:web:2e1ac5bcb5b0fe64465dc2",
+  measurementId: "G-EQQ5QDVJWG"
+});
+
+const auth = getAuth(firebaseApp);
+
 
 export default function SignupView() {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const navigate = useNavigate();
+  
+  const signInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+  }
+
+  const loginEmailPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password).then(cred => {
+        console.log(cred.user)
+      });
+    }
+    catch (error) {
+      alert(error.code)
+    }
+  }
+
+  const monitorAuthState = async () => {
+    onAuthStateChanged(auth, user => {
+      if(user) {
+        console.log(user)
+    
+        navigate("/")
+      }
+      else {
+        alert("failed")
+      }
+    })
+  }
+
+  monitorAuthState()
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
@@ -133,21 +180,7 @@ export default function SignupView() {
                   Let&apos;s get started! Please enter your details.
                 </Typography>
               </div>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const formElements = event.currentTarget.elements;
-                  const data = {
-                    email: formElements.email.value,
-                    password: formElements.password.value,
-                    persistent: formElements.persistent.checked,
-                  };
-                  alert(JSON.stringify(data, null, 2));
-
-                  //TEST LOG TO SEE IF EVENT LISTENER WORKS
-                  console.log(email, password);
-                }}
-              >
+              <form>
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
                   <Input
@@ -163,6 +196,7 @@ export default function SignupView() {
                       outline: "1px solid #454545",
                     }}
                     autoComplete="off"
+                    onChange={(e) => {setEmail(e.target.value)}}
                   />
                 </FormControl>
                 <FormControl required>
@@ -180,6 +214,7 @@ export default function SignupView() {
                       borderRadius: "6px",
                       outline: "1px solid #454545",
                     }}
+                    onChange={(e) => {setPassword(e.target.value)}}
                   />
                 </FormControl>
                 <Box
@@ -208,14 +243,15 @@ export default function SignupView() {
                     Forgot Password
                   </Link>
                 </Box>
-                <Button type="submit" fullWidth variant="contained">
+                <Button type="submit" fullWidth variant="contained" onClick={loginEmailPassword}>
                   Sign In
                 </Button>
               </form>
               <Button
                 variant="outlined"
-                startdecorator={<GoogleIcon />}
+                startDecorator={<GoogleIcon />}
                 fullWidth
+                onClick={signInWithGoogle}
               >
                 Sign in with Google
               </Button>
@@ -231,5 +267,5 @@ export default function SignupView() {
         </Box>
       </Grid>
     </Grid>
-  );
+  )
 }
