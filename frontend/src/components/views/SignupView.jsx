@@ -22,8 +22,6 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 
-import 'firebase/firestore';
-
 const firebaseApp = initializeApp({
   apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
   authDomain: "schoolsdb-be6ea.firebaseapp.com",
@@ -55,9 +53,6 @@ export default function SignupView() {
     catch(error) {
       alert(error.code)
     }
-    email=""
-    password=""
-    role=""
   }
 
   return (
