@@ -5,6 +5,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Link from '@mui/joy/Link';
 import Grid from '@mui/material/Grid'
+import { useNavigate } from "react-router-dom"
 
 import GoogleIcon from '../../assets/GoogleIcon'
 
@@ -39,6 +40,8 @@ export default function SignupView() {
   const [password, setPassword] = React.useState('');
   const [role, setRole] = React.useState('');
 
+  const navigate = useNavigate();
+
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
@@ -47,12 +50,22 @@ export default function SignupView() {
   const createAccount = async(e) => {
     e.preventDefault();
     try {
-     const userCredentials = await createUserWithEmailAndPassword(auth, email, password, role);
-     console.log(userCredentials.user)
+     await createUserWithEmailAndPassword(auth, email, password, role);
     }
     catch(error) {
       alert(error.code)
     }
+  }
+  
+  const monitorAuthState = async () => {
+    onAuthStateChanged(auth, user => {
+      if(user != null) {
+        console.log(user);
+      }
+      else {
+        alert("Failed to make an account");
+      }
+    })
   }
 
   return (
