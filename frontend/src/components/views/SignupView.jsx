@@ -25,7 +25,13 @@ import {
 import 'firebase/firestore';
 
 const firebaseApp = initializeApp({
-  
+  apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
+  authDomain: "schoolsdb-be6ea.firebaseapp.com",
+  projectId: "schoolsdb-be6ea",
+  storageBucket: "schoolsdb-be6ea.appspot.com",
+  messagingSenderId: "214316542823",
+  appId: "1:214316542823:web:2e1ac5bcb5b0fe64465dc2",
+  measurementId: "G-EQQ5QDVJWG"
 });
 
 const auth = getAuth(firebaseApp);
