@@ -15,7 +15,7 @@ function LiveSearch(){
 
     console.log(jsonResults);
     return (
-        <Stack sx={{justifyContent:"center", alignItems:"center", width: 400, margin: "auto" }}>
+        <Stack sx={{justifyContent:"center", alignItems:"center", width: 300, margin: "auto" }}>
             <Autocomplete 
                 id="school_names_test"
                 getOptionLabel={(jsonResults) => `${jsonResults.school_name}`}
@@ -31,7 +31,7 @@ function LiveSearch(){
                     </Box>
                 )}
                 renderInput={(params) => <TextField {...params} 
-                label= "Search for schools"
+                label= "Search for schools..."
                 variant="filled"
                 sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}}
                  />}

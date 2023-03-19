@@ -8,7 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
+import LiveSearch from './LiveSearch';
 import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../FooterStyling';
 
 
@@ -17,10 +17,6 @@ import Schools from "../../assets/schools.json";
 import React from 'react'
 
 
-import { useState } from "react";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import LiveSearch from './LiveSearch';
 
 
 const filteredArr = Schools.reduce((acc, current) => {
@@ -32,24 +28,6 @@ const filteredArr = Schools.reduce((acc, current) => {
   }
 }, []);
 
-const SearchBar = ({setSearchQuery}) => (
-  <form>
-    <TextField
-      id="search-bar"
-      className="text"
-      onInput={(e) => {
-        setSearchQuery(e.target.value);
-      }}
-      label="Search for schools"
-      variant="filled"
-      sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}}
-      />
-
-      <IconButton type ="submit" aria-label="search">
-        <SearchIcon style={{ fill: "blue"}} />
-      </IconButton>
-   </form>
-  );
 
 export default function HomepageView() { 
   const [open, setOpen] = React.useState(false); 
@@ -67,9 +45,6 @@ export default function HomepageView() {
     if (reason !== 'backdropClick') {
       setOpen(false);
     }
-
-  
-  
   };
   return (
     <> 
@@ -79,7 +54,6 @@ export default function HomepageView() {
             The easiest way to find the school best suited for your needs.
           </Typography>
         </Box>
-       
         <Box sx={{ mt: "5rem", width: "50%" }}>
          <LiveSearch />
         </Box>
