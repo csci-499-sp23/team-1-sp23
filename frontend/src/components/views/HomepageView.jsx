@@ -81,7 +81,6 @@ export default function HomepageView() {
         </Box>
        
         <Box sx={{ mt: "5rem", width: "50%" }}>
-         <SearchBar />
          <LiveSearch />
         </Box>
         <div>
