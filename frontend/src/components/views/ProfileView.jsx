@@ -1,14 +1,12 @@
 import {
   Box,
-  Button,
-  Checkbox,
-  CssBaseline,
-  FormControl,
-  FormControlLabel,
-  Input,
   Typography,
   Grid,
-  Paper
+  Paper,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
 } from "@mui/material";
 
 import React from 'react'
