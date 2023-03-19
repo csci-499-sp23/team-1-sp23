@@ -3,11 +3,11 @@ import {
   Typography,
   Grid,
   Paper,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
 } from "@mui/material";
+import Tabs from "@mui/joy/Tabs";
+import TabList from "@mui/joy/TabList";
+import Tab from "@mui/joy/Tab";
+import TabPanel from "@mui/joy/TabPanel";
 
 import React from 'react'
 
@@ -30,36 +30,46 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 export default function ProfileView() {
+  const [username, setUsername] = React.useState(null);
+  const [role, setRole] = React.useState(null);
+  const [savedSchools, setSavedSchools] = React.useState(null)
 
-  const [data, setData] = React.useState(null);
-  
   React.useEffect(() => {
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
+    const unsub = onAuthStateChanged(auth, user => {
+      unsub();
+      if(user) {
+        const uid = auth.currentUser.uid
+        console.log(uid)
+        const docRef = doc(db, "users", uid);
         const docSnap = getDoc(docRef).then(docSnap => {
           if (docSnap.exists()) {
-            console.log(docSnap.data())
-            return setData(docSnap.data())
+            setUsername(docSnap.data().username);
+            setRole(docSnap.data().role);
+            setSavedSchools(docSnap.data().savedSchools);
+          }
+          else {
+            console.log("document does not exist")
           }
         });
       }
       else {
-        console.log("Not logged in")
-        return null;
+        console.log("not logged in");
       }
     })
   }, [])
 
   return (
-    <Box sx={{ backgroundColor: "white" }}>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 16, sm: 8, md: 16 }}>
-        <Grid item xs={16} sm={4} md={16} >
-          <Paper elevation={0}>
-            {data.username + data.role}
-          </Paper>
-        </Grid>
-      </Grid>
+    <Box sx = {{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100%",
+      width: "100%",
+      flexDirection: "column"
+    }}>
+      <Typography>{username}</Typography>
+      <Typography>{role}</Typography>
+      <Typography>{savedSchools ? savedSchools : "You have no saved schools"}</Typography>
     </Box>
   )
 }
