@@ -11,7 +11,7 @@ import GoogleIcon from '../../assets/GoogleIcon'
 
 import React, { Component } from 'react'
 
-import { initializeApp } from 'firebase/app'
+import {initializeApp} from 'firebase/app'
 import { 
   getAuth,  
   createUserWithEmailAndPassword, 
@@ -51,8 +51,7 @@ export default function SignupView() {
     e.preventDefault();
 
     await createUserWithEmailAndPassword(auth, email, password).then(cred => {
-      console.log(cred);
-      return addDoc(collection(db, "users"), {
+      return setDoc(doc(db, "users", cred.user.uid), {
         username: email,
         role: role,
         reviews: null,
@@ -199,7 +198,7 @@ export default function SignupView() {
               </form>
               <Button
                 variant="outlined"
-                startdecorator={<GoogleIcon />}
+                startDecorator={<GoogleIcon />}
                 fullWidth
                 onClick={signInWithGoogle}
               >

@@ -17,7 +17,6 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 import Collapse from '@mui/material/Collapse';
 import Chip from '@mui/material/Chip'
 
-
 import LanguageIcon from '@mui/icons-material/Language';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -35,14 +34,6 @@ class InfoCard extends Component {
         };
         console.log(props)
     };
-
-    handleTab() {
-
-    }
-
-    handlePopup() {
-
-    }
 
     render() {
         return (
@@ -136,7 +127,7 @@ class InfoCard extends Component {
                                                 height: 10,
                                                 borderRadius: 5,
                                                 width: {
-                                                    xs: "100%",
+                                                    xs: "100    %",
                                                     md: 220
                                                 }
                                             }}>
