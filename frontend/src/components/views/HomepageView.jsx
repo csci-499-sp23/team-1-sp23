@@ -13,13 +13,14 @@ import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../Foote
 
 
 import Schools from "../../assets/schools.json";
+
 import React from 'react'
 
 
 import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-//import TextField from "@mui/material/TextField";
+import LiveSearch from './LiveSearch';
 
 
 const filteredArr = Schools.reduce((acc, current) => {
@@ -50,20 +51,9 @@ const SearchBar = ({setSearchQuery}) => (
    </form>
   );
 
-const filterData = (query, data) => {
-  if(!query){
-    return data;
-  }else{
-    return data.filter((d) => d.toLowerCase().includes(query));
-  }
-};
-
-
-
 export default function HomepageView() { 
-
   const [open, setOpen] = React.useState(false); 
-
+  
   const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
@@ -73,16 +63,13 @@ export default function HomepageView() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = (event, reason) => {
     if (reason !== 'backdropClick') {
       setOpen(false);
     }
 
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const dataFiltered = filterData(searchQuery, Schools);
-
+  
+  
   };
   return (
     <> 
@@ -95,6 +82,7 @@ export default function HomepageView() {
        
         <Box sx={{ mt: "5rem", width: "50%" }}>
          <SearchBar />
+         <LiveSearch />
         </Box>
         <div>
           <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#60a5fa", color:"white"  }}>Advance Search</Button>
