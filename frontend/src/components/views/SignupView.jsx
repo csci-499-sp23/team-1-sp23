@@ -42,6 +42,15 @@ export default function SignupView() {
 
   const navigate = useNavigate();
 
+  onAuthStateChanged(auth, user => {
+    if(user) {
+      navigate("/")
+    }
+    else {
+      console.log("Failed to make an account");
+    }
+  })
+  
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
@@ -54,21 +63,12 @@ export default function SignupView() {
       return setDoc(doc(db, "users", cred.user.uid), {
         username: email,
         role: role,
-        reviews: null,
         saved_schools: null
       })
     })
 
   }
   
-  auth.onAuthStateChanged(user => {
-    if(user) {
-      navigate("/")
-    }
-    else {
-      console.log("Failed to make an account");
-    }
-  })
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
