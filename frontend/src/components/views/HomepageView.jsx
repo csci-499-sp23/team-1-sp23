@@ -25,7 +25,7 @@ import {
 } from 'firebase/auth'
 
 const firebaseApp = initializeApp({
-  apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
+  apiKey: "AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI",
   authDomain: "schoolsdb-be6ea.firebaseapp.com",
   projectId: "schoolsdb-be6ea",
   storageBucket: "schoolsdb-be6ea.appspot.com",
@@ -48,21 +48,33 @@ const filteredArr = Schools.reduce((acc, current) => {
 const getLoggedInLinks = document.querySelectorAll(".logged-in");
 const getLoggedOutLinks = document.querySelectorAll(".logged-out");
 
-
 export default function HomepageView() { 
   const [open, setOpen] = React.useState(false); 
   const [age, setAge] = React.useState('');
 
-  const user = auth.currentUser;
-
-  onAuthStateChanged(auth, user => {
-    if(user) {
-      console.log(user)
-    }
-    else {
-      console.log("Not logged in")
-    }
-  })
+  // React.useEffect(() => {
+  //   const unsub = onAuthStateChanged(auth, user => {
+  //     unsub();
+  //     if(user) {
+  //       const uid = auth.currentUser.uid
+  //       console.log(uid)
+  //       getLoggedInLinks.forEach(link => {
+  //         link.style.display = "block"
+  //       })
+  //       getLoggedOutLinks.forEach(link => {
+  //         link.style.display = "none"
+  //       })
+  //     }
+  //     else {
+  //       getLoggedInLinks.forEach(link => {
+  //         link.style.display = "none"
+  //       })
+  //       getLoggedOutLinks.forEach(link => {
+  //         link.style.display = "block"
+  //       })
+  //     }
+  //   })
+  // }, [])
 
   const handleChange = (event) => {
     setAge(Number(event.target.value) || '');

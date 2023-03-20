@@ -26,10 +26,8 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 
-import HomepageView from "./HomepageView"
-
 const firebaseApp = initializeApp({
-  apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
+  apiKey: "AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI",
   authDomain: "schoolsdb-be6ea.firebaseapp.com",
   projectId: "schoolsdb-be6ea",
   storageBucket: "schoolsdb-be6ea.appspot.com",
@@ -54,7 +52,6 @@ export default function SignupView() {
       console.log("Not logged in")
     }
   })
-
   
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -65,7 +62,6 @@ export default function SignupView() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password).then(cred => {
-        console.log(cred.user)
         document.querySelector("form").reset();
       });
     }
@@ -73,8 +69,7 @@ export default function SignupView() {
       console.log(error.code)
     }
   }
-
-
+  
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid

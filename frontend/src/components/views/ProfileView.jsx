@@ -16,7 +16,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore'
 
 const firebaseApp = initializeApp({
-    apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
+    apiKey: "AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI",
     authDomain: "schoolsdb-be6ea.firebaseapp.com",
     projectId: "schoolsdb-be6ea",
     storageBucket: "schoolsdb-be6ea.appspot.com",
