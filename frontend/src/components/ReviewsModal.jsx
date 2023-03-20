@@ -27,6 +27,7 @@ class ReviewsModal extends Component {
             modal: bool,
         })
     }
+    
     render() {
         return (
             <Box sx={{
@@ -77,7 +78,7 @@ class ReviewsModal extends Component {
                             />
                         </Grid>     
                         <Grid item xs={12}>
-                            <Button size="medium" variant="outlined" onClick={this.handleClose.bind(null, false)}>Cancel</Button>
+                            <Button size="medium" variant="outlined">Cancel</Button>
                             <Button size="medium" variant="contained">Submit</Button>
                         </Grid>               
                     </Grid>
