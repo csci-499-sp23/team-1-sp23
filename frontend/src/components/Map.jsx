@@ -29,7 +29,7 @@ const center = {
   lng: -73.893470
 };
 
-const boroughs =["Queens", "Manhattan", "Bronx", "Brooklyn", "Staten Island"]
+const boroughs =["Queens", "Manhattan", "Bronx", "Brooklyn", "Staten Island", "More Filters"]
 
 class Map extends Component {
   constructor() {
