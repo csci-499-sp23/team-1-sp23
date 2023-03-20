@@ -8,10 +8,14 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+
+import LiveSearch from './LiveSearch';
+
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
 import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../FooterStyling';
+
 
 import Schools from "../../assets/schools.json";
 
@@ -34,6 +38,8 @@ const firebaseApp = initializeApp({
 });
 
 const auth = getAuth(firebaseApp);
+
+
 
 const filteredArr = Schools.reduce((acc, current) => {
   const x = acc.find(item => item.neighborhood === current.neighborhood);
@@ -62,7 +68,6 @@ export default function HomepageView() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = (event, reason) => {
     if (reason !== 'backdropClick') {
       setOpen(false);
@@ -122,9 +127,8 @@ export default function HomepageView() {
             The easiest way to find the school best suited for your needs.
           </Typography>
         </Box>
-       
         <Box sx={{ mt: "5rem", width: "50%" }}>
-          <TextField id="outlined-basic" label="Search for schools" variant="filled" sx={{ backgroundColor: "white", width: "100%", borderRadius: "5px",}} />
+         <LiveSearch />
         </Box>
         <div>
           <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#60a5fa", color:"white"  }}>Advance Search</Button>
