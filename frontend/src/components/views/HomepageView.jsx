@@ -25,6 +25,7 @@ import { initializeApp } from 'firebase/app'
 import { 
   getAuth, 
   signOut,
+  onAuthStateChanged
 } from 'firebase/auth'
 
 const firebaseApp = initializeApp({
@@ -59,7 +60,15 @@ export default function HomepageView() {
   const [age, setAge] = React.useState('');
 
   const user = auth.currentUser;
-  console.log(user);
+
+  onAuthStateChanged(auth, user => {
+    if(user) {
+      console.log(user)
+    }
+    else {
+      console.log("Not logged in")
+    }
+  })
 
   const handleChange = (event) => {
     setAge(Number(event.target.value) || '');

@@ -43,7 +43,18 @@ const auth = getAuth(firebaseApp)
 export default function SignupView() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+
   const navigate = useNavigate();
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      navigate("/")
+    }
+    else {
+      console.log("Not logged in")
+    }
+  })
+
   
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -58,20 +69,11 @@ export default function SignupView() {
         document.querySelector("form").reset();
       });
     }
-    catch (error) {
+    catch(error) {
       console.log(error.code)
     }
   }
-  
-  auth.onAuthStateChanged( user => {
-    if(user) {
-      navigate("/")
-    }
-    else {
-      console.log("error")
-    }
-  })
-  
+
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
