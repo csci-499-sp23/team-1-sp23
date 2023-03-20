@@ -9,10 +9,8 @@ import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
-import Tabs from "@mui/joy/Tabs";
-import TabList from "@mui/joy/TabList";
-import Tab from "@mui/joy/Tab";
-import TabPanel from "@mui/joy/TabPanel";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import LinearProgress from "@mui/material/LinearProgress";
 import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
@@ -42,21 +40,22 @@ const urlFix = (url) => {
     .toLowerCase();
 };
 
+const TabPanel = ({ children, value, index }) => {
+  return value === index && children;
+};
+
 class InfoCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: "Overview",
-      saved: false,
-      modal: false,
+      selectedTab: 0,
     };
   }
 
-  showModal = (bool) => {
-    this.setState({
-      modal: bool,
-    });
-  }
+  handleTab = (_, value) => {
+    console.log(value);
+    this.setState(() => ({ selectedTab: value }));
+  };
 
   handleSave() {
 
@@ -88,10 +87,12 @@ class InfoCard extends Component {
             {this.props.school.school_name}
           </Typography>
           <Typography gutterBottom variant="body2" component="div">
-            {this.props.school.neighborhood},
-            {this.props.school.borough === "STATEN IS"
-              ? this.props.school.city
-              : this.props.school.borough}
+            {`${this.props.school.neighborhood}, ${this.props.school.borough
+              .toLowerCase()
+              .split(" ")
+              .map((word) => word.replace(/^./, (c) => c.toUpperCase()))
+              .join(" ")}`}
+            {this.props.school.borough === "STATEN IS" && "land"}
           </Typography>
 
           <Box
@@ -102,56 +103,17 @@ class InfoCard extends Component {
               mt: 3,
             }}
           >
-            <Tabs>
-              <TabList variant="plain">
-                <Tab sx={{ fontWeight: "500" }}>Overview</Tab>
-                <Tab sx={{ fontWeight: "500" }}>Reviews</Tab>
-                <Tab sx={{ fontWeight: "500" }}>About</Tab>
-              </TabList>
-              <Divider
-                sx={{
-                  mt: 1,
-                  mb: 2,
-                }}
-              />
-              
-              <TabPanel value={0} sx={{ p: 2 }}>
-                <Box display="flex" justifyContent="space-between">
-                  <IconButton variant="outlined" sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    color: "#2E72CB"
-                  }}>
-                    <DirectionsIcon sx={{
-                      border: "1px solid #2E72CB",
-                      borderRadius: "50%",
-                      padding: "7px",
-                      m: 1
-                    }} />
-                    <Typography variant="body2">Directions</Typography>
-                  </IconButton>
-                  <IconButton variant="outlined" sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    color: "#2E72CB"
-                  }}>
-                    <BookmarkBorderIcon sx={{
-                      border: "1px solid #2E72CB",
-                      borderRadius: "50%",
-                      padding: "7px",
-                      m: 1
-                    }} />
-                    <Typography variant="body2">Save School</Typography>
-                  </IconButton>
-                </Box>
-
-                <Divider
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                  }}
-                />
-
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Tabs
+                sx={{ alignSelf: "center", mb: 2 }}
+                value={this.state.selectedTab}
+                onChange={this.handleTab}
+              >
+                <Tab sx={{ fontWeight: "500", mr: 2 }} label="Overview" />
+                <Tab sx={{ fontWeight: "500", mx: 2 }} label="Reviews" />
+                <Tab sx={{ fontWeight: "500", ml: 2 }} label="About" />
+              </Tabs>
+              <TabPanel value={0} index={this.state.selectedTab} sx={{ p: 2 }}>
                 <Typography variant="body2" color="text.secondary">
                   {this.props.school.overview_paragraph}
                 </Typography>
@@ -382,7 +344,7 @@ class InfoCard extends Component {
               </TabPanel>
 
               {/* REVIEWS TAB */}
-              <TabPanel value={1} sx={{ p: 2 }}>
+              <TabPanel value={1} index={this.state.selectedTab} sx={{ p: 2 }}>
                 <Grid container spacing={1} justifyContent="center">
                   <Grid item xs={12} sm container>
                     <Grid
@@ -567,7 +529,7 @@ class InfoCard extends Component {
               </TabPanel>
 
               {/* ABOUT TAB */}
-              <TabPanel value={2} sx={{ p: 2 }}>
+              <TabPanel value={2} index={this.state.selectedTab} sx={{ p: 2 }}>
                 <Box>
                   {/* ACADEMICS */}
                   <Grid
@@ -759,7 +721,7 @@ class InfoCard extends Component {
                         color="text.primary"
                         fontWeight="500"
                       >
-                        Saftey
+                        Safety
                       </Typography>
                       {Math.round(
                         Number(this.props.school.pct_stu_safe) * 100
@@ -780,7 +742,7 @@ class InfoCard extends Component {
                   </Grid>
                 </Box>
               </TabPanel>
-            </Tabs>
+            </Box>
           </Box>
         </CardContent>
         <CardActions>
