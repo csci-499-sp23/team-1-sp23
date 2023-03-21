@@ -19,11 +19,16 @@ import { onAuthStateChanged } from "firebase/auth";
 class ReviewsModal extends Component {
     constructor(props) {
         super(props);
+
+        var today = new Date(),
+        date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+
         this.state = {
             modal: true,
             review: null,
             buttonDisable: true,
             value: 0,
+            currentDate: date,
         }
     }
 
@@ -42,12 +47,13 @@ class ReviewsModal extends Component {
 
     handleSubmit = async()=> {
         if (this.state.review != null || this.state.stars !=null) {
-            await setDoc(doc(db, "reviews", this.props.name), {
+            await setDoc(doc(db, "school", this.props.name, "reviews", this.props.uid), {
                 user: this.props.user,
                 review: this.state.review,
                 role: this.props.role,
                 stars: this.state.value,
-                uid: this.props.uid
+                uid: this.props.uid,
+                datePosted: this.state.currentDate,
             });
             
         }

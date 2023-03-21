@@ -33,7 +33,7 @@ import ReviewsCard from "./ReviewsCard"
 
 import {auth, db} from '../config/firebase'
 import { onAuthStateChanged } from "firebase/auth";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 
 const urlFix = (url) => {
   return url
@@ -59,10 +59,12 @@ class InfoCard extends Component {
       username: null,
       role: null,
       uid: null,
+      reviewData: null,
     };
   }
 
   componentDidMount() {
+    //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -104,13 +106,36 @@ class InfoCard extends Component {
     })
   }
 
-  handleTab = (_, value) => {
-    this.setState(() => ({ selectedTab: value }));
-  };
+  setReviewData = (data) => {
+    this.setState({
+      reviewData: data
+    })
+  }
+
+  getReviews = async() => {
+    const schoolRef = collection(db,`school/${this.props.school.school_name}/reviews`)
+    const querySnapshot =  await getDocs(schoolRef)
+    querySnapshot.forEach((doc) => {
+      if(doc.exists()) {
+        console.log(doc.data())
+        this.setReviewData(doc.data())
+      }
+      else {
+        console.log("No reviews yet");
+        return null;
+      }
+    })
+  }  
 
   handleSave() {
 
-  }
+  } 
+  
+  handleTab = (_, value) => {
+    this.setState(() => ({ 
+      selectedTab: value
+    }));
+  };
 
   render() {
     return (
@@ -537,8 +562,10 @@ class InfoCard extends Component {
                   }}
                 />
 
-                {/* PUT REVIEW CARD CODE HERE */}
-                <Box></Box>
+                {/* PUT REVIEWS CARD CODE HERE */}
+                <Box onClick={this.getReviews}>
+                  <ReviewsCard data={this.state.reviewData}/>
+                </Box>
               </TabPanel>
 
               {/* ABOUT TAB */}
@@ -763,14 +790,14 @@ class InfoCard extends Component {
           <Button size="small" >Learn More</Button>
         </CardActions>
       </Card>
-      {this.state.modal && (
-        <ReviewsModal 
-          name={this.props.school.school_name} 
-          onClose={()=> this.setState({modal: false})} 
-          user={this.state.username} 
-          role={this.state.role}
-          uid={this.state.uid}
-        />)}
+        {this.state.modal && (
+          <ReviewsModal
+            name={this.props.school.school_name}
+            onClose={() => this.setState({ modal: false })}
+            user={this.state.username}
+            role={this.state.role}
+            uid={this.state.uid}
+          />)}
       </>
     );
   }
