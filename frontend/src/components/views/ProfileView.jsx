@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../../config/firebase";
+import Avatar from '@mui/material/Avatar'
 
 export default function ProfileView() {
   const [username, setUsername] = React.useState("");

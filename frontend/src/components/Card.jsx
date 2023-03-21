@@ -16,6 +16,7 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
+import Rating from '@mui/material/Rating'
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -28,6 +29,11 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
+import ReviewsCard from "./ReviewsCard"
+
+import {auth, db} from '../config/firebase'
+import { onAuthStateChanged } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
 
 const urlFix = (url) => {
   return url
@@ -49,23 +55,61 @@ class InfoCard extends Component {
     super(props);
     this.state = {
       selectedTab: 0,
-      modal: false
+      modal: false,
+      username: null,
+      role: null,
+      uid: null,
     };
   }
 
-  handleTab = (_, value) => {
-    console.log(value);
-    this.setState(() => ({ selectedTab: value }));
-  };
+  componentDidMount() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = getDoc(docRef).then((docSnap) => {
+          if (docSnap.exists()) {
+            this.setUsername(docSnap.data().username);
+            this.setRole(docSnap.data().role);
+            this.setUid(auth.currentUser.uid)
+          } else {
+            console.log("document does not exist");
+          }
+        });
+      } else {
+        console.log("not logged in");
+      }
+    });
+  }
 
-  handleSave() {
+  setUsername = (name) => {
+    this.setState({
+      username: name,
+    })
+  }
 
+  setRole = (userRole) => {
+    this.setState({
+      role: userRole,
+    })
+  }
+  setUid = (userUid) => {
+    this.setState({
+      uid: userUid,
+    })
   }
 
   showModal = (bool) => {
     this.setState({
       modal: bool,
     })
+  }
+
+  handleTab = (_, value) => {
+    this.setState(() => ({ selectedTab: value }));
+  };
+
+  handleSave() {
+
   }
 
   render() {
@@ -316,28 +360,9 @@ class InfoCard extends Component {
                       >
                         4.1
                       </Typography>
-                      <Grid item>
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                      </Grid>
+                        <Grid item>
+                          <Rating name="read-only" value={2} readOnly size="small"/>
+                        </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -479,26 +504,7 @@ class InfoCard extends Component {
                         4.1
                       </Typography>
                       <Grid item>
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
-                        <StarIcon
-                          fontSize=".8rem"
-                          sx={{ backgroundColor: "#F8F9FA" }}
-                        />
+                        <Rating name="read-only" value={3} readOnly precision={0.5}/>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -520,7 +526,7 @@ class InfoCard extends Component {
                         padding: "9px",
                         cursor: "pointer",
                       }}
-                      onClick={this.showModal.bind(null, true)}
+                      onClick={(auth.currentUser ? this.showModal.bind(null, true) : undefined)}
                     ></Chip>
                   </Grid>
                 </Grid>
@@ -757,7 +763,14 @@ class InfoCard extends Component {
           <Button size="small" >Learn More</Button>
         </CardActions>
       </Card>
-      {this.state.modal && (<ReviewsModal name={this.props.school.school_name}/>)}
+      {this.state.modal && (
+        <ReviewsModal 
+          name={this.props.school.school_name} 
+          onClose={()=> this.setState({modal: false})} 
+          user={this.state.username} 
+          role={this.state.role}
+          uid={this.state.uid}
+        />)}
       </>
     );
   }
