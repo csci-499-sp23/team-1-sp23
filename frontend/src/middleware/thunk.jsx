@@ -12,6 +12,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth'
+import { getFirestore, collection, doc, setDoc, addDoc } from 'firebase/firestore'
 
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyATU3EhmKaM9AizPjVfgpqYzbNNe7ad4ns",
@@ -24,20 +25,40 @@ const firebaseApp = initializeApp({
 });
 
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-  }
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+}
 
-const loginEmailPassword = async (e) => {
-e.preventDefault();
-try {
+const loginEmailPassword = async (email, password) => {
+  e.preventDefault();
+  try {
     await signInWithEmailAndPassword(auth, email, password).then(cred => {
-    console.log(cred.user)
+      console.log(cred.user)
     });
-}
-catch (error) {
+  }
+  catch (error) {
     alert(error.code)
+  }
 }
+
+const signUpWithGoogle = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
 }
+
+const createAccount = async(email, password) => {
+  e.preventDefault();
+
+  await createUserWithEmailAndPassword(auth, email, password).then(cred => {
+    return setDoc(doc(db, "users", cred.user.uid), {
+      username: email,
+      role: role,
+      saved_schools: null
+    })
+  })
+}
+
+export default {signInWithGoogle, loginEmailPassword, signUpWithGoogle, createAccount}

@@ -62,7 +62,8 @@ export default function SignupView() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password).then(cred => {
-        document.querySelector("form").reset();
+        console.log(cred.user)
+        localStorage.setItem("user", cred.user);
       });
     }
     catch(error) {

@@ -49,6 +49,7 @@ class InfoCard extends Component {
     super(props);
     this.state = {
       selectedTab: 0,
+      modal: false
     };
   }
 
@@ -59,6 +60,12 @@ class InfoCard extends Component {
 
   handleSave() {
 
+  }
+
+  showModal = (bool) => {
+    this.setState({
+      modal: bool,
+    })
   }
 
   render() {

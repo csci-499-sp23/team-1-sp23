@@ -12,8 +12,7 @@ function LiveSearch(){
         .then((response) => response.json())
         .then((json) => setJsonResults(json))
     }, [])
-
-    console.log(jsonResults);
+    
     return (
         <Stack sx={{justifyContent:"center", alignItems:"center", width: 300, margin: "auto" }}>
             <Autocomplete 

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -35,7 +34,8 @@ class ReviewsModal extends Component {
                 position: "absolute",
                 left: "50%", 
                 top: "50%", 
-                transform: "translate(-50%, -50%)"
+                transform: "translate(-50%, -50%)",
+                maxWidth: 600,
             }}>
                 <Paper variant="outlined" sx={{ borderRadius: 4}}>
                     <Grid container spacing={3} sx={{padding: 5, display: "flex", alignItems: "center"}}>
@@ -44,7 +44,7 @@ class ReviewsModal extends Component {
                                 {this.props.name}
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} md={12}>
+                        <Grid item xs={12} md={12} textAlign="center">
                             <StarBorderOutlinedIcon
                                 fontSize="1.7rem"
                                 sx={{ color: "text.secondary", fontSize: "1.7rem" }}
@@ -77,9 +77,9 @@ class ReviewsModal extends Component {
                                 rows={4}
                             />
                         </Grid>     
-                        <Grid item xs={12}>
-                            <Button size="medium" variant="outlined">Cancel</Button>
-                            <Button size="medium" variant="contained">Submit</Button>
+                        <Grid item xs={12} textAlign="end">
+                            <Button size="medium" variant="outlined" >Cancel</Button>
+                            <Button size="medium" variant="contained" sx={{ml: 2}}>Submit</Button>
                         </Grid>               
                     </Grid>
                 </Paper>

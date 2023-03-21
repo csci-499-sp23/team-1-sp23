@@ -34,6 +34,8 @@ export default function ProfileView() {
   const [role, setRole] = React.useState(null);
   const [savedSchools, setSavedSchools] = React.useState(null)
 
+  const user = localStorage.getItem("user")
+
   React.useEffect(() => {
     const unsub = onAuthStateChanged(auth, user => {
       unsub();
