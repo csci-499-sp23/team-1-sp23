@@ -13,6 +13,9 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import LinearProgress from "@mui/material/LinearProgress";
 import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from '@mui/material/Snackbar';
+import CloseIcon from '@mui/icons-material/Close';
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -20,8 +23,11 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import StarIcon from "@mui/icons-material/Star";
+import DirectionsIcon from '@mui/icons-material/Directions';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
 import "./ScrollbarStyle.css";
+import ReviewsModal from "./ReviewsModal";
 
 const urlFix = (url) => {
   return url
@@ -43,6 +49,7 @@ class InfoCard extends Component {
     super(props);
     this.state = {
       selectedTab: 0,
+      modal: false
     };
   }
 
@@ -51,10 +58,19 @@ class InfoCard extends Component {
     this.setState(() => ({ selectedTab: value }));
   };
 
-  handlePopup() {}
+  handleSave() {
+
+  }
+
+  showModal = (bool) => {
+    this.setState({
+      modal: bool,
+    })
+  }
 
   render() {
     return (
+      <>
       <Card
         sx={{
           maxWidth: { xs: "100vw", sm: 400, md: 400 },
@@ -504,6 +520,7 @@ class InfoCard extends Component {
                         padding: "9px",
                         cursor: "pointer",
                       }}
+                      onClick={this.showModal.bind(null, true)}
                     ></Chip>
                   </Grid>
                 </Grid>
@@ -736,10 +753,12 @@ class InfoCard extends Component {
           </Box>
         </CardContent>
         <CardActions>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
+          <Button size="small" >Share</Button>
+          <Button size="small" >Learn More</Button>
         </CardActions>
       </Card>
+      {this.state.modal && (<ReviewsModal name={this.props.school.school_name}/>)}
+      </>
     );
   }
 }

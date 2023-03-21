@@ -18,6 +18,7 @@ import Divider from '@mui/material/Divider'
 import schools from "../assets/schools.json"
 
 import InfoCard from './Card';
+import FiltersModal from './MoreFilters';
 
 const containerStyle = {
   width: '100%',
