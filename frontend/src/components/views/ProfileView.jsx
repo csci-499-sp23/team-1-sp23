@@ -1,36 +1,34 @@
 import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import React from "react";
+import { auth, db } from "../../config/firebase";
 
 export default function ProfileView() {
-  const [username, setUsername] = React.useState(null);
-  const [role, setRole] = React.useState(null);
-  const [savedSchools, setSavedSchools] = React.useState(null);
+  const [username, setUsername] = React.useState("");
+  const [role, setRole] = React.useState("");
+  const [savedSchools, setSavedSchools] = React.useState([]);
   const [value, setValue] = React.useState(0);
 
-  // React.useEffect(() => {
-  //   const unsub = onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       const uid = auth.currentUser.uid;
-  //       console.log(uid);
-  //       const docRef = doc(db, "users", uid);
-  //       const docSnap = getDoc(docRef).then((docSnap) => {
-  //         if (docSnap.exists()) {
-  //           setUsername(docSnap.data().username);
-  //           setRole(docSnap.data().role);
-  //           setSavedSchools(docSnap.data().savedSchools);
-  //         } else {
-  //           console.log("document does not exist");
-  //         }
-  //       });
-  //     } else {
-  //       console.log("not logged in");
-  //     }
-  //   });
-  // }, []);
-
-  const handleTab = (_, value) => {
-    setValue(value);
-  };
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = auth.currentUser.uid;
+        const docRef = doc(db, "users", uid);
+        getDoc(docRef).then((docSnap) => {
+          if (docSnap.exists()) {
+            setUsername(docSnap.data().username.split("@").at(0));
+            setRole(docSnap.data().role);
+            setSavedSchools(docSnap.data().savedSchools);
+          } else {
+            console.log("document does not exist");
+          }
+        });
+      } else {
+        console.log("not logged in");
+      }
+    });
+  }, []);
 
   return (
     <Box
@@ -53,7 +51,7 @@ export default function ProfileView() {
               fontSize: "2rem",
             }}
           >
-            Hello, User 👋
+            Hello, {username}👋
           </Typography>
           <Box
             sx={{
@@ -67,7 +65,7 @@ export default function ProfileView() {
           </Box>
         </Box>
         <Box sx={{ my: 3 }}>
-          <Tabs value={value} onChange={handleTab}>
+          <Tabs value={value} onChange={(_, val) => setValue(val)}>
             <Tab sx={{ mr: 5 }} label="Your Reviews" />
             <Tab sx={{ mr: 5 }} label="Saved Schools" />
           </Tabs>
