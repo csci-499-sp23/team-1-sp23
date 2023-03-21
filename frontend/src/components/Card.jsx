@@ -81,6 +81,7 @@ class InfoCard extends Component {
         console.log("not logged in");
       }
     });
+    this.getReviews()
   }
 
   setUsername = (name) => {

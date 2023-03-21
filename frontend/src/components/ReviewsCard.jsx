@@ -15,7 +15,7 @@ class ReviewCard extends Component {
   render() {
     return(
       <Box>
-        {console.log(this.props.data)}
+        {/* {console.log(this.props.data)} */}
       </Box>
     )
   }

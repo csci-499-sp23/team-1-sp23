@@ -47,7 +47,7 @@ class ReviewsModal extends Component {
 
     handleSubmit = async()=> {
         if (this.state.review != null || this.state.stars !=null) {
-            await setDoc(doc(db, "school", this.props.name, "reviews", this.props.uid), {
+            await setDoc(doc(db, "reviews", this.props.name), {
                 user: this.props.user,
                 review: this.state.review,
                 role: this.props.role,
