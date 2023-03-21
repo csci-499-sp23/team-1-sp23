@@ -2,75 +2,55 @@ import {
   Box,
   Button,
   Checkbox,
-  CssBaseline,
   FormControl,
-  FormControlLabel,
   Input,
   Typography,
 } from "@mui/material";
 import FormLabel, { formLabelClasses } from "@mui/joy/FormLabel";
 import Link from "@mui/joy/Link";
 import Grid from "@mui/material/Grid";
-import { useNavigate } from "react-router-dom"
-
+import { useNavigate } from "react-router-dom";
 import GoogleIcon from "../../assets/GoogleIcon";
-
 import React from "react";
-
-import { initializeApp } from 'firebase/app'
-import { 
-  getAuth, 
-  signInWithEmailAndPassword,  
+import {
+  signInWithEmailAndPassword,
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-} from 'firebase/auth'
-
-const firebaseApp = initializeApp({
-  apiKey: "AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI",
-  authDomain: "schoolsdb-be6ea.firebaseapp.com",
-  projectId: "schoolsdb-be6ea",
-  storageBucket: "schoolsdb-be6ea.appspot.com",
-  messagingSenderId: "214316542823",
-  appId: "1:214316542823:web:2e1ac5bcb5b0fe64465dc2",
-  measurementId: "G-EQQ5QDVJWG"
-});
-
-const auth = getAuth(firebaseApp)
+} from "firebase/auth";
+import { auth, db } from "../../config/firebase";
 
 export default function SignupView() {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const navigate = useNavigate();
 
-  onAuthStateChanged(auth, user => {
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-      navigate("/")
+      navigate("/");
+    } else {
+      console.log("Not logged in");
     }
-    else {
-      console.log("Not logged in")
-    }
-  })
-  
+  });
+
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-  }
+    signInWithPopup(auth, provider);
+  };
 
   const loginEmailPassword = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password).then(cred => {
-        console.log(cred.user)
-        localStorage.setItem("user", cred.user);
+      await signInWithEmailAndPassword(auth, email, password).then((cred) => {
+        console.log(cred.user);
+        document.querySelector("form").reset();
       });
+    } catch (error) {
+      console.log(error.code);
     }
-    catch(error) {
-      console.log(error.code)
-    }
-  }
-  
+  };
+
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
@@ -169,7 +149,7 @@ export default function SignupView() {
                   sx={{ my: 1, mb: 3 }}
                   fontWeight="300"
                 >
-                  Let&apos;s get started! Please enter your details.
+                  Let's get started! Please enter your details.
                 </Typography>
               </div>
               <form>
@@ -188,7 +168,9 @@ export default function SignupView() {
                       outline: "1px solid #454545",
                     }}
                     autoComplete="off"
-                    onChange={(e) => {setEmail(e.target.value)}}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
                   />
                 </FormControl>
                 <FormControl required>
@@ -206,7 +188,9 @@ export default function SignupView() {
                       borderRadius: "6px",
                       outline: "1px solid #454545",
                     }}
-                    onChange={(e) => {setPassword(e.target.value)}}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
                   />
                 </FormControl>
                 <Box
@@ -235,7 +219,12 @@ export default function SignupView() {
                     Forgot Password
                   </Link>
                 </Box>
-                <Button type="submit" fullWidth variant="contained" onClick={loginEmailPassword}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  onClick={loginEmailPassword}
+                >
                   Sign In
                 </Button>
               </form>
@@ -250,7 +239,7 @@ export default function SignupView() {
               <Box component="footer" sx={{ py: 3 }}>
                 <Typography fontWeight="300" textAlign="center" fontSize="14px">
                   <Link href="/signup">
-                    Don&apos;t have an account? Sign up here.
+                    Don't have an account? Sign up here.
                   </Link>
                 </Typography>
               </Box>
@@ -259,5 +248,5 @@ export default function SignupView() {
         </Box>
       </Grid>
     </Grid>
-  )
+  );
 }

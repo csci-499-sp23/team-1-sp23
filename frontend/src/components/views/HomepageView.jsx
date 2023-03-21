@@ -1,49 +1,31 @@
-import { Box, Typography, TextField, CardActions } from '@mui/material'
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-import LiveSearch from './LiveSearch';
-
+import { Box, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import LiveSearch from "./LiveSearch";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-
-import { FooterBox, Container, Row, Column, FooterLink, Heading } from '../FooterStyling';
-
-
+import {
+  FooterBox,
+  Container,
+  Row,
+  Column,
+  FooterLink,
+  Heading,
+} from "../FooterStyling";
 import Schools from "../../assets/schools.json";
-
-import React from 'react'
-
-import { initializeApp } from 'firebase/app'
-import { 
-  getAuth, 
-  signOut,
-  onAuthStateChanged
-} from 'firebase/auth'
-
-const firebaseApp = initializeApp({
-  apiKey: "AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI",
-  authDomain: "schoolsdb-be6ea.firebaseapp.com",
-  projectId: "schoolsdb-be6ea",
-  storageBucket: "schoolsdb-be6ea.appspot.com",
-  messagingSenderId: "214316542823",
-  appId: "1:214316542823:web:2e1ac5bcb5b0fe64465dc2",
-  measurementId: "G-EQQ5QDVJWG"
-});
-
-const auth = getAuth(firebaseApp);
-
-
+import React from "react";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 const filteredArr = Schools.reduce((acc, current) => {
-  const x = acc.find(item => item.neighborhood === current.neighborhood);
+  const x = acc.find((item) => item.neighborhood === current.neighborhood);
   if (!x) {
     return acc.concat([current]);
   } else {
@@ -54,43 +36,29 @@ const filteredArr = Schools.reduce((acc, current) => {
 const getLoggedInLinks = document.querySelectorAll(".logged-in");
 const getLoggedOutLinks = document.querySelectorAll(".logged-out");
 
-export default function HomepageView() { 
-  const [open, setOpen] = React.useState(false); 
-  const [age, setAge] = React.useState('');
+export default function HomepageView() {
+  const [open, setOpen] = React.useState(false);
+  const [age, setAge] = React.useState("");
 
-  // React.useEffect(() => {
-  //   const unsub = onAuthStateChanged(auth, user => {
-  //     unsub();
-  //     if(user) {
-  //       const uid = auth.currentUser.uid
-  //       console.log(uid)
-  //       getLoggedInLinks.forEach(link => {
-  //         link.style.display = "block"
-  //       })
-  //       getLoggedOutLinks.forEach(link => {
-  //         link.style.display = "none"
-  //       })
-  //     }
-  //     else {
-  //       getLoggedInLinks.forEach(link => {
-  //         link.style.display = "none"
-  //       })
-  //       getLoggedOutLinks.forEach(link => {
-  //         link.style.display = "block"
-  //       })
-  //     }
-  //   })
-  // }, [])
+  const user = auth.currentUser;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log(user);
+    } else {
+      console.log("Not logged in");
+    }
+  });
 
   const handleChange = (event) => {
-    setAge(Number(event.target.value) || '');
+    setAge(Number(event.target.value) || "");
   };
 
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = (event, reason) => {
-    if (reason !== 'backdropClick') {
+    if (reason !== "backdropClick") {
       setOpen(false);
     }
   };
@@ -98,12 +66,12 @@ export default function HomepageView() {
   const handleLogout = (e) => {
     e.preventDefault();
     signOut(auth).then(() => {
-      console.log("signed out")
+      console.log("signed out");
     });
-  }
+  };
 
   return (
-    <> 
+    <>
       {/* NAVBAR */}
       <Box sx={{ width: "100%" }}>
         <AppBar position="sticky" style={{ background: "#2b2d42" }}>
@@ -124,16 +92,20 @@ export default function HomepageView() {
               <Button color="inherit" href="/map">
                 Map
               </Button>
-              <Button className = "logged-out" color="inherit" href="/login">
+              <Button className="logged-out" color="inherit" href="/login">
                 Login
               </Button>
-              <Button className = "logged-out" color="inherit" href="/signup">
+              <Button className="logged-out" color="inherit" href="/signup">
                 Sign Up
               </Button>
-              <Button className = "logged-in" color="inherit" onClick={handleLogout}>
+              <Button
+                className="logged-in"
+                color="inherit"
+                onClick={handleLogout}
+              >
                 Sign Out
               </Button>
-              <Button className = "logged-in" color="inherit" href="/profile">
+              <Button className="logged-in" color="inherit" href="/profile">
                 Profile
               </Button>
             </Box>
@@ -143,23 +115,40 @@ export default function HomepageView() {
       {/* END OF NAVBAR */}
 
       <Box className="home-banner">
-        <Box sx={{ mt: "10%"}}>
-          <Typography variant="h1" component="h1" sx={{ textAlign: "center", fontSize: "2.25rem", filter: "drop-shadow(1px 1px 5px black)"}}> 
+        <Box sx={{ mt: "10%" }}>
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              textAlign: "center",
+              fontSize: "2.25rem",
+              filter: "drop-shadow(1px 1px 5px black)",
+            }}
+          >
             The easiest way to find the school best suited for your needs.
           </Typography>
         </Box>
         <Box sx={{ mt: "5rem", width: "50%" }}>
-         <LiveSearch />
+          <LiveSearch />
         </Box>
         <div>
-          <Button onClick={handleClickOpen} sx= {{mt: "3rem", padding: ".7rem"}} style={{ background: "#60a5fa", color:"white"  }}>Advance Search</Button>
+          <Button
+            onClick={handleClickOpen}
+            sx={{ mt: "3rem", padding: ".7rem" }}
+            style={{ background: "#60a5fa", color: "white" }}
+          >
+            Advance Search
+          </Button>
           <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-            <DialogTitle >Filter your Search</DialogTitle>
+            <DialogTitle>Filter your Search</DialogTitle>
             <DialogContent>
-              <Box component="form" sx={{ 
-                display: 'flex', 
-                flexWrap: 'wrap', 
-              }}>
+              <Box
+                component="form"
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                }}
+              >
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   <InputLabel htmlFor="dialog-native">Borough</InputLabel>
                   <Select
@@ -195,50 +184,40 @@ export default function HomepageView() {
               <FooterLink href="#"></FooterLink>
               <FooterLink href="#"></FooterLink>
               {filteredArr.map((school, key) => {
-                if(school.borocode === "Q") {
-                  return(
-                    <p key = {key}>{school.neighborhood}</p>
-                  )
+                if (school.borocode === "Q") {
+                  return <p key={key}>{school.neighborhood}</p>;
                 }
               })}
             </Column>
             <Column>
               <Heading>Brooklyn</Heading>
               {filteredArr.map((school, key) => {
-                if(school.borocode === "K") {
-                  return(
-                    <p key = {key}>{school.neighborhood}</p>
-                  )
+                if (school.borocode === "K") {
+                  return <p key={key}>{school.neighborhood}</p>;
                 }
               })}
             </Column>
             <Column>
               <Heading>Bronx</Heading>
               {filteredArr.map((school, key) => {
-                if(school.borocode === "X") {
-                  return(
-                    <p key = {key}>{school.neighborhood}</p>
-                  )
+                if (school.borocode === "X") {
+                  return <p key={key}>{school.neighborhood}</p>;
                 }
               })}
             </Column>
             <Column>
               <Heading>Manhattan</Heading>
               {filteredArr.map((school, key) => {
-                if(school.borocode === "M") {
-                  return(
-                    <p key = {key}>{school.neighborhood}</p>
-                  )
+                if (school.borocode === "M") {
+                  return <p key={key}>{school.neighborhood}</p>;
                 }
               })}
             </Column>
             <Column>
               <Heading>Staten Island</Heading>
               {filteredArr.map((school, key) => {
-                if(school.borocode === "R") {
-                  return(
-                    <p key = {key}>{school.neighborhood}</p>
-                  )
+                if (school.borocode === "R") {
+                  return <p key={key}>{school.neighborhood}</p>;
                 }
               })}
             </Column>
@@ -246,5 +225,5 @@ export default function HomepageView() {
         </Container>
       </FooterBox>
     </>
-  )
+  );
 }
