@@ -9,22 +9,52 @@ import IconButton from "@mui/material/IconButton";
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import Paper from '@mui/material/Paper'
+import Avatar from "@mui/material/Avatar";
+import Rating from '@mui/material/Rating'
 
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+import { auth, db } from '../config/firebase'
+import { setDoc, doc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 class ReviewsModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modal: true
+            modal: true,
+            review: null,
+            buttonDisable: true,
+            value: 0,
         }
     }
 
-    handleClose = (bool) => {
+    setValue = (e) => {
         this.setState({
-            modal: bool,
+            value: e
         })
+    }
+
+    handleChange = (e) => {
+        this.setState({
+            review: e.target.value,
+            buttonDisable: e.target.value.trim() != "" ? false : true
+        })
+    }
+
+    handleSubmit = async()=> {
+        if (this.state.review != null || this.state.stars !=null) {
+            await setDoc(doc(db, "reviews", this.props.name), {
+                user: this.props.user,
+                review: this.state.review,
+                role: this.props.role,
+                stars: this.state.value,
+                uid: this.props.uid
+            });
+            
+        }
+        else {
+            console.log("Can't have empty review!")
+        }
+
     }
     
     render() {
@@ -44,26 +74,23 @@ class ReviewsModal extends Component {
                                 {this.props.name}
                             </Typography>
                         </Grid>
+                        <Grid item xs={12} sx={{display: "flex"}}>
+                            <Avatar>{this.props.user[0]}</Avatar>
+                            <Box sx={{ml: 2}}>
+                                <Typography variant="body2" color="text.primary">
+                                    {this.props.user + " • " + this.props.role}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Posting Publicly
+                                </Typography>
+                            </Box>
+                        </Grid>
                         <Grid item xs={12} md={12} textAlign="center">
-                            <StarBorderOutlinedIcon
-                                fontSize="1.7rem"
-                                sx={{ color: "text.secondary", fontSize: "1.7rem" }}
-                            />
-                            <StarBorderOutlinedIcon
-                                fontSize="1.7rem"
-                                sx={{ color: "text.secondary", fontSize: "1.7rem" }}
-                            />
-                            <StarBorderOutlinedIcon
-                                sx={{ color: "text.secondary", fontSize: "1.7rem" }}
-                            />
-                            <StarBorderOutlinedIcon
-                                fontSize="1.7rem"
-                                sx={{ color: "text.secondary", fontSize: "1.7rem" }}
-                            />
-                            <StarBorderOutlinedIcon
-                                fontSize="1.7rem"
-                                sx={{ color: "text.secondary", fontSize: "1.7rem" }}
-                            />
+                            <Rating name="simple-controlled"
+                                value={this.state.value}
+                                onChange={(event, newValue) => {
+                                    this.setValue(newValue);
+                                }} />
                         </Grid>
                         <Grid item xs={12} sm={12}>
                             <TextField
@@ -75,11 +102,12 @@ class ReviewsModal extends Component {
                                 variant="outlined"
                                 multiline
                                 rows={4}
+                                onChange={this.handleChange}
                             />
                         </Grid>     
                         <Grid item xs={12} textAlign="end">
-                            <Button size="medium" variant="outlined" >Cancel</Button>
-                            <Button size="medium" variant="contained" sx={{ml: 2}}>Submit</Button>
+                            <Button size="medium" variant="outlined" onClick={this.props.onClose} >Cancel</Button>
+                            <Button size="medium" disabled={this.state.buttonDisable} variant="contained" sx={{ml: 2}} onClick={this.handleSubmit}>Submit</Button>
                         </Grid>               
                     </Grid>
                 </Paper>
