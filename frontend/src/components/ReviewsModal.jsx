@@ -13,7 +13,7 @@ import Avatar from "@mui/material/Avatar";
 import Rating from '@mui/material/Rating'
 
 import { auth, db } from '../config/firebase'
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, getDoc, doc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 class ReviewsModal extends Component {
@@ -46,16 +46,16 @@ class ReviewsModal extends Component {
     }
 
     handleSubmit = async()=> {
-        if (this.state.review != null || this.state.stars !=null) {
-            await setDoc(doc(db, "reviews", this.props.name), {
+        if (this.state.review != null || this.state.stars != null) {
+            await setDoc(doc(db, "school", this.props.name, "reviews", this.props.uid), {
                 user: this.props.user,
                 review: this.state.review,
                 role: this.props.role,
                 stars: this.state.value,
                 uid: this.props.uid,
                 datePosted: this.state.currentDate,
+                verified: this.props.verified
             });
-            
         }
         else {
             console.log("Can't have empty review!")

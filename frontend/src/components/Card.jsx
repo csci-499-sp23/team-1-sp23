@@ -17,6 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import Rating from '@mui/material/Rating'
+import Avatar from "@mui/material/Avatar";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -29,7 +30,6 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
-import ReviewsCard from "./ReviewsCard"
 
 import {auth, db} from '../config/firebase'
 import { onAuthStateChanged } from "firebase/auth";
@@ -59,12 +59,34 @@ class InfoCard extends Component {
       username: null,
       role: null,
       uid: null,
-      reviewData: null,
+      reviewData: [],
+      verified: null,
     };
+  }   
+  
+  setReviewData = (data) => {
+    this.setState((arr) => ({
+      reviewData: [...arr.reviewData, data]
+    }))
   }
+  
+  getReviews = async() => {
+    const schoolRef = collection(db,`school/${this.props.school.school_name}/reviews`)
+    const querySnapshot =  await getDocs(schoolRef)
+    querySnapshot.forEach((doc) => {
+      if(doc.exists()) {
+        this.setReviewData(doc.data())
+      }
+      else {
+        console.log("No reviews yet");
+        return null;
+      }
+    })
+  }  
 
   componentDidMount() {
     //CHECK AUTH STATE ON LOAD
+    this.getReviews()
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -73,6 +95,7 @@ class InfoCard extends Component {
             this.setUsername(docSnap.data().username);
             this.setRole(docSnap.data().role);
             this.setUid(auth.currentUser.uid)
+            this.setVerified(docSnap.data().verfied_user)
           } else {
             console.log("document does not exist");
           }
@@ -81,7 +104,6 @@ class InfoCard extends Component {
         console.log("not logged in");
       }
     });
-    this.getReviews()
   }
 
   setUsername = (name) => {
@@ -101,33 +123,18 @@ class InfoCard extends Component {
     })
   }
 
+  setVerified = (verify) => {
+    this.setState({
+      verified: verify
+    })
+  }
+
   showModal = (bool) => {
     this.setState({
       modal: bool,
     })
   }
-
-  setReviewData = (data) => {
-    this.setState({
-      reviewData: data
-    })
-  }
-
-  getReviews = async() => {
-    const schoolRef = collection(db,`school/${this.props.school.school_name}/reviews`)
-    const querySnapshot =  await getDocs(schoolRef)
-    querySnapshot.forEach((doc) => {
-      if(doc.exists()) {
-        console.log(doc.data())
-        this.setReviewData(doc.data())
-      }
-      else {
-        console.log("No reviews yet");
-        return null;
-      }
-    })
-  }  
-
+ 
   handleSave() {
 
   } 
@@ -565,7 +572,29 @@ class InfoCard extends Component {
 
                 {/* PUT REVIEWS CARD CODE HERE */}
                 <Box onClick={this.getReviews}>
-                  <ReviewsCard data={this.state.reviewData}/>
+                  {this.state.reviewData.map(data => {
+                    <>
+                      {console.log(data)}
+                    </>
+                    return(
+                      <Grid container columns={12} direction = "column" spacing={2}>
+                        <Grid item sx={{display: "flex", flexDirection: "row"}}>
+                          <Avatar>{data.user[0]}</Avatar>
+                          <Box sx={{pl: 1}}>
+                            <Typography variant="body1">{data.user}</Typography>
+                            <Typography variant="body2" color="text.secondary">{data.role + " • " + data.verified}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item sx={{display: "flex", alignItems: "center"}}>
+                          <Rating name="read-only" read-only value={data.stars} />
+                          <Typography sx={{pl: 1}} variant="body1">{data.datePosted}</Typography>
+                        </Grid>
+                        <Grid item >
+                          <Typography>{data.review}</Typography>
+                        </Grid>
+                      </Grid>
+                    )
+                  })}
                 </Box>
               </TabPanel>
 
@@ -798,6 +827,7 @@ class InfoCard extends Component {
             user={this.state.username}
             role={this.state.role}
             uid={this.state.uid}
+            verified={this.state.verified}
           />)}
       </>
     );

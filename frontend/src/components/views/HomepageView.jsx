@@ -39,17 +39,7 @@ const getLoggedOutLinks = document.querySelectorAll(".logged-out");
 export default function HomepageView() {
   const [open, setOpen] = React.useState(false);
   const [age, setAge] = React.useState("");
-
-  const user = auth.currentUser;
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log(user);
-    } else {
-      console.log("Not logged in");
-    }
-  });
-
+  
   const handleChange = (event) => {
     setAge(Number(event.target.value) || "");
   };

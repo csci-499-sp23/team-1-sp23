@@ -51,6 +51,7 @@ export default function SignupView() {
         username: email,
         role: role,
         saved_schools: null,
+        verfied_user: false,
       });
     });
   };
