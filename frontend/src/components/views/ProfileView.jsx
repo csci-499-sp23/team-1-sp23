@@ -16,11 +16,20 @@ export default function ProfileView() {
       if (user) {
         const uid = auth.currentUser.uid;
         const docRef = doc(db, "users", uid);
+        const schoolRef = doc(db, "school", "reviews")
+
+        getDoc(schoolRef).then((docSnap) => {
+          if(docSnap.exists()) {
+            console.log(docSnap.data())
+          }
+        })
+
         getDoc(docRef).then((docSnap) => {
           if (docSnap.exists()) {
             setUsername(docSnap.data().username.split("@").at(0));
             setRole(docSnap.data().role);
-            setSavedSchools(docSnap.data().savedSchools);
+            setSavedSchools(docSnap.data().saved_schools);
+
           } else {
             console.log("document does not exist");
           }
@@ -54,15 +63,12 @@ export default function ProfileView() {
           >
             Hello, {username}👋
           </Typography>
-          <Box
-            sx={{
+          <Box>
+            <Avatar sx={{
               width: "75px",
               height: "75px",
-              borderRadius: "50%",
               backgroundColor: colors.black,
-            }}
-          >
-            <img />
+            }}>{username[0]}</Avatar>
           </Box>
         </Box>
         <Box sx={{ my: 3 }}>
@@ -78,6 +84,7 @@ export default function ProfileView() {
             </TabPanel>
             <TabPanel value={value} index={1}>
               <Typography sx={{ color: colors.black }}>
+
                 You do not have any saved schools.
               </Typography>
             </TabPanel>

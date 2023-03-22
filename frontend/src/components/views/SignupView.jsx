@@ -50,7 +50,9 @@ export default function SignupView() {
       return setDoc(doc(db, "users", cred.user.uid), {
         username: email,
         role: role,
-        saved_schools: null,
+        saved_schools: [],
+        verfied_user: false,
+        reviews: []
       });
     });
   };
