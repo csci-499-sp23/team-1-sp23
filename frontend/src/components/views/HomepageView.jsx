@@ -19,21 +19,23 @@ import {
   FooterLink,
   Heading,
 } from "../FooterStyling";
-import Schools from "../../assets/schools.json";
 import React from "react";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebase";
-
-const filteredArr = Schools.reduce((acc, current) => {
-  const x = acc.find((item) => item.neighborhood === current.neighborhood);
-  if (!x) {
-    return acc.concat([current]);
-  } else {
-    return acc;
-  }
-}, []);
+import SchoolsData from "../../schoolData";
 
 export default function HomepageView() {
+  const Schools = SchoolsData();
+
+  const filteredArr = Schools.reduce((acc, current) => {
+    const x = acc.find((item) => item.neighborhood === current.neighborhood);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+
   const [open, setOpen] = React.useState(false);
   const [age, setAge] = React.useState("");
   const [loggedIn, setLoggedIn] = React.useState(false);
