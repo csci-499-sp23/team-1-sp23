@@ -19,12 +19,13 @@ import {
   FooterLink,
   Heading,
 } from "../FooterStyling";
-import Schools from "../../assets/schools.json";
 import React from "react";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebase";
+import SchoolsData from "../../schoolData";
 
 export default function HomepageView() {
+  const Schools = SchoolsData();
 
   const filteredArr = Schools.reduce((acc, current) => {
     const x = acc.find((item) => item.neighborhood === current.neighborhood);
