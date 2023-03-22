@@ -1,38 +1,26 @@
-import React, { Component } from "react";
-import { Box, Typography, Grid } from "@mui/material";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
-import { getDoc, doc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import React from "react";
 import { auth, db } from "../../config/firebase";
 import Avatar from '@mui/material/Avatar'
 
-const TabPanel = ({ children, value, index }) => {
-  return value === index && children;
-};
+export default function ProfileView() {
+  const [username, setUsername] = React.useState("");
+  const [role, setRole] = React.useState("");
+  const [savedSchools, setSavedSchools] = React.useState([]);
+  const [value, setValue] = React.useState(0);
 
-class ProfileView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: null,
-      role: null,
-      savedSchools: null,
-      selectedTab: 0,
-    };
-  }
-  
-  componentDidMount() {
+  React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const docRef = doc(db, "users", auth.currentUser.uid);
-        const docSnap = getDoc(docRef).then((docSnap) => {
+        const uid = auth.currentUser.uid;
+        const docRef = doc(db, "users", uid);
+        getDoc(docRef).then((docSnap) => {
           if (docSnap.exists()) {
-            this.setUsername(docSnap.data().username);
-            this.setRole(docSnap.data().role);
-            this.setSavedSchools(docSnap.data().savedSchools);
+            setUsername(docSnap.data().username.split("@").at(0));
+            setRole(docSnap.data().role);
+            setSavedSchools(docSnap.data().savedSchools);
           } else {
             console.log("document does not exist");
           }
@@ -41,82 +29,70 @@ class ProfileView extends Component {
         console.log("not logged in");
       }
     });
-  }
+  }, []);
 
-  setUsername = (name) => {
-    this.setState({
-      username: name,
-    })
-  }
-
-  setRole = (userRole) => {
-    this.setState({
-      role: userRole,
-    })
-  }
-
-  setSavedSchools = (schools) => {
-    this.setState({
-      savedSchools: schools,
-    })
-  }
-
-  handleTab = (_, value) => {
-    this.setState(() => ({ selectedTab: value }));
-  };
-
-  render() {
-    return (
-      <Grid container spacing={0} sx={{ minHeight: "100vh" }}>
-        <Grid item xs={6} >
-          <Box
+  return (
+    <Box
+      sx={{
+        height: "100vh",
+        backgroundColor: colors.white,
+      }}
+    >
+      <Box sx={{ p: 5 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              width: "100%",
-              flexDirection: "column",
+              color: colors.black,
+              fontSize: "2rem",
             }}
           >
-            <Typography >{this.state.username}</Typography>
-            <Typography >{this.state.role}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={6} >
+            Hello, {username}👋
+          </Typography>
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              width: "100%",
-              flexDirection: "column",
+              width: "75px",
+              height: "75px",
+              borderRadius: "50%",
+              backgroundColor: colors.black,
             }}
           >
-            <Tabs
-              sx={{ alignSelf: "center", mb: 2 }}
-              value={this.state.selectedTab}
-              onChange={this.handleTab}
-            >
-              <Tab sx={{ fontWeight: "500", mr: 2 }} label="Your Reviews" />
-              <Tab sx={{ fontWeight: "500", mx: 2 }} label="Saved Schools" />
-            </Tabs>
-
-            {/* YOUR REVIEWS TAB */}
-            <TabPanel value={0} index={this.state.selectedTab} sx={{ p: 2 }}>
-              <Typography></Typography>
+            <img />
+          </Box>
+        </Box>
+        <Box sx={{ my: 3 }}>
+          <Tabs value={value} onChange={(_, val) => setValue(val)}>
+            <Tab sx={{ mr: 5 }} label="Your Reviews" />
+            <Tab sx={{ mr: 5 }} label="Saved Schools" />
+          </Tabs>
+          <Box sx={{ my: 3 }}>
+            <TabPanel value={value} index={0}>
+              <Typography sx={{ color: colors.black }}>
+                You do not have any reviews.
+              </Typography>
             </TabPanel>
-
-            {/* YOUR SAVED SCHOOLS TAB */}
-            <TabPanel value={1} index={this.state.selectedTab}>
-              {this.state.savedSchools ? this.state.savedSchools==null : "You have no saved schools!"}
+            <TabPanel value={value} index={1}>
+              <Typography sx={{ color: colors.black }}>
+                You do not have any saved schools.
+              </Typography>
             </TabPanel>
           </Box>
-        </Grid>
-      </Grid>
-    );
-  }
+        </Box>
+      </Box>
+    </Box>
+  );
 }
 
-export default ProfileView
+const TabPanel = ({ value, index, children }) => {
+  return value === index && children;
+};
+
+const colors = {
+  white: "#f8fafc",
+  black: "#0f172a",
+};

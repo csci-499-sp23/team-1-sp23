@@ -3,15 +3,10 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { Autocomplete } from "@mui/material/";
 import { Box } from "@mui/system";
+import SchoolsData from "../../schoolData";
 
 function LiveSearch() {
-  const [jsonResults, setJsonResults] = useState([]);
-
-  useEffect(() => {
-    fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
-      .then((response) => response.json())
-      .then((json) => setJsonResults(json));
-  }, []);
+  const Schools = SchoolsData();
 
   return (
     <Stack
@@ -24,16 +19,16 @@ function LiveSearch() {
     >
       <Autocomplete
         id="school_names_test"
-        getOptionLabel={(jsonResults) => `${jsonResults.school_name}`}
-        options={jsonResults}
+        getOptionLabel={(Schools) => `${Schools.school_name}`}
+        options={Schools}
         sx={{ width: 500 }}
         isOptionEqualToValue={(option, value) =>
           option.school_name == value.school_name
         }
         noOptionsText={"School name not found."}
-        renderOption={(props, jsonResults) => (
-          <Box component="li" {...props} key={jsonResults.id}>
-            {jsonResults.school_name}
+        renderOption={(props, Schools) => (
+          <Box component="li" {...props} key={Schools.id}>
+            {Schools.school_name}
           </Box>
         )}
         renderInput={(params) => (

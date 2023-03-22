@@ -19,27 +19,33 @@ import {
   FooterLink,
   Heading,
 } from "../FooterStyling";
-import Schools from "../../assets/schools.json";
 import React from "react";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebase";
-
-const filteredArr = Schools.reduce((acc, current) => {
-  const x = acc.find((item) => item.neighborhood === current.neighborhood);
-  if (!x) {
-    return acc.concat([current]);
-  } else {
-    return acc;
-  }
-}, []);
-
-const getLoggedInLinks = document.querySelectorAll(".logged-in");
-const getLoggedOutLinks = document.querySelectorAll(".logged-out");
+import SchoolsData from "../../schoolData";
 
 export default function HomepageView() {
+  const Schools = SchoolsData();
+
+  const filteredArr = Schools.reduce((acc, current) => {
+    const x = acc.find((item) => item.neighborhood === current.neighborhood);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+
   const [open, setOpen] = React.useState(false);
   const [age, setAge] = React.useState("");
-  
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      user ? setLoggedIn(true) : setLoggedIn(false);
+    });
+  }, []);
+
   const handleChange = (event) => {
     setAge(Number(event.target.value) || "");
   };
@@ -82,22 +88,30 @@ export default function HomepageView() {
               <Button color="inherit" href="/map">
                 Map
               </Button>
-              <Button className="logged-out" color="inherit" href="/login">
-                Login
-              </Button>
-              <Button className="logged-out" color="inherit" href="/signup">
-                Sign Up
-              </Button>
-              <Button
-                className="logged-in"
-                color="inherit"
-                onClick={handleLogout}
-              >
-                Sign Out
-              </Button>
-              <Button className="logged-in" color="inherit" href="/profile">
-                Profile
-              </Button>
+              {!loggedIn && (
+                <Button className="logged-out" color="inherit" href="/login">
+                  Login
+                </Button>
+              )}
+              {!loggedIn && (
+                <Button className="logged-out" color="inherit" href="/signup">
+                  Sign Up
+                </Button>
+              )}
+              {loggedIn && (
+                <Button
+                  className="logged-in"
+                  color="inherit"
+                  onClick={handleLogout}
+                >
+                  Sign Out
+                </Button>
+              )}
+              {loggedIn && (
+                <Button className="logged-in" color="inherit" href="/profile">
+                  Profile
+                </Button>
+              )}
             </Box>
           </Toolbar>
         </AppBar>
