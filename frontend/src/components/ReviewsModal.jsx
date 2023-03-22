@@ -13,7 +13,7 @@ import Avatar from "@mui/material/Avatar";
 import Rating from '@mui/material/Rating'
 
 import { auth, db } from '../config/firebase'
-import { setDoc, getDoc, doc } from "firebase/firestore";
+import { setDoc, getDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 class ReviewsModal extends Component {
@@ -56,6 +56,9 @@ class ReviewsModal extends Component {
                 datePosted: this.state.currentDate,
                 verified: this.props.verified
             });
+            await updateDoc(doc(db, "users", this.props.uid), {
+                review: arrayUnion(this.state.review)
+            })
         }
         else {
             console.log("Can't have empty review!")

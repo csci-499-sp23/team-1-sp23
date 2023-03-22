@@ -37,14 +37,14 @@ class Map extends Component {
     super(); 
     this.state = { 
       card: false, 
-      school: null 
+      school: null,
     }
   }
 
   showCard = (bool, obj) => {
     this.setState({
       card: bool,
-      school: obj
+      school: obj,
     });
   }
 
@@ -174,7 +174,7 @@ class Map extends Component {
               </Marker>
             )
           })}
-          {this.state.card && (<InfoCard school = {this.state.school}/>)}
+          {this.state.card && (<InfoCard school = {this.state.school} />)}
         </GoogleMap>
       </LoadScript>
     )

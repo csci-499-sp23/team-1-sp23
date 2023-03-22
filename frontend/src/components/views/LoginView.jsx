@@ -43,7 +43,6 @@ export default function SignupView() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password).then((cred) => {
-        console.log(cred.user);
         document.querySelector("form").reset();
       });
     } catch (error) {

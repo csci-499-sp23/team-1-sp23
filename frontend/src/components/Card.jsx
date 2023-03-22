@@ -33,7 +33,7 @@ import ReviewsModal from "./ReviewsModal";
 
 import {auth, db} from '../config/firebase'
 import { onAuthStateChanged } from "firebase/auth";
-import { getDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
+import { getDoc, doc, collection, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 
 const urlFix = (url) => {
   return url
@@ -85,8 +85,8 @@ class InfoCard extends Component {
   }  
 
   componentDidMount() {
-    //CHECK AUTH STATE ON LOAD
     this.getReviews()
+    //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -135,15 +135,23 @@ class InfoCard extends Component {
     })
   }
  
-  handleSave() {
-
-  } 
-  
   handleTab = (_, value) => {
     this.setState(() => ({ 
       selectedTab: value
     }));
   };
+
+  handleSave = () => {
+    if (auth.currentUser != null || undefined) {
+      const docRef = doc(db, "users", auth.currentUser.uid)
+      return updateDoc(docRef, {
+        saved_schools: arrayUnion(this.props.school.school_name)
+      })
+    }
+    else {
+      console.log("you are not logged in!")
+    }
+  } 
 
   render() {
     return (
@@ -193,11 +201,32 @@ class InfoCard extends Component {
                 value={this.state.selectedTab}
                 onChange={this.handleTab}
               >
-                <Tab sx={{ fontWeight: "500", mr: 2 }} label="Overview" />
+                <Tab sx={{ fontWeight: "500", mr: 2 }} label="Overview" on/>
                 <Tab sx={{ fontWeight: "500", mx: 2 }} label="Reviews" />
                 <Tab sx={{ fontWeight: "500", ml: 2 }} label="About" />
               </Tabs>
+              <Divider
+                    sx={{
+                      mt: 1,
+                      mb: 2,
+                    }}
+                  />
               <TabPanel value={0} index={this.state.selectedTab} sx={{ p: 2 }}>
+                  <Box>
+                    <IconButton size="large" onClick={this.handleSave}>
+                      <BookmarkBorderIcon />
+                    </IconButton>
+                    <IconButton size="large">
+                      <DirectionsIcon />
+                    </IconButton>
+                  </Box>
+                  <Divider
+                    sx={{
+                      mt: 1,
+                      mb: 2,
+                    }}
+                  />
+
                 <Typography variant="body2" color="text.secondary">
                   {this.props.school.overview_paragraph}
                 </Typography>
@@ -530,7 +559,7 @@ class InfoCard extends Component {
                       }}
                     >
                       <Typography
-                        variant="body2"
+                        variant="body"
                         fontSize="3.6rem"
                         component="div"
                       >
@@ -571,30 +600,28 @@ class InfoCard extends Component {
                 />
 
                 {/* PUT REVIEWS CARD CODE HERE */}
-                <Box onClick={this.getReviews}>
-                  {this.state.reviewData.map(data => {
-                    <>
-                      {console.log(data)}
-                    </>
-                    return(
-                      <Grid container columns={12} direction = "column" spacing={2}>
-                        <Grid item sx={{display: "flex", flexDirection: "row"}}>
-                          <Avatar>{data.user[0]}</Avatar>
-                          <Box sx={{pl: 1}}>
-                            <Typography variant="body1">{data.user}</Typography>
-                            <Typography variant="body2" color="text.secondary">{data.role + " • " + data.verified}</Typography>
-                          </Box>
+                <Box>
+                    {this.state.reviewData.map(data => {
+                      return (
+                        <Grid container columns={12} direction="column" spacing={2}>
+                          <Grid item sx={{ display: "flex", flexDirection: "row" }}>
+                            <Avatar>{data.user[0]}</Avatar>
+                            <Box sx={{ pl: 1 }}>
+                              <Typography variant="body1">{data.user}</Typography>
+                              <Typography variant="body2" color="text.secondary">{data.role + " • " + data.verified}</Typography>
+                            </Box>
+                          </Grid>
+                          <Grid item sx={{ display: "flex", alignItems: "center" }}>
+                            <Rating name="read-only" read-only value={data.stars} />
+                            <Typography sx={{ pl: 1 }} variant="body1">{data.datePosted}</Typography>
+                          </Grid>
+                          <Grid item >
+                            <Typography>{data.review}</Typography>
+                          </Grid>
                         </Grid>
-                        <Grid item sx={{display: "flex", alignItems: "center"}}>
-                          <Rating name="read-only" read-only value={data.stars} />
-                          <Typography sx={{pl: 1}} variant="body1">{data.datePosted}</Typography>
-                        </Grid>
-                        <Grid item >
-                          <Typography>{data.review}</Typography>
-                        </Grid>
-                      </Grid>
-                    )
-                  })}
+                      )
+                    })
+                    }
                 </Box>
               </TabPanel>
 
