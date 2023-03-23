@@ -71,6 +71,7 @@ class InfoCard extends Component {
       verified: null,
       currSchool: "",
       snackbarOpen: false,
+      snackbarSuccessOpen: false,
     };
   }   
   
@@ -166,20 +167,15 @@ class InfoCard extends Component {
     }));
   };
 
-  handleSave = () => {
-    if (auth.currentUser != null || undefined) {
-      const docRef = doc(db, "users", auth.currentUser.uid);
-      return updateDoc(docRef, {
-        saved_schools: arrayUnion(this.props.school.school_name),
-      });
-    } else {
-      console.log("you are not logged in!");
-    }
-  };
-
   handleSnackbarOpen = () => {
     this.setState({
       snackbarOpen: true,
+    })
+  }
+
+  handleSnackbarSuccessOpen = () => {
+    this.setState({
+      snackbarSuccessOpen: true
     })
   }
 
@@ -188,9 +184,24 @@ class InfoCard extends Component {
       return;
     }
     this.setState({
-      snackbarOpen: false
+      snackbarOpen: false,
+      snackbarSuccessOpen: false,
     })
   }
+
+  handleSave = () => {
+    if (auth.currentUser != null || undefined) {
+      const docRef = doc(db, "users", auth.currentUser.uid);
+      this.handleSnackbarSuccessOpen()
+      return updateDoc(docRef, {
+        saved_schools: arrayUnion(this.props.school.school_name),
+      });
+    } else {
+      console.log("you are not logged in!");
+      this.handleSnackbarOpen()
+
+    }
+  };
 
   render() {
     return (
@@ -727,14 +738,7 @@ class InfoCard extends Component {
                             : this.handleSnackbarOpen
                         }
                       ></Chip>
-                      <Snackbar
-                        open={this.state.snackbarOpen}
-                        autoHideDuration={2000}
-                        onClose={this.handleSnackbarClose}                      >
-                        <Alert severity="warning">
-                          You need to be logged in to do that!
-                        </Alert>
-                      </Snackbar>
+
                     </Grid>
                   </Grid>
 
@@ -1044,6 +1048,24 @@ class InfoCard extends Component {
             verified={this.state.verified}
           />
         )}
+        {/* SNACKBARS THEIR POSITIONS DONT MATTER SO IM PUTTING THEM OUT HERE */}
+        <Snackbar
+          open={this.state.snackbarOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}>
+          <Alert onClose={this.handleSnackbarClose} severity="warning">
+            You need to be logged in to do that!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar 
+          open={this.state.snackbarSuccessOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}>
+          <Alert onClose={this.handleSnackbarClose} severity="success">
+            Saved school!
+          </Alert>
+        </Snackbar>
       </>
     );
   }
