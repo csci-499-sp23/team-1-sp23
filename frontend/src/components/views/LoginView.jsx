@@ -19,6 +19,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
+import Navbar from "./NavBar";
 
 export default function SignupView() {
   const [email, setEmail] = React.useState("");
@@ -52,6 +53,8 @@ export default function SignupView() {
   };
 
   return (
+    <>
+    <Navbar/>
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
         item
@@ -248,5 +251,6 @@ export default function SignupView() {
         </Box>
       </Grid>
     </Grid>
+    </>
   );
 }
