@@ -16,6 +16,8 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Rating from "@mui/material/Rating";
 import Avatar from "@mui/material/Avatar";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from '@mui/material/Alert'
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -68,6 +70,7 @@ class InfoCard extends Component {
       reviewData: [],
       verified: null,
       currSchool: "",
+      snackbarOpen: false,
     };
   }   
   
@@ -174,6 +177,21 @@ class InfoCard extends Component {
     }
   };
 
+  handleSnackbarOpen = () => {
+    this.setState({
+      snackbarOpen: true,
+    })
+  }
+
+  handleSnackbarClose = (e, reason) => {
+    if(reason === "clickaway") {
+      return;
+    }
+    this.setState({
+      snackbarOpen: false
+    })
+  }
+
   render() {
     return (
       <>
@@ -275,7 +293,7 @@ class InfoCard extends Component {
                        Sports & Extracurriculars
                     </Typography>
                     <Typography variant="caption" sx={{display: 'flex', alignItems: "center"}}>
-                      {this.props.school.school_accessibility == "Accessible" ? <CloseIcon fontSize="small" color="error" /> : <CheckIcon fontSize="small" color="success" />}
+                      {this.props.school.school_accessibility == "Fully Accessible" ? <CheckIcon fontSize="small" color="success" /> :  <CloseIcon fontSize="small" color="error" /> }
                        Accessibility
                     </Typography>
                 </Box>
@@ -706,9 +724,17 @@ class InfoCard extends Component {
                         onClick={
                           auth.currentUser
                             ? this.showModal.bind(null, true)
-                            : undefined
+                            : this.handleSnackbarOpen
                         }
                       ></Chip>
+                      <Snackbar
+                        open={this.state.snackbarOpen}
+                        autoHideDuration={2000}
+                        onClose={this.handleSnackbarClose}                      >
+                        <Alert severity="warning">
+                          You need to be logged in to do that!
+                        </Alert>
+                      </Snackbar>
                     </Grid>
                   </Grid>
 
@@ -752,7 +778,7 @@ class InfoCard extends Component {
                             >
                               <Rating
                                 name="read-only"
-                                read-only
+                                readOnly
                                 value={data.stars}
                               />
                               <Typography sx={{ pl: 1 }} variant="body1">

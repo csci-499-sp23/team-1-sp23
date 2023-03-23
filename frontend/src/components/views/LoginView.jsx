@@ -11,6 +11,8 @@ import Link from "@mui/joy/Link";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "../../assets/GoogleIcon";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from '@mui/material/Alert'
 import React from "react";
 import {
   signInWithEmailAndPassword,
@@ -23,8 +25,16 @@ import { auth, db } from "../../config/firebase";
 export default function SignupView() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [open, setOpen] = React.useState(false)
 
   const navigate = useNavigate();
+
+  const handleClose = (e, reason) => {
+    if(reason === "clickaway") {
+      return
+    } 
+    setOpen(false);
+  }
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -46,7 +56,8 @@ export default function SignupView() {
         document.querySelector("form").reset();
       });
     } catch (error) {
-      console.log(error.code);
+      console.log(error.code)
+      setOpen(true)
     }
   };
 
@@ -245,6 +256,15 @@ export default function SignupView() {
             </Box>
           </Box>
         </Box>
+
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}                      >
+          <Alert severity="error">
+            Incorrect Email or Password!
+          </Alert>
+        </Snackbar>
       </Grid>
     </Grid>
   );
