@@ -3,10 +3,12 @@ import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import React from "react";
 
 
 export default function Navbar({ loggedIn, handleLogout }) {
+  const { pathname } = useLocation();
     return(
   <Box sx={{ width: "100%" }}>
     <AppBar position="sticky" style={{ background: "#2b2d42" }}>
@@ -34,12 +36,12 @@ export default function Navbar({ loggedIn, handleLogout }) {
           <Button color="inherit" href="/map">
             Map
           </Button>
-          {!loggedIn && (
+          {!loggedIn && pathname !== "/login" && (
             <Button className="logged-out" color="inherit" href="/login">
               Login
             </Button>
           )}
-          {!loggedIn && (
+          {!loggedIn && pathname !== "/signup" && (
             <Button className="logged-out" color="inherit" href="/signup">
               Sign Up
             </Button>
