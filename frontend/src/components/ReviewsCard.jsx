@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Paper from '@mui/material/Paper'
-import Avatar from "@mui/material/Avatar";
 import Rating from '@mui/material/Rating'
 import Typography from '@mui/material/Typography';
 
