@@ -41,6 +41,7 @@ import {
   getDocs,
   updateDoc,
   arrayUnion,
+  onSnapshot
 } from "firebase/firestore";
 
 const urlFix = (url) => {
@@ -72,13 +73,15 @@ class InfoCard extends Component {
       currSchool: "",
       snackbarOpen: false,
       snackbarSuccessOpen: false,
+      currentSchoolRatingAvg: [],
     };
-  }   
-  
-  setReviewData = (data) => {
+  } 
+
+  setReviewData = (data, stars) => {
     this.setState(() => ({
       reviewData: data,
-    }));
+      currentSchoolRatingAvg: stars
+    }))
   };
   
   getReviews = async () => {
@@ -89,24 +92,25 @@ class InfoCard extends Component {
     const querySnapshot = await getDocs(schoolRef);
     this.setState({ currSchool: this.props.school.school_name });
     const toAdd = [];
+    const stars = [];
     querySnapshot.forEach((doc) => {
       if (doc.exists()) {
         toAdd.push(doc.data());
+        stars.push(doc.data().stars)
       } else {
         console.log("No reviews yet");
         return null;
       }
     });
-    this.setReviewData(toAdd);
+    this.setReviewData(toAdd, stars);
   };
 
-  getWebResults = async() => {
-    console.log()
+  badVerificationMethod = (email, query) => {
+    return(query.split(" ").every(q => new RegExp('\b(highschool)\b|\b(.edu)\b|(highschool)' + q + '\b(highschool)\b|\b(.edu)\b|(highschool)').test(email)))
   }
 
   componentDidMount() {
     this.getReviews();
-    // this.getWebResults(); WILL DO IN THE FUTURE IF YOU WANT TO GET IMAGE RESULTS 
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -116,7 +120,13 @@ class InfoCard extends Component {
             this.setUsername(docSnap.data().username);
             this.setRole(docSnap.data().role);
             this.setUid(auth.currentUser.uid);
-            this.setVerified(docSnap.data().verfied_user);
+
+            if(user.emailVerified && this.badVerificationMethod(docSnap.data().username, "highschool")) {
+              this.setVerified(true);
+            }
+            else {
+              this.setVerified(false)
+            }
           } else {
             console.log("document does not exist");
           }
@@ -202,6 +212,10 @@ class InfoCard extends Component {
 
     }
   };
+
+  reviewsAvg = (arr) => {
+    arr.reduce((a, b) => a + b) / arr.length;
+  }
 
   render() {
     return (
@@ -511,12 +525,14 @@ class InfoCard extends Component {
                         fontSize="3.6rem"
                         component="div"
                       >
-                        4.1
+                        {/* {
+                          console.log(this.state.currentSchoolRatingAvg.reduce((a, b) => a+ b)/this.state.currentSchoolRatingAvg.length)
+                        } */}
                       </Typography>
                         <Grid item>
                           <Rating
                             name="read-only"
-                            value={2}
+                            value={this.state.currentSchoolRatingAvg}
                             readOnly
                             size="small"
                           />
@@ -744,58 +760,71 @@ class InfoCard extends Component {
 
                   {/* PUT REVIEWS CARD CODE HERE */}
                   <Box>
-                    {this.state.reviewData.map((data) => {
-                      return (
-                        <>
-                          <Divider
-                            sx={{
-                              mt: 3,
-                              mb: 2,
-                            }}
-                          />
-                          <Grid
-                            container
-                            columns={12}
-                            direction="column"
-                            spacing={2}
-                          >
+                    {this.state.reviewData != 0 || undefined || null ? this.state.reviewData.map((data) => {
+                        return (
+                          <>
+                            <Divider
+                              sx={{
+                                mt: 3,
+                                mb: 2,
+                              }}
+                            />
                             <Grid
-                              item
-                              sx={{ display: "flex", flexDirection: "row" }}
+                              container
+                              columns={12}
+                              direction="column"
+                              spacing={2}
                             >
-                              <Avatar>{data.user[0]}</Avatar>
-                              <Box sx={{ pl: 1 }}>
-                                <Typography variant="body1">
-                                  {data.user}
+                              <Grid
+                                item
+                                sx={{ display: "flex", flexDirection: "row" }}
+                              >
+                                <Avatar>{data.user[0]}</Avatar>
+                                <Box sx={{ pl: 1 }}>
+                                  <Typography variant="body1">
+                                    {data.user}
+                                  </Typography>
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    {data.role + " • " } {data.verified ? "Verified User" : "Unverified User"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid
+                                item
+                                sx={{ display: "flex", alignItems: "center" }}
+                              >
+                                <Rating
+                                  name="read-only"
+                                  readOnly
+                                  value={data.stars}
+                                />
+                                <Typography sx={{ pl: 1 }} variant="body1">
+                                  {data.datePosted}
                                 </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {data.role + " • " + data.verified}
-                                </Typography>
-                              </Box>
+                              </Grid>
+                              <Grid item>
+                                <Typography>{data.review}</Typography>
+                              </Grid>
                             </Grid>
-                            <Grid
-                              item
-                              sx={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Rating
-                                name="read-only"
-                                readOnly
-                                value={data.stars}
-                              />
-                              <Typography sx={{ pl: 1 }} variant="body1">
-                                {data.datePosted}
-                              </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Typography>{data.review}</Typography>
-                            </Grid>
-                          </Grid>
-                        </>
-                      );
-                    })}
+                          </>
+                        )})
+                    : 
+                      <>                            
+                        <Divider
+                          sx={{
+                            mt: 3,
+                            mb: 2,
+                          }}
+                        /><Box sx={{mt: 3}}>
+                          <Typography textAlign="center" variant="body1">
+                            Be the first to submit a review for this school!
+                          </Typography>
+                        </Box>
+                      </>
+                    }
                 </Box>
               </TabPanel>
 

@@ -19,8 +19,11 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  sendSignInLinkToEmail,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
+import { useUserContext } from "../../context/thunk";
 
 export default function SignupView() {
   const [email, setEmail] = React.useState("");
@@ -59,6 +62,16 @@ export default function SignupView() {
       console.log(error.code)
       setOpen(true)
     }
+  };
+
+  const forgotPasswordHandler = () => {
+    // const userEmail = email;
+    // console.log(userEmail)
+    // if (userEmail)
+    //   sendPasswordResetEmail(userEmail).then(() => {
+    //     console.log(userEmail)
+    //     userEmail.current.value = "";
+    //   });
   };
 
   return (
@@ -225,7 +238,7 @@ export default function SignupView() {
                     />
                     <Typography>Remember Me</Typography>
                   </Box>
-                  <Link fontSize="sm" fontWeight="500" href="#">
+                  <Link fontSize="sm" fontWeight="500" href="#" onClick={forgotPasswordHandler}>
                     Forgot Password
                   </Link>
                 </Box>
@@ -260,8 +273,12 @@ export default function SignupView() {
         <Snackbar
           open={open}
           autoHideDuration={2000}
-          onClose={handleClose}                      >
-          <Alert severity="error">
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom", 
+            horizontal: "right"
+          }}>
+          <Alert onClose={handleClose} severity="error">
             Incorrect Email or Password!
           </Alert>
         </Snackbar>
