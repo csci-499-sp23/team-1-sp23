@@ -206,7 +206,12 @@ class Map extends Component {
               ></Marker>
             );
           })}
-          {this.state.card && <InfoCard school={this.state.school} />}
+          {this.state.card && (
+            <InfoCard
+              school={this.state.school}
+              key={this.state.school + "2031"}
+            />
+          )}
         </GoogleMap>
       </LoadScript>
     );
