@@ -1,14 +1,15 @@
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Paper, Rating, Tab, Tabs, Typography } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, query, where } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../../config/firebase";
-import Avatar from '@mui/material/Avatar'
+import Avatar from "@mui/material/Avatar";
 
 export default function ProfileView() {
   const [username, setUsername] = React.useState("");
   const [role, setRole] = React.useState("");
   const [savedSchools, setSavedSchools] = React.useState([]);
+  const [reviews, setReviews] = React.useState([]);
   const [value, setValue] = React.useState(0);
 
   React.useEffect(() => {
@@ -16,20 +17,13 @@ export default function ProfileView() {
       if (user) {
         const uid = auth.currentUser.uid;
         const docRef = doc(db, "users", uid);
-        const schoolRef = doc(db, "school", "reviews")
-
-        getDoc(schoolRef).then((docSnap) => {
-          if(docSnap.exists()) {
-            console.log(docSnap.data())
-          }
-        })
 
         getDoc(docRef).then((docSnap) => {
           if (docSnap.exists()) {
             setUsername(docSnap.data().username.split("@").at(0));
             setRole(docSnap.data().role);
             setSavedSchools(docSnap.data().saved_schools);
-
+            setReviews(docSnap.data().reviews);
           } else {
             console.log("document does not exist");
           }
@@ -43,11 +37,11 @@ export default function ProfileView() {
   return (
     <Box
       sx={{
-        height: "100vh",
+        minHeight: "100vh",
         backgroundColor: colors.white,
       }}
     >
-      <Box sx={{ p: 5 }}>
+      <Box sx={{ p: { xs: 1, md: 5 } }}>
         <Box
           sx={{
             display: "flex",
@@ -64,29 +58,50 @@ export default function ProfileView() {
             Hello, {username}👋
           </Typography>
           <Box>
-            <Avatar sx={{
-              width: "75px",
-              height: "75px",
-              backgroundColor: colors.black,
-            }}>{username[0]}</Avatar>
+            <Avatar
+              sx={{
+                width: "75px",
+                height: "75px",
+                backgroundColor: colors.black,
+              }}
+            >
+              {username[0]}
+            </Avatar>
           </Box>
         </Box>
         <Box sx={{ my: 3 }}>
           <Tabs value={value} onChange={(_, val) => setValue(val)}>
-            <Tab sx={{ mr: 5 }} label="Your Reviews" />
-            <Tab sx={{ mr: 5 }} label="Saved Schools" />
+            <Tab
+              sx={{ mr: 5, fontSize: { xs: "1rem", md: "1.25rem" } }}
+              label="Your Reviews"
+            />
+            <Tab
+              sx={{ mr: 5, fontSize: { xs: "1rem", md: "1.25rem" } }}
+              label="Saved Schools"
+            />
           </Tabs>
           <Box sx={{ my: 3 }}>
             <TabPanel value={value} index={0}>
-              <Typography sx={{ color: colors.black }}>
-                You do not have any reviews.
-              </Typography>
+              {reviews.length === 0 ? (
+                <Typography sx={{ color: colors.black }}>
+                  You do not have any reviews.
+                </Typography>
+              ) : (
+                reviews.map((data) => (
+                  <ReviewCard {...data} key={data.school} />
+                ))
+              )}
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <Typography sx={{ color: colors.black }}>
-
-                You do not have any saved schools.
-              </Typography>
+              {savedSchools.length === 0 ? (
+                <Typography sx={{ color: colors.black }}>
+                  You do not have any saved schools.
+                </Typography>
+              ) : (
+                savedSchools.map((name, i) => (
+                  <SavedSchool schoolName={name} key={i} />
+                ))
+              )}
             </TabPanel>
           </Box>
         </Box>
@@ -94,6 +109,86 @@ export default function ProfileView() {
     </Box>
   );
 }
+
+const ReviewCard = ({ content, school, stars, datePosted }) => {
+  return (
+    <Box sx={{ my: 5 }}>
+      <Paper sx={{ borderRadius: "0.5rem" }} elevation={5}>
+        <Box
+          sx={{
+            background: `no-repeat center`,
+            backgroundSize: "cover",
+            height: "5rem",
+            borderRadius: "0.5rem 0.5rem 0 0",
+          }}
+          className={"alt-school-banner"}
+        />
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box sx={{ mx: 1 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: { xs: "1.25rem", md: "1.5rem" },
+                }}
+              >
+                {school}
+              </Typography>
+              <Typography
+                sx={{
+                  color: "grey",
+                  fontSize: "1.25rem"
+                }}
+              >
+                {datePosted}
+              </Typography>
+            </Box>
+            <Rating value={stars} readOnly />
+          </Box>
+          <Typography sx={{ m: 1 }}>{content}</Typography>
+        </Box>
+      </Paper>
+    </Box>
+  );
+};
+
+const SavedSchool = ({ schoolName }) => {
+  return (
+    <Box sx={{ my: { xs: 2 }, borderRadius: "1rem" }}>
+      <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography
+            sx={{
+              alignSelf: "center",
+              ml: { xs: 2 },
+              fontSize: { xs: "1.25rem", md: "1.75rem" },
+            }}
+          >
+            {schoolName}
+          </Typography>
+          <Box
+            sx={{
+              height: "auto",
+              width: { xs: "8rem", md: "12rem" },
+            }}
+          >
+            <img
+              src="https://i.insider.com/5cb4fb6faefeef24780d8ac5?width=600&format=jpeg&auto=webp"
+              alt="school"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                display: "block",
+                borderTopRightRadius: "0.5rem",
+                borderBottomRightRadius: "0.5rem",
+              }}
+            />
+          </Box>
+        </Box>
+      </Paper>
+    </Box>
+  );
+};
 
 const TabPanel = ({ value, index, children }) => {
   return value === index && children;
