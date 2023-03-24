@@ -84,7 +84,7 @@ class InfoCard extends Component {
   getReviews = async () => {
     const schoolRef = collection(
       db,
-      `school/${this.props.school.school_name}/reviews`
+      `schools/${this.props.school.school_name}/reviews`
     );
     const querySnapshot = await getDocs(schoolRef);
     this.setState({ currSchool: this.props.school.school_name });
