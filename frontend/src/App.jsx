@@ -1,5 +1,11 @@
 import { Routes, Route } from "react-router-dom"
-import { HomepageContainer, LoginContainer, SignupContainer, MapContainer, ProfileContainer } from './components/containers'
+import { 
+  HomepageContainer, 
+  LoginContainer, 
+  SignupContainer, 
+  MapContainer, 
+  ProfileContainer, 
+} from './components/containers'
 import './App.css'
 
 const App = () => {

@@ -21,6 +21,8 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  sendSignInLinkToEmail,
+  sendEmailVerification
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
@@ -29,12 +31,29 @@ export default function SignupView() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [role, setRole] = React.useState("");
+  const [open, setOpen] = React.useState(false)
 
   const navigate = useNavigate();
+
+  const actionCodeSettings = {
+    url: 'https://schoolsdb-be6ea.firebaseapp.com/confirmation',
+    handleCodeInApp: true,
+    iOS: {
+      bundleId: 'com.schoolsdb-be6ea.firebaseapp.com.ios'
+    },
+    android: {
+      packageName: 'com.schoolsdb-be6ea.firebaseapp.com.android',
+      installApp: true,
+      minimumVersion: '12'
+    },
+    dynamicLinkDomain: "https://schoolsdb-be6ea.firebaseapp.com/confirmation",
+  }
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       navigate("/");
+      console.log("sending verification email")
+      sendEmailVerification(auth.currentUser)
     } else {
       console.log("Failed to make an account");
     }
@@ -48,16 +67,29 @@ export default function SignupView() {
   const createAccount = async (e) => {
     e.preventDefault();
 
-    await createUserWithEmailAndPassword(auth, email, password).then((cred) => {
-      return setDoc(doc(db, "users", cred.user.uid), {
-        username: email,
-        role: role,
-        saved_schools: [],
-        verfied_user: false,
-        reviews: []
+    try {
+      await createUserWithEmailAndPassword(auth, email, password).then((cred) => {
+        setDoc(doc(db, "users", cred.user.uid), {
+          username: email,
+          role: role,
+          saved_schools: [],
+          verified_user: false,
+          reviews: []
+        })
       });
-    });
+    }
+    catch(error){
+      console.log(error)
+      setOpen(true)
+    }
   };
+
+  const handleClose = (e, reason) => {
+    if(reason === "clickaway") {
+      return
+    } 
+    setOpen(false);
+  }
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
@@ -246,6 +278,24 @@ export default function SignupView() {
             </Box>
           </Box>
         </Box>
+
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right"
+          }}>
+          <Alert onClose={handleClose} severity="error" sx={{
+            width: {
+              xs: "100%",
+              sm: "auto"
+            }
+            }}>
+            Invalid Email or Password!
+          </Alert>
+        </Snackbar>
       </Grid>
     </Grid>
   );

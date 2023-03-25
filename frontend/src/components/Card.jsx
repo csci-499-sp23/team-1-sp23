@@ -41,6 +41,7 @@ import {
   getDocs,
   updateDoc,
   arrayUnion,
+  onSnapshot
 } from "firebase/firestore";
 
 const urlFix = (url) => {
@@ -72,13 +73,18 @@ class InfoCard extends Component {
       currSchool: "",
       snackbarOpen: false,
       snackbarSuccessOpen: false,
+      currentSchoolRatingAvg: [],
     };
   }
 
   setReviewData = (data) => {
+  } 
+
+  setReviewData = (data, stars) => {
     this.setState(() => ({
       reviewData: data,
-    }));
+      currentSchoolRatingAvg: stars
+    }))
   };
 
   getReviews = async () => {
@@ -89,24 +95,25 @@ class InfoCard extends Component {
     const querySnapshot = await getDocs(schoolRef);
     this.setState({ currSchool: this.props.school.school_name });
     const toAdd = [];
+    const stars = [];
     querySnapshot.forEach((doc) => {
       if (doc.exists()) {
         toAdd.push(doc.data());
+        stars.push(doc.data().stars)
       } else {
         console.log("No reviews yet");
         return null;
       }
     });
-    this.setReviewData(toAdd);
+    this.setReviewData(toAdd, stars);
   };
 
-  getWebResults = async () => {
-    console.log();
-  };
+  badVerificationMethod = (email, query) => {
+    return(query.split(" ").every(q => new RegExp('\b(highschool)\b|\b(.edu)\b|(highschool)' + q + '\b(highschool)\b|\b(.edu)\b|(highschool)').test(email)))
+  }
 
   componentDidMount() {
     this.getReviews();
-    // this.getWebResults(); WILL DO IN THE FUTURE IF YOU WANT TO GET IMAGE RESULTS
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -116,7 +123,13 @@ class InfoCard extends Component {
             this.setUsername(docSnap.data().username);
             this.setRole(docSnap.data().role);
             this.setUid(auth.currentUser.uid);
-            this.setVerified(docSnap.data().verfied_user);
+
+            if(user.emailVerified && this.badVerificationMethod(docSnap.data().username, "highschool")) {
+              this.setVerified(true);
+            }
+            else {
+              this.setVerified(false)
+            }
           } else {
             console.log("document does not exist");
           }
@@ -201,6 +214,10 @@ class InfoCard extends Component {
       this.handleSnackbarOpen();
     }
   };
+
+  reviewsAvg = (arr) => {
+    arr.reduce((a, b) => a + b) / arr.length;
+  }
 
   render() {
     return (
@@ -541,7 +558,7 @@ class InfoCard extends Component {
                         <Grid item>
                           <Rating
                             name="read-only"
-                            value={2}
+                            value={this.state.currentSchoolRatingAvg}
                             readOnly
                             size="small"
                           />
