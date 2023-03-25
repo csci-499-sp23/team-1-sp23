@@ -809,7 +809,8 @@ class InfoCard extends Component {
 
                   {/* PUT REVIEWS CARD CODE HERE */}
                   <Box>
-                    {this.state.reviewData.map((data) => {
+                    
+                    {this.state.reviewData != 0 || null || undefined ? this.state.reviewData.map((data) => {
                       return (
                         <>
                           <Divider
@@ -844,7 +845,7 @@ class InfoCard extends Component {
                                     variant="body2"
                                     color="text.secondary"
                                   >
-                                    {data.role + " • " + data.verified}
+                                    {data.role + " • "} {data.verified ? "verified user" : "unverified user"}
                                   </Typography>
                                 </Box>
                                 <Typography variant="body1">
@@ -867,8 +868,11 @@ class InfoCard extends Component {
                             </Grid>
                           </Grid>
                         </>
-                      );
-                    })}
+                      )})
+                      : <Box>
+                        <Typography>No reviews for this school yet!</Typography>
+                      </Box>
+                      }
                   </Box>
                 </TabPanel>
 

@@ -84,7 +84,7 @@ export default function HomepageView() {
             >
               SchoolsDB
             </Typography>
-            <Box>
+            <Box sx={{display: "flex"}}>
               <Button color="inherit" href="/map">
                 Map
               </Button>

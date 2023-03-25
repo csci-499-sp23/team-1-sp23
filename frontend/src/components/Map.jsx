@@ -103,6 +103,7 @@ class Map extends Component {
                       xs: "flex-start",
                       md: "center",
                     },
+                    maxWidth: "100%"
                   }}
                 >
                   <Autocomplete>
@@ -115,8 +116,7 @@ class Map extends Component {
                         display: "flex",
                         alignItems: "center",
                         width: {
-                          xs: 410,
-                          sm: 410,
+                          xs: 360,
                           md: 370,
                         },
                         ml: 1,
@@ -169,9 +169,10 @@ class Map extends Component {
                         xs: 0,
                         md: 2,
                       },
+                      maxWidth: "100%"
                     }}
                   >
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} sx={{ overflow: 'auto'}}>
                       {boroughs.map((borough) => {
                         return (
                           <Chip
