@@ -18,6 +18,10 @@ import Rating from "@mui/material/Rating";
 import Avatar from "@mui/material/Avatar";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { Autocomplete } from "@react-google-maps/api";
+import Paper from '@mui/material/Paper'
+import InputBase from '@mui/material/InputBase'
+import Tooltip from '@mui/material/Tooltip'
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -28,6 +32,10 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import DirectionsSubwayIcon from '@mui/icons-material/DirectionsSubway';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -43,6 +51,7 @@ import {
   arrayUnion,
   onSnapshot
 } from "firebase/firestore";
+import { Stack } from "@mui/system";
 
 const urlFix = (url) => {
   return url
@@ -110,6 +119,10 @@ class InfoCard extends Component {
 
   badVerificationMethod = (email, query) => {
     return(query.split(" ").every(q => new RegExp('\b(highschool)\b|\b(.edu)\b|(highschool)' + q + '\b(highschool)\b|\b(.edu)\b|(highschool)').test(email)))
+  }
+
+  loadDirectionServices = () => {
+
   }
 
   componentDidMount() {
@@ -286,7 +299,7 @@ class InfoCard extends Component {
                     <IconButton size="large" onClick={this.handleSave}>
                       <BookmarkBorderIcon />
                     </IconButton>
-                    <IconButton size="large">
+                    <IconButton size="large" onClick={this.loadDirectionServices}>
                       <DirectionsIcon />
                     </IconButton>
                   </Box>
@@ -1124,6 +1137,11 @@ class InfoCard extends Component {
             verified={this.state.verified}
           />
         )}
+
+        {/* {this.state.directions && (
+          <
+        )} */}
+
         {/* SNACKBARS THEIR POSITIONS DONT MATTER SO IM PUTTING THEM OUT HERE */}
         <Snackbar
           open={this.state.snackbarOpen}
@@ -1144,6 +1162,114 @@ class InfoCard extends Component {
             Saved school!
           </Alert>
         </Snackbar>
+
+        <Card
+          sx={{
+            maxWidth: { xs: "100vw", sm: 400, md: 400 },
+            maxHeight: "100%",
+            zIndex: 1000,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "clamp(320px, calc(100vw-90%), 100%)",
+            overflowY: "auto",
+          }}
+        >
+          <CardContent>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                mt: 3,
+              }}
+            >
+              <Stack direction="row" spacing={2} justifyContent="space-around">
+                <Tooltip title="Driving">
+                  <IconButton>
+                    <DirectionsCarIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Tranist">
+                  <IconButton>
+                    <DirectionsSubwayIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Walking">
+                  <IconButton>
+                    <DirectionsWalkIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Cycling">
+                  <IconButton>
+                    <DirectionsBikeIcon />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+
+              <Box>
+                <Autocomplete>
+                  <Paper
+                    component="form"
+                    sx={{
+                      p: {
+                        md: "2px 4px",
+                      },
+                      display: "flex",
+                      alignItems: "center",
+                      width: {
+                        xs: 340,
+                        md: 350,
+                      },
+                      ml: 1,
+                      mt: { xs: 1, sm: 1, md: 0 },
+                    }}
+                  >
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Choose a starting point, or click on the map"
+                      inputProps={{ "aria-label": "search google maps" }}
+                    />
+
+                  </Paper>
+                </Autocomplete>
+              </Box>
+              
+              <Box>
+                <Autocomplete>
+                  <Paper
+                    component="form"
+                    sx={{
+                      p: {
+                        md: "2px 4px",
+                      },
+                      display: "flex",
+                      alignItems: "center",
+                      width: {
+                        xs: 340,
+                        md: 350,
+                      },
+                      ml: 1,
+                      mt: { xs: 1, sm: 1, md: 0 },
+                    }}
+                  >
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Search For A School"
+                      inputProps={{ "aria-label": "search google maps" }}
+                      defaultValue={this.props.school.school_name}
+                    />
+
+                  </Paper>
+                </Autocomplete>
+              </Box>              
+            </Box>
+          </CardContent>
+        </Card>
       </>
     );
   }

@@ -88,6 +88,11 @@ class Map extends Component {
           zoom={11}
           clickableIcons={false}
           onClick={this.showCard.bind(null, false)}
+          options= {{
+            zoomControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+          }}
         >
           {/* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
