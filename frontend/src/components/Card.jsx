@@ -83,6 +83,10 @@ class InfoCard extends Component {
       snackbarOpen: false,
       snackbarSuccessOpen: false,
       currentSchoolRatingAvg: [],
+      directionsOpen: false,
+      origin: "",
+      destination: "",
+      travelMode: "DRIVING",
     };
   }
 
@@ -119,10 +123,6 @@ class InfoCard extends Component {
 
   badVerificationMethod = (email, query) => {
     return(query.split(" ").every(q => new RegExp('\b(highschool)\b|\b(.edu)\b|(highschool)' + q + '\b(highschool)\b|\b(.edu)\b|(highschool)').test(email)))
-  }
-
-  loadDirectionServices = () => {
-
   }
 
   componentDidMount() {
@@ -232,6 +232,36 @@ class InfoCard extends Component {
     arr.reduce((a, b) => a + b) / arr.length;
   }
 
+  setOrigin = (origin) => {
+    console.log(origin)
+    this.setState({
+      origin: origin
+    })
+  }
+
+  setDestination = (destination) => {
+    this.setState({
+      destination: destination
+    })
+  }
+  
+  handleDirectionsSubmit = () => {
+    this.props.onDirectionsSubmit(this.state.origin, this.state.destination, this.state.travelMode)
+  }
+
+  openDirections = () => {
+    this.setState({
+      directionsOpen: true
+    })
+  }
+
+  handleDirectionsClose = () => {
+    this.setState({
+      directionsOpen: false
+    })
+    this.props.closeDirections(false)
+  }
+
   render() {
     return (
       <>
@@ -299,7 +329,7 @@ class InfoCard extends Component {
                     <IconButton size="large" onClick={this.handleSave}>
                       <BookmarkBorderIcon />
                     </IconButton>
-                    <IconButton size="large" onClick={this.loadDirectionServices}>
+                    <IconButton size="large" onClick={this.openDirections}>
                       <DirectionsIcon />
                     </IconButton>
                   </Box>
@@ -658,7 +688,7 @@ class InfoCard extends Component {
                   sx={{ p: 2 }}
                 >
                   <Grid container spacing={1} justifyContent="center">
-                    <Grid xs={12} sm container>
+                    <Grid xs={12} container>
                       <Grid
                         item
                         xs={12}
@@ -1138,10 +1168,6 @@ class InfoCard extends Component {
           />
         )}
 
-        {/* {this.state.directions && (
-          <
-        )} */}
-
         {/* SNACKBARS THEIR POSITIONS DONT MATTER SO IM PUTTING THEM OUT HERE */}
         <Snackbar
           open={this.state.snackbarOpen}
@@ -1163,7 +1189,8 @@ class InfoCard extends Component {
           </Alert>
         </Snackbar>
 
-        <Card
+        {/* Directions card idk how this will show on click yet */}
+        {this.state.directionsOpen && <Card
           sx={{
             maxWidth: { xs: "100vw", sm: 400, md: 400 },
             maxHeight: "100%",
@@ -1175,8 +1202,12 @@ class InfoCard extends Component {
             width: "clamp(320px, calc(100vw-90%), 100%)",
             overflowY: "auto",
           }}
+          directionsOpen={this.state.directionsOpen}
         >
           <CardContent>
+            <IconButton onClick={this.handleDirectionsClose}>
+              <CloseIcon />
+            </IconButton>
             <Box
               sx={{
                 display: "flex",
@@ -1225,22 +1256,26 @@ class InfoCard extends Component {
                         xs: 340,
                         md: 350,
                       },
-                      ml: 1,
-                      mt: { xs: 1, sm: 1, md: 0 },
+                      mt: { xs: 1, sm: 1, md: 1 },
+                      p: 1,
+                      outline: "1px solid"
                     }}
                   >
                     <InputBase
-                      sx={{ ml: 1, flex: 1 }}
+                      sx={{ ml: 1, flex: 1, }}
                       placeholder="Choose a starting point, or click on the map"
                       inputProps={{ "aria-label": "search google maps" }}
+                      onChange={(e) => {
+                        this.setOrigin(e.target.value)
+                      }}
                     />
 
                   </Paper>
                 </Autocomplete>
               </Box>
-              
+
               <Box>
-                <Autocomplete>
+                <Autocomplete types={"secondary_school"}>
                   <Paper
                     component="form"
                     sx={{
@@ -1253,23 +1288,29 @@ class InfoCard extends Component {
                         xs: 340,
                         md: 350,
                       },
-                      ml: 1,
-                      mt: { xs: 1, sm: 1, md: 0 },
+                      mt: { xs: 1, sm: 1, md: 1 },
+                      p: 1,
+                      outline: "1px solid"
                     }}
                   >
                     <InputBase
                       sx={{ ml: 1, flex: 1 }}
-                      placeholder="Search For A School"
+                      placeholder={this.props.school.school_name}
                       inputProps={{ "aria-label": "search google maps" }}
-                      defaultValue={this.props.school.school_name}
+                      defaultValue=""
+                      onChange={(e) => {
+                        this.setDestination(e.target.value)
+                      }}
                     />
-
                   </Paper>
                 </Autocomplete>
-              </Box>              
+              </Box>
+              <Button variant="contained" onClick={this.handleDirectionsSubmit}>Get Directions</Button>
             </Box>
           </CardContent>
         </Card>
+        }
+        
       </>
     );
   }
