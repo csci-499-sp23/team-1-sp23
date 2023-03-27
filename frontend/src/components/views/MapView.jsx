@@ -6,7 +6,7 @@ import Navbar from "./NavBar";
 export default function MapView() {
   return (
     <>
-    <Navbar/>
+    
     <Grid sx={{ height: "100vh" }}>
       <Grid xs={12} sm={8} md={5} item sx={{}}></Grid>
       <Map />
