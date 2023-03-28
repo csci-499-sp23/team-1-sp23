@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -6,11 +7,25 @@ import PersonIcon from '@mui/icons-material/Person';
 import MapIcon from '@mui/icons-material/Map';
 
 export default function Drawerbar() {
+  const [state, setState] = React.useState({
+    left: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Drawer
-        variant="permanent"
+        anchor="left"
+        variant="temporary"
         open={open}
+        onClose={toggleDrawer(false)}
         sx={{
           "& .MuiDrawer-paper": {
             width: 60,
@@ -19,6 +34,7 @@ export default function Drawerbar() {
             color: "white",
           },
         }}
+
       >
         <List>
           <ListItem button>

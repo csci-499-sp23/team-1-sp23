@@ -19,6 +19,7 @@ import schools from "../assets/schools.json"
 
 import InfoCard from './Card';
 import FiltersModal from './MoreFilters';
+import Drawerbar from "./views/DrawerNavBar";
 
 const containerStyle = {
   width: '100%',
@@ -37,7 +38,8 @@ class Map extends Component {
     super(); 
     this.state = { 
       card: false, 
-      school: null 
+      school: null, 
+      drawer: false
     }
   }
 
@@ -63,6 +65,12 @@ class Map extends Component {
       default:
         break;
     }
+  }
+
+  openDrawer = (bool) => {
+    this.setState({
+      drawer: bool
+    })
   }
 
   render() {
@@ -109,7 +117,7 @@ class Map extends Component {
                         ml: 1,
                         mt: { xs: 1, sm: 1, md: 0, },
                       }}>
-                      <IconButton sx={{ p: '10px' }} aria-label="menu">
+                      <IconButton sx={{ p: '10px' }} aria-label="menu" onClick={this.openDrawer.bind(null, true)}>
                         <MenuIcon />
                       </IconButton>
                       <InputBase
@@ -126,6 +134,7 @@ class Map extends Component {
                       </IconButton>
                     </Paper>
                   </Autocomplete>
+                  {this.state.drawer && <Drawerbar />}
                   <Box sx={{
                     position: {
                       md: 'relative',
