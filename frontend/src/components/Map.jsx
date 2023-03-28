@@ -140,7 +140,7 @@ class Map extends Component {
 
   render() {
     return (
-      <LoadScript googleMapsApiKey={mK} libraries={lib}>
+      <LoadScript googleMapsApiKey="AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI" libraries={lib}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
