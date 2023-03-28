@@ -28,7 +28,7 @@ class ReviewsModal extends Component {
 
     this.state = {
       modal: true,
-      review: null,
+      review: "",
       buttonDisable: true,
       stars: 0,
       currentDate: date,
@@ -88,8 +88,8 @@ class ReviewsModal extends Component {
     );
     const schoolDoc = await getDoc(snapSchool);
 
-    if (this.state.review != null || (this.state.stars != null || undefined)) {
-      if (!schoolDoc) {
+    if (this.state.review && this.state.stars) {
+      if (!schoolDoc.exists()) {
         await setDoc(snapSchool, {
           ...base,
           user: this.props.user,
@@ -105,12 +105,10 @@ class ReviewsModal extends Component {
         });
         this.handleSnackbarSuccessOpen();
       } else {
-        console.log(schoolDoc.data())
-        this.handleSnackbarOpen()
+        this.handleSnackbarOpen();
       }
-    } 
-    else {
-      this.handleSnackbarOpen();
+    } else {
+      alert("Invalid Input");
     }
   };
 
@@ -211,7 +209,7 @@ class ReviewsModal extends Component {
             </Alert>
           </Snackbar>
         </Box>
-     </>
+      </>
     );
   }
 }

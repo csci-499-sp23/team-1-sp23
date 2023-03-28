@@ -25,6 +25,7 @@ import schools from "../assets/schools.json";
 
 import InfoCard from "./Card";
 import FiltersModal from "./MoreFilters";
+import { mK } from "../config/environment";
 
 const containerStyle = {
   width: "100%",
@@ -135,7 +136,7 @@ class Map extends Component {
 
   render() {
     return (
-      <LoadScript googleMapsApiKey="AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI" libraries={lib}>
+      <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}

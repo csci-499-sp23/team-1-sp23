@@ -1,11 +1,19 @@
-import { Box, IconButton, Paper, Rating, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Paper,
+  Rating,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, doc, getDoc, query, where } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../../config/firebase";
 import Avatar from "@mui/material/Avatar";
 
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 
 import ReviewsModal from "../ReviewsModal";
 
@@ -113,7 +121,15 @@ export default function ProfileView() {
   );
 }
 
-const ReviewCard = ({ content, school, stars, datePosted, role, verified, user }) => {
+const ReviewCard = ({
+  content,
+  school,
+  stars,
+  datePosted,
+  role,
+  verified,
+  user,
+}) => {
   return (
     <>
       <Box sx={{ my: 5 }}>
@@ -141,7 +157,7 @@ const ReviewCard = ({ content, school, stars, datePosted, role, verified, user }
                 <Typography
                   sx={{
                     color: "grey",
-                    fontSize: "1.25rem"
+                    fontSize: "1.25rem",
                   }}
                 >
                   {datePosted}
@@ -162,7 +178,7 @@ const ReviewCard = ({ content, school, stars, datePosted, role, verified, user }
 
 const SavedSchool = ({ schoolName }) => {
   return (
-    <Box sx={{ my: { xs: 2 }, borderRadius: "1rem" }}>
+    <Box sx={{ my: 5, borderRadius: "1rem" }}>
       <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography
@@ -197,7 +213,6 @@ const SavedSchool = ({ schoolName }) => {
     </Box>
   );
 };
-
 
 const TabPanel = ({ value, index, children }) => {
   return value === index && children;
