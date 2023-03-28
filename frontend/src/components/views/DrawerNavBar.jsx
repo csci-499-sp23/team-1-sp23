@@ -37,22 +37,27 @@ export default function Drawerbar() {
 
       >
         <List>
+         <a href="/">
           <ListItem button>
             <ListItemIcon>
-              <HomeIcon sx={{color: 'white'}} />
+              <HomeIcon sx={{color: 'white'}}/>
             </ListItemIcon>
           </ListItem>
+          </a>
+          <a href="/profile">
           <ListItem button>
             <ListItemIcon>
               <PersonIcon sx={{color: 'white'}} />
             </ListItemIcon>
           </ListItem>
+          </a>
+          <a href="/map">
           <ListItem button>
             <ListItemIcon>
               <MapIcon sx={{color: 'white'}} />
             </ListItemIcon>
-            
           </ListItem>
+          </a>
         </List>
       </Drawer>
     </Box>
