@@ -25,6 +25,7 @@ import schools from "../assets/schools.json";
 
 import InfoCard from "./Card";
 import FiltersModal from "./MoreFilters";
+import Drawerbar from "./views/DrawerNavBar";
 import { mK } from "../config/environment";
 
 const containerStyle = {
@@ -45,6 +46,7 @@ const boroughs = [
   "Staten Island",
   "More Filters",
 ];
+
 const lib = ["places"];
 
 class Map extends Component {
@@ -53,6 +55,7 @@ class Map extends Component {
     this.state = {
       card: false,
       school: null,
+      drawer: false,
       origin: "",
       destination: "",
       travelMode: "DRIVING",
@@ -87,6 +90,11 @@ class Map extends Component {
     }
   }
 
+  openDrawer = (bool) => {
+    this.setState({
+      drawer: bool,
+    });
+  };
   
   // calculateRoute = async () => {
   //   if (this.state.origin === "" || this.state.destination === "") {
@@ -229,7 +237,11 @@ class Map extends Component {
                         mt: { xs: 1, sm: 1, md: 0 },
                       }}
                     >
-                      <IconButton sx={{ p: "10px" }} aria-label="menu">
+                      <IconButton
+                        sx={{ p: "10px" }}
+                        aria-label="menu"
+                        onClick={this.openDrawer.bind(null, true)}
+                      >
                         <MenuIcon />
                       </IconButton>
                       <InputBase
@@ -257,6 +269,10 @@ class Map extends Component {
                       </IconButton>
                     </Paper>
                   </Autocomplete>
+                  <Drawerbar
+                    status={this.state.drawer}
+                    toggle={this.openDrawer}
+                  />
                   <Box
                     sx={{
                       position: {

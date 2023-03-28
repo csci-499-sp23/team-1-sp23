@@ -23,6 +23,7 @@ import {
   sendPasswordResetEmail
 } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
+import Navbar from "./NavBar";
 import { useUserContext } from "../../context/thunk";
 
 export default function SignupView() {
@@ -75,6 +76,8 @@ export default function SignupView() {
   };
 
   return (
+    <>
+    <Navbar/>
     <Grid container component="main" sx={{ height: "100vh" }}>
       <Grid
         item
@@ -284,5 +287,6 @@ export default function SignupView() {
         </Snackbar>
       </Grid>
     </Grid>
+    </>
   );
 }
