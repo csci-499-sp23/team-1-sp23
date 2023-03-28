@@ -2,8 +2,15 @@
     width: 5px;
 }
 ::-webkit-scrollbar-track {
-    display: none;
+    background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-    
+    background: #555;
+    height: 50px;
 }
+::-webkit-scrollbar-track:horizontal {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb:horizontal {
+    background: transparent;
+  }

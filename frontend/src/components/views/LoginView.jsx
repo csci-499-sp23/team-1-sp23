@@ -11,21 +11,34 @@ import Link from "@mui/joy/Link";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "../../assets/GoogleIcon";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from '@mui/material/Alert'
 import React from "react";
 import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  sendSignInLinkToEmail,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
 import Navbar from "./NavBar";
+import { useUserContext } from "../../context/thunk";
 
 export default function SignupView() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [open, setOpen] = React.useState(false)
 
   const navigate = useNavigate();
+
+  const handleClose = (e, reason) => {
+    if(reason === "clickaway") {
+      return
+    } 
+    setOpen(false);
+  }
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -44,12 +57,22 @@ export default function SignupView() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password).then((cred) => {
-        console.log(cred.user);
         document.querySelector("form").reset();
       });
     } catch (error) {
-      console.log(error.code);
+      console.log(error.code)
+      setOpen(true)
     }
+  };
+
+  const forgotPasswordHandler = () => {
+    // const userEmail = email;
+    // console.log(userEmail)
+    // if (userEmail)
+    //   sendPasswordResetEmail(userEmail).then(() => {
+    //     console.log(userEmail)
+    //     userEmail.current.value = "";
+    //   });
   };
 
   return (
@@ -218,7 +241,7 @@ export default function SignupView() {
                     />
                     <Typography>Remember Me</Typography>
                   </Box>
-                  <Link fontSize="sm" fontWeight="500" href="#">
+                  <Link fontSize="sm" fontWeight="500" href="#" onClick={forgotPasswordHandler}>
                     Forgot Password
                   </Link>
                 </Box>
@@ -249,6 +272,19 @@ export default function SignupView() {
             </Box>
           </Box>
         </Box>
+
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom", 
+            horizontal: "right"
+          }}>
+          <Alert onClose={handleClose} severity="error">
+            Incorrect Email or Password!
+          </Alert>
+        </Snackbar>
       </Grid>
     </Grid>
     </>

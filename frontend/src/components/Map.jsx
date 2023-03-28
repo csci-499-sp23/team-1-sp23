@@ -26,6 +26,7 @@ import schools from "../assets/schools.json";
 import InfoCard from "./Card";
 import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
+import { mK } from "../config/environment";
 
 const containerStyle = {
   width: "100%",
@@ -46,6 +47,8 @@ const boroughs = [
   "More Filters",
 ];
 
+const lib = ["places"];
+
 class Map extends Component {
   constructor() {
     super();
@@ -53,9 +56,16 @@ class Map extends Component {
       card: false,
       school: null,
       drawer: false,
+      origin: "",
+      destination: "",
+      travelMode: "DRIVING",
+      response: null,
+      directionsRenderer: true
     };
-  }
 
+    this.directionsCallback = this.directionsCallback.bind(this)
+  }
+  
   showCard = (bool, obj) => {
     this.setState({
       card: bool,
@@ -85,17 +95,114 @@ class Map extends Component {
       drawer: bool,
     });
   };
+  
+  // calculateRoute = async () => {
+  //   if (this.state.origin === "" || this.state.destination === "") {
+  //     console.log("failed route")
+  //     return
+  //   }
+
+  //   const directionsService = new google.maps.DirectionsService()
+
+  //   const results = await directionsService.route({
+  //     origin: this.state.origin,
+  //     destination: this.state.destination,
+  //     // eslint-disable-next-line no-undef
+  //     travelMode: this.state.travelMode,
+  //   })
+  //   console.log(results)
+  //   this.setState({
+  //     response: results
+  //   })
+  // }
+
+  directionsCallback(response) {
+    if (response !== null) {
+      if (response.status === 'OK') {
+        this.setState({
+            response: response
+          })
+      } else {
+        console.log('response: ', response)
+      }
+    }
+  }
+
+  handleDirections = (origin, destination, mode) => {
+    this.setState({
+      origin: origin,
+      destination: destination,
+      travelMode: mode
+    })
+  }
+
+  handleClose = (bool) => {
+    this.setState({
+      directionsRenderer: bool
+    })
+  }
 
   render() {
     return (
-      <LoadScript googleMapsApiKey="" libraries={["places"]}>
+      <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
           zoom={11}
           clickableIcons={false}
           onClick={this.showCard.bind(null, false)}
-        >
+          options= {{
+            zoomControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+          }}
+        > 
+          {
+            (
+              this.state.destination !== '' &&
+              this.state.origin !== '' && 
+              this.state.directionsRenderer == true
+            ) && (
+              <DirectionsService
+                // required
+                options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
+                  destination: this.state.destination,
+                  origin: this.state.origin,
+                  travelMode: this.state.travelMode
+                }}
+                // required
+                callback={this.directionsCallback}
+                // optional
+                onLoad={directionsService => {
+                  console.log('DirectionsService onLoad directionsService: ', directionsService)
+                }}
+                // optional
+                onUnmount={directionsService => {
+                  console.log('DirectionsService onUnmount directionsService: ', directionsService)
+                }}
+              />
+            )
+          }
+
+          {
+            (this.state.response !== null && this.state.directionsRenderer == true) && (
+              <DirectionsRenderer
+                // required
+                options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
+                  directions: this.state.response
+
+                }}
+                // optional
+                onLoad={directionsRenderer => {
+                  console.log('DirectionsRenderer onLoad directionsRenderer: ', directionsRenderer)
+                }}
+                // optional
+                onUnmount={directionsRenderer => {
+                  console.log('DirectionsRenderer onUnmount directionsRenderer: ', directionsRenderer)
+                }}
+              />
+            )
+          }
           {/* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -110,6 +217,7 @@ class Map extends Component {
                       xs: "flex-start",
                       md: "center",
                     },
+                    maxWidth: "100%"
                   }}
                 >
                   <Autocomplete>
@@ -122,8 +230,7 @@ class Map extends Component {
                         display: "flex",
                         alignItems: "center",
                         width: {
-                          xs: 410,
-                          sm: 410,
+                          xs: 360,
                           md: 370,
                         },
                         ml: 1,
@@ -184,9 +291,10 @@ class Map extends Component {
                         xs: 0,
                         md: 2,
                       },
+                      maxWidth: "100%"
                     }}
                   >
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} sx={{ overflow: 'auto'}}>
                       {boroughs.map((borough) => {
                         return (
                           <Chip
@@ -221,7 +329,14 @@ class Map extends Component {
               ></Marker>
             );
           })}
-          {this.state.card && <InfoCard school={this.state.school} />}
+          {this.state.card && (
+            <InfoCard
+              school={this.state.school}
+              key={this.state.school + "2031"}
+              onDirectionsSubmit={this.handleDirections}
+              closeDirections={this.handleClose}
+            />
+          )}
         </GoogleMap>
       </LoadScript>
     );

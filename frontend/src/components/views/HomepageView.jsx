@@ -37,7 +37,7 @@ export default function HomepageView() {
   }, []);
 
   const [open, setOpen] = React.useState(false);
-  const [age, setAge] = React.useState("");
+  const [borough, setBorough] = React.useState("");
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
@@ -47,7 +47,7 @@ export default function HomepageView() {
   }, []);
 
   const handleChange = (event) => {
-    setAge(Number(event.target.value) || "");
+    setBorough(Number(event.target.value) || "");
   };
 
   const handleClickOpen = () => {
@@ -69,7 +69,6 @@ export default function HomepageView() {
   return (
     <>
       <Navbar loggedIn={loggedIn} handleLogout={handleLogout} />
-
       <Box className="home-banner">
         <Box sx={{ mt: "10%" }}>
           <Typography
@@ -109,16 +108,16 @@ export default function HomepageView() {
                   <InputLabel htmlFor="dialog-native">Borough</InputLabel>
                   <Select
                     native
-                    value={age}
+                    value={borough}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Age" id="dialog-native" />}
+                    input={<OutlinedInput label="Borough" id="dialog-native" />}
                   >
                     <option aria-label="None" value="" />
                     <option value={10}>Queens</option>
                     <option value={20}>Brooklyn</option>
                     <option value={30}>Bronx</option>
-                    <option value={30}>Manhattan</option>
-                    <option value={30}>Staten Island</option>
+                    <option value={40}>Manhattan</option>
+                    <option value={50}>Staten Island</option>
                   </Select>
                 </FormControl>
               </Box>
