@@ -7,14 +7,15 @@ import Avatar from "@mui/material/Avatar";
 
 import EditIcon from '@mui/icons-material/Edit';
 
-import ReviewsModal from "../ReviewsModal";
+import EditModal from '../EditModal'
+
 
 export default function ProfileView() {
   const [username, setUsername] = React.useState("");
   const [role, setRole] = React.useState("");
   const [savedSchools, setSavedSchools] = React.useState([]);
   const [reviews, setReviews] = React.useState([]);
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(0)
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -38,82 +39,85 @@ export default function ProfileView() {
     });
   }, []);
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: colors.white,
-      }}
-    >
-      <Box sx={{ p: { xs: 1, md: 5 } }}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
+    <>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: colors.white,
+        }}
+      >
+        <Box sx={{ p: { xs: 1, md: 5 } }}>
+          <Box
             sx={{
-              color: colors.black,
-              fontSize: "2rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            Hello, {username}👋
-          </Typography>
-          <Box>
-            <Avatar
+            <Typography
               sx={{
-                width: "75px",
-                height: "75px",
-                backgroundColor: colors.black,
+                color: colors.black,
+                fontSize: "2rem",
               }}
             >
-              {username[0]}
-            </Avatar>
+              Hello, {username}👋
+            </Typography>
+            <Box>
+              <Avatar
+                sx={{
+                  width: "75px",
+                  height: "75px",
+                  backgroundColor: colors.black,
+                }}
+              >
+                {username[0]}
+              </Avatar>
+            </Box>
           </Box>
-        </Box>
-        <Box sx={{ my: 3 }}>
-          <Tabs value={value} onChange={(_, val) => setValue(val)}>
-            <Tab
-              sx={{ mr: 5, fontSize: { xs: "1rem", md: "1.25rem" } }}
-              label="Your Reviews"
-            />
-            <Tab
-              sx={{ mr: 5, fontSize: { xs: "1rem", md: "1.25rem" } }}
-              label="Saved Schools"
-            />
-          </Tabs>
           <Box sx={{ my: 3 }}>
-            <TabPanel value={value} index={0}>
-              {reviews.length === 0 ? (
-                <Typography sx={{ color: colors.black }}>
-                  You do not have any reviews.
-                </Typography>
-              ) : (
-                reviews.map((data) => (
-                  <ReviewCard {...data} key={data.school} />
-                ))
-              )}
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              {savedSchools.length === 0 ? (
-                <Typography sx={{ color: colors.black }}>
-                  You do not have any saved schools.
-                </Typography>
-              ) : (
-                savedSchools.map((name, i) => (
-                  <SavedSchool schoolName={name} key={i} />
-                ))
-              )}
-            </TabPanel>
+            <Tabs value={value} onChange={(_, val) => setValue(val)}>
+              <Tab
+                sx={{ mr: 5, fontSize: { xs: "1rem", md: "1.25rem" } }}
+                label="Your Reviews"
+              />
+              <Tab
+                sx={{ mr: 5, fontSize: { xs: "1rem", md: "1.25rem" } }}
+                label="Saved Schools"
+              />
+            </Tabs>
+            <Box sx={{ my: 3 }}>
+              <TabPanel value={value} index={0}>
+                {reviews.length === 0 ? (
+                  <Typography sx={{ color: colors.black }}>
+                    You do not have any reviews.
+                  </Typography>
+                ) : (
+                  reviews.map((data) => (
+                    <ReviewCard {...data} key={data.school} open={open}/>
+                  ))
+                )}
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                {savedSchools.length === 0 ? (
+                  <Typography sx={{ color: colors.black }}>
+                    You do not have any saved schools.
+                  </Typography>
+                ) : (
+                  savedSchools.map((name, i) => (
+                    <SavedSchool schoolName={name} key={i} />
+                  ))
+                )}
+              </TabPanel>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 
-const ReviewCard = ({ content, school, stars, datePosted, role, verified, user }) => {
+const ReviewCard = ({ content, school, stars, datePosted, role, verified, username }) => {
+  const [open, setOpen] = React.useState(false)
   return (
     <>
       <Box sx={{ my: 5 }}>
@@ -151,11 +155,13 @@ const ReviewCard = ({ content, school, stars, datePosted, role, verified, user }
             </Box>
             <Typography sx={{ m: 1 }}>{content}</Typography>
           </Box>
-          <IconButton sx={{ width: "100%", borderRadius: 0 }}>
+          <IconButton sx={{ width: "100%", borderRadius: 0 }} onClick={() => setOpen(true)}>
             <EditIcon />
           </IconButton>
         </Paper>
       </Box>
+      {open && (<EditModal user={school} name={school} role={role}/>)}
+      
     </>
   );
 };
