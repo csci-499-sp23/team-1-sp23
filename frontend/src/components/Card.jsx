@@ -18,6 +18,10 @@ import Rating from "@mui/material/Rating";
 import Avatar from "@mui/material/Avatar";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { Autocomplete } from "@react-google-maps/api";
+import Paper from "@mui/material/Paper";
+import InputBase from "@mui/material/InputBase";
+import Tooltip from "@mui/material/Tooltip";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -28,6 +32,10 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import DirectionsSubwayIcon from "@mui/icons-material/DirectionsSubway";
+import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
+import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -41,8 +49,9 @@ import {
   getDocs,
   updateDoc,
   arrayUnion,
-  onSnapshot
+  onSnapshot,
 } from "firebase/firestore";
+import { Stack } from "@mui/system";
 
 const urlFix = (url) => {
   return url
@@ -74,17 +83,20 @@ class InfoCard extends Component {
       snackbarOpen: false,
       snackbarSuccessOpen: false,
       currentSchoolRatingAvg: [],
+      directionsOpen: false,
+      origin: "",
+      destination: "",
+      travelMode: "DRIVING",
     };
   }
 
-  setReviewData = (data) => {
-  } 
+  setReviewData = (data) => {};
 
   setReviewData = (data, stars) => {
     this.setState(() => ({
       reviewData: data,
-      currentSchoolRatingAvg: stars
-    }))
+      currentSchoolRatingAvg: stars,
+    }));
   };
 
   getReviews = async () => {
@@ -99,7 +111,7 @@ class InfoCard extends Component {
     querySnapshot.forEach((doc) => {
       if (doc.exists()) {
         toAdd.push(doc.data());
-        stars.push(doc.data().stars)
+        stars.push(doc.data().stars);
       } else {
         console.log("No reviews yet");
         return null;
@@ -109,8 +121,16 @@ class InfoCard extends Component {
   };
 
   badVerificationMethod = (email, query) => {
-    return(query.split(" ").every(q => new RegExp('\b(highschool)\b|\b(.edu)\b|(highschool)' + q + '\b(highschool)\b|\b(.edu)\b|(highschool)').test(email)))
-  }
+    return query
+      .split(" ")
+      .every((q) =>
+        new RegExp(
+          "\b(highschool)\b|\b(.edu)\b|(highschool)" +
+            q +
+            "\b(highschool)\b|\b(.edu)\b|(highschool)"
+        ).test(email)
+      );
+  };
 
   componentDidMount() {
     this.getReviews();
@@ -124,11 +144,13 @@ class InfoCard extends Component {
             this.setRole(docSnap.data().role);
             this.setUid(auth.currentUser.uid);
 
-            if(user.emailVerified && this.badVerificationMethod(docSnap.data().username, "highschool")) {
+            if (
+              user.emailVerified &&
+              this.badVerificationMethod(docSnap.data().username, "highschool")
+            ) {
               this.setVerified(true);
-            }
-            else {
-              this.setVerified(false)
+            } else {
+              this.setVerified(false);
             }
           } else {
             console.log("document does not exist");
@@ -217,7 +239,41 @@ class InfoCard extends Component {
 
   reviewsAvg = (arr) => {
     arr.reduce((a, b) => a + b) / arr.length;
-  }
+  };
+
+  setOrigin = (origin) => {
+    console.log(origin);
+    this.setState({
+      origin: origin,
+    });
+  };
+
+  setDestination = (destination) => {
+    this.setState({
+      destination: destination,
+    });
+  };
+
+  handleDirectionsSubmit = () => {
+    this.props.onDirectionsSubmit(
+      this.state.origin,
+      this.state.destination,
+      this.state.travelMode
+    );
+  };
+
+  openDirections = () => {
+    this.setState({
+      directionsOpen: true,
+    });
+  };
+
+  handleDirectionsClose = () => {
+    this.setState({
+      directionsOpen: false,
+    });
+    this.props.closeDirections(false);
+  };
 
   render() {
     return (
@@ -286,7 +342,7 @@ class InfoCard extends Component {
                     <IconButton size="large" onClick={this.handleSave}>
                       <BookmarkBorderIcon />
                     </IconButton>
-                    <IconButton size="large">
+                    <IconButton size="large" onClick={this.openDirections}>
                       <DirectionsIcon />
                     </IconButton>
                   </Box>
@@ -644,11 +700,10 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Grid container spacing={1} justifyContent="center">
-                    <Grid xs={12} sm container>
-                      <Grid
+                  <Grid container spacing={1}>
+                    <Grid xs={8} item>
+                      <Box
                         item
-                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -665,11 +720,9 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        ></LinearProgress>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
+                        />
+                      </Box>
+                      <Box
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -686,11 +739,9 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        ></LinearProgress>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
+                        />
+                      </Box>
+                      <Box
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -707,11 +758,10 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        ></LinearProgress>
-                      </Grid>
+                        />
+                      </Box>
                       <Grid
                         item
-                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -728,11 +778,10 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        ></LinearProgress>
+                        />
                       </Grid>
                       <Grid
                         item
-                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -749,12 +798,11 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        ></LinearProgress>
+                        />
                       </Grid>
                     </Grid>
-                    <Grid item>
-                      <Grid
-                        item
+                    <Grid xs={4} item>
+                      <Box
                         sx={{
                           display: "flex",
                           alignItems: "center",
@@ -770,15 +818,15 @@ class InfoCard extends Component {
                         >
                           4.1
                         </Typography>
-                        <Grid item>
+                        <Box>
                           <Rating
                             name="read-only"
                             value={3}
                             readOnly
                             precision={0.5}
                           />
-                        </Grid>
-                      </Grid>
+                        </Box>
+                      </Box>
                     </Grid>
                     <Grid
                       item
@@ -786,6 +834,7 @@ class InfoCard extends Component {
                       sx={{
                         display: "flex",
                         justifyContent: "center",
+                        my: 2,
                       }}
                     >
                       <Chip
@@ -803,72 +852,81 @@ class InfoCard extends Component {
                             ? this.showModal.bind(null, true)
                             : this.handleSnackbarOpen
                         }
-                      ></Chip>
+                      />
                     </Grid>
                   </Grid>
 
                   {/* PUT REVIEWS CARD CODE HERE */}
-                  <Box>
-                    {this.state.reviewData.map((data) => {
-                      return (
-                        <>
-                          <Divider
-                            sx={{
-                              mt: 3,
-                              mb: 2,
-                            }}
-                          />
-                          <Grid
-                            container
-                            columns={12}
-                            direction="column"
-                            spacing={2}
-                          >
+                  <Box> 
+                    {this.state.reviewData != 0 || null || undefined ? (
+                      this.state.reviewData.map((data) => {
+                        return (
+                          <>
+                            <Divider
+                              sx={{
+                                mt: 3,
+                                mb: 2,
+                              }}
+                            />
                             <Grid
-                              item
-                              sx={{ display: "flex", flexDirection: "row" }}
+                              container
+                              columns={12}
+                              direction="column"
+                              spacing={2}
                             >
-                              <Avatar>{data.user[0]}</Avatar>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexGrow: 1,
-                                  justifyContent: "space-between",
-                                }}
+                              <Grid
+                                item
+                                sx={{ display: "flex", flexDirection: "row" }}
                               >
-                                <Box sx={{ pl: 1 }}>
+                                <Avatar>{data.user[0]}</Avatar>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexGrow: 1,
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <Box sx={{ pl: 1 }}>
+                                    <Typography variant="body1">
+                                      {data.user}
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                    >
+                                      {data.role + " • "}{" "}
+                                      {data.verified
+                                        ? "verified user"
+                                        : "unverified user"}
+                                    </Typography>
+                                  </Box>
                                   <Typography variant="body1">
-                                    {data.user}
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                  >
-                                    {data.role + " • " + data.verified}
+                                    {data.datePosted}
                                   </Typography>
                                 </Box>
-                                <Typography variant="body1">
-                                  {data.datePosted}
-                                </Typography>
-                              </Box>
+                              </Grid>
+                              <Grid
+                                item
+                                sx={{ display: "flex", alignItems: "center" }}
+                              >
+                                <Rating
+                                  name="read-only"
+                                  readOnly
+                                  value={data.stars}
+                                />
+                              </Grid>
+                              <Grid item>
+                                <Typography>{data.content}</Typography>
+                              </Grid>
                             </Grid>
-                            <Grid
-                              item
-                              sx={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Rating
-                                name="read-only"
-                                readOnly
-                                value={data.stars}
-                              />
-                            </Grid>
-                            <Grid item>
-                              <Typography>{data.content}</Typography>
-                            </Grid>
-                          </Grid>
-                        </>
-                      );
-                    })}
+                          </>
+                        );
+                      })
+                    ) : (
+                      <Box sx={{ my: 2, display: "flex", justifyContent: "center" }}>
+                        <Typography>No reviews for this school yet!</Typography>
+                      </Box>
+                    )}
                   </Box>
                 </TabPanel>
 
@@ -1120,6 +1178,7 @@ class InfoCard extends Component {
             verified={this.state.verified}
           />
         )}
+
         {/* SNACKBARS THEIR POSITIONS DONT MATTER SO IM PUTTING THEM OUT HERE */}
         <Snackbar
           open={this.state.snackbarOpen}
@@ -1140,6 +1199,136 @@ class InfoCard extends Component {
             Saved school!
           </Alert>
         </Snackbar>
+
+        {/* Directions card idk how this will show on click yet */}
+        {this.state.directionsOpen && (
+          <Card
+            sx={{
+              maxWidth: { xs: "100vw", sm: 400, md: 400 },
+              maxHeight: "100%",
+              zIndex: 1000,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: "100%",
+              width: "clamp(320px, calc(100vw-90%), 100%)",
+              overflowY: "auto",
+            }}
+            directionsOpen={this.state.directionsOpen}
+          >
+            <CardContent>
+              <IconButton onClick={this.handleDirectionsClose}>
+                <CloseIcon />
+              </IconButton>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  mt: 3,
+                }}
+              >
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  justifyContent="space-around"
+                >
+                  <Tooltip title="Driving">
+                    <IconButton>
+                      <DirectionsCarIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Tranist">
+                    <IconButton>
+                      <DirectionsSubwayIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Walking">
+                    <IconButton>
+                      <DirectionsWalkIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Cycling">
+                    <IconButton>
+                      <DirectionsBikeIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+
+                <Box>
+                  <Autocomplete>
+                    <Paper
+                      component="form"
+                      sx={{
+                        p: {
+                          md: "2px 4px",
+                        },
+                        display: "flex",
+                        alignItems: "center",
+                        width: {
+                          xs: 340,
+                          md: 350,
+                        },
+                        mt: { xs: 1, sm: 1, md: 1 },
+                        outline: "1px solid",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Choose a starting point, or click on the map"
+                        inputProps={{ "aria-label": "search google maps" }}
+                        onChange={(e) => {
+                          this.setOrigin(e.target.value);
+                        }}
+                      />
+                    </Paper>
+                  </Autocomplete>
+                </Box>
+
+                <Box>
+                  <Autocomplete types={"secondary_school"}>
+                    <Paper
+                      component="form"
+                      sx={{
+                        p: {
+                          md: "2px 4px",
+                        },
+                        display: "flex",
+                        alignItems: "center",
+                        width: {
+                          xs: 340,
+                          md: 350,
+                        },
+                        mt: { xs: 1, sm: 1, md: 1 },
+                        p: 1,
+                        outline: "1px solid",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder={this.props.school.school_name}
+                        inputProps={{ "aria-label": "search google maps" }}
+                        defaultValue=""
+                        onChange={(e) => {
+                          this.setDestination(e.target.value);
+                        }}
+                      />
+                    </Paper>
+                  </Autocomplete>
+                </Box>
+                <Button
+                  variant="contained"
+                  onClick={this.handleDirectionsSubmit}
+                >
+                  Get Directions
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
       </>
     );
   }

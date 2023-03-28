@@ -1,9 +1,21 @@
-import { Box, Paper, Rating, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Paper,
+  Rating,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, doc, getDoc, query, where } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../../config/firebase";
 import Avatar from "@mui/material/Avatar";
+
+import EditIcon from "@mui/icons-material/Edit";
+
+import ReviewsModal from "../ReviewsModal";
 
 export default function ProfileView() {
   const [username, setUsername] = React.useState("");
@@ -33,7 +45,6 @@ export default function ProfileView() {
       }
     });
   }, []);
-
   return (
     <Box
       sx={{
@@ -110,51 +121,64 @@ export default function ProfileView() {
   );
 }
 
-const ReviewCard = ({ content, school, stars, datePosted }) => {
+const ReviewCard = ({
+  content,
+  school,
+  stars,
+  datePosted,
+  role,
+  verified,
+  user,
+}) => {
   return (
-    <Box sx={{ my: 5 }}>
-      <Paper sx={{ borderRadius: "0.5rem" }} elevation={5}>
-        <Box
-          sx={{
-            background: `no-repeat center`,
-            backgroundSize: "cover",
-            height: "5rem",
-            borderRadius: "0.5rem 0.5rem 0 0",
-          }}
-          className={"alt-school-banner"}
-        />
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Box sx={{ mx: 1 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: "1.25rem", md: "1.5rem" },
-                }}
-              >
-                {school}
-              </Typography>
-              <Typography
-                sx={{
-                  color: "grey",
-                  fontSize: "1.25rem"
-                }}
-              >
-                {datePosted}
-              </Typography>
+    <>
+      <Box sx={{ my: 5 }}>
+        <Paper sx={{ borderRadius: "0.5rem" }} elevation={5}>
+          <Box
+            sx={{
+              background: `no-repeat center`,
+              backgroundSize: "cover",
+              height: "5rem",
+              borderRadius: "0.5rem 0.5rem 0 0",
+            }}
+            className={"alt-school-banner"}
+          />
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ mx: 1 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                  }}
+                >
+                  {school}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "grey",
+                    fontSize: "1.25rem",
+                  }}
+                >
+                  {datePosted}
+                </Typography>
+              </Box>
+              <Rating value={stars} readOnly />
             </Box>
-            <Rating value={stars} readOnly />
+            <Typography sx={{ m: 1 }}>{content}</Typography>
           </Box>
-          <Typography sx={{ m: 1 }}>{content}</Typography>
-        </Box>
-      </Paper>
-    </Box>
+          <IconButton sx={{ width: "100%", borderRadius: 0 }}>
+            <EditIcon />
+          </IconButton>
+        </Paper>
+      </Box>
+    </>
   );
 };
 
 const SavedSchool = ({ schoolName }) => {
   return (
-    <Box sx={{ my: { xs: 2 }, borderRadius: "1rem" }}>
+    <Box sx={{ my: 5, borderRadius: "1rem" }}>
       <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography

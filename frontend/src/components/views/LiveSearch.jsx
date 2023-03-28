@@ -13,7 +13,7 @@ function LiveSearch() {
       sx={{
         justifyContent: "center",
         alignItems: "center",
-        width: 300,
+        width: 100,
         margin: "auto",
       }}
     >
@@ -21,7 +21,7 @@ function LiveSearch() {
         id="school_names_test"
         getOptionLabel={(Schools) => `${Schools.school_name}`}
         options={Schools}
-        sx={{ width: 500 }}
+        sx={{ width: {xs: 320, sm: 450, md: 500} }}
         isOptionEqualToValue={(option, value) =>
           option.school_name == value.school_name
         }
