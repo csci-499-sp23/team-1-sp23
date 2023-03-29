@@ -1,3 +1,4 @@
+//MUI IMPORTS
 import React, { Component } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -18,10 +19,11 @@ import Rating from "@mui/material/Rating";
 import Avatar from "@mui/material/Avatar";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { Autocomplete } from "@react-google-maps/api";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -36,10 +38,13 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import DirectionsSubwayIcon from "@mui/icons-material/DirectionsSubway";
 import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
 import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
 
+import { Autocomplete, useJsApiLoader   } from "@react-google-maps/api";
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -51,7 +56,6 @@ import {
   arrayUnion,
   onSnapshot,
 } from "firebase/firestore";
-import { Stack } from "@mui/system";
 
 const urlFix = (url) => {
   return url
@@ -84,10 +88,13 @@ class InfoCard extends Component {
       snackbarSuccessOpen: false,
       currentSchoolRatingAvg: [],
       directionsOpen: false,
+      directionError: false,
       origin: "",
       destination: "",
       travelMode: "DRIVING",
     };
+    this.autocomplete = null
+    this.onPlaceChanged = this.onPlaceChanged.bind(this)
   }
 
   setReviewData = (data) => {};
@@ -221,6 +228,7 @@ class InfoCard extends Component {
     this.setState({
       snackbarOpen: false,
       snackbarSuccessOpen: false,
+      directionError: false,
     });
   };
 
@@ -253,14 +261,28 @@ class InfoCard extends Component {
       destination: destination,
     });
   };
+  
+  setDirectionsError = () => {
+    this.setState({
+      directionError: true,
+    });
+  }; 
+
+  handleModeChange = (e, mode) => {
+    console.log(this.state.travelMode)
+    this.setState({
+      travelMode: mode
+    })
+  }
 
   handleDirectionsSubmit = () => {
-    this.props.onDirectionsSubmit(
-      this.state.origin,
-      this.state.destination,
-      this.state.travelMode
-    );
-  };
+    if(this.state.origin != "" && this.state.destination != "" && this.state.travelMode != null) {
+      this.props.onDirectionsSubmit(this.state.origin, this.state.destination, this.state.travelMode)
+    }
+    else {
+      this.setDirectionsError()
+    }
+  }
 
   openDirections = () => {
     this.setState({
@@ -270,10 +292,28 @@ class InfoCard extends Component {
 
   handleDirectionsClose = () => {
     this.setState({
-      directionsOpen: false,
-    });
-    this.props.closeDirections(false);
-  };
+      directionsOpen: false
+    })
+    this.props.closeDirections(false)
+  }
+
+  onPlaceChanged () {
+    if(this.autocomplete !== null) {
+      console.log(this.autocomplete.getPlace())
+    }
+    else {
+      console.log("Not complete yet")
+    }
+  }
+
+  profileOpen () {
+    
+  }
+  
+  
+  compareOpen () {
+    
+  }
 
   render() {
     return (
@@ -287,7 +327,7 @@ class InfoCard extends Component {
             top: 0,
             left: 0,
             height: "100%",
-            width: "clamp(320px, calc(100vw-90%), 100%)",
+            width: "100%",
             overflowY: "auto",
           }}
         >
@@ -338,13 +378,33 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Box>
-                    <IconButton size="large" onClick={this.handleSave}>
-                      <BookmarkBorderIcon />
-                    </IconButton>
-                    <IconButton size="large" onClick={this.openDirections}>
-                      <DirectionsIcon />
-                    </IconButton>
+                  <Box sx={{
+                    display: "flex",
+                    justifyContent: "space-around"
+                  }}>
+                    <Tooltip title="Bookmark">
+                      <IconButton size="large" onClick={this.handleSave}>
+                        <BookmarkBorderIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Directions">
+                      <IconButton size="large" onClick={this.openDirections}>
+                        <DirectionsIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Compare">
+                      <IconButton size="large" onClick={this.compareOpen}>
+                        <CompareArrowsIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Profile">
+                      <IconButton size="large" onClick={this.profileOpen}>
+                        <BarChartIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                   <Divider
                     sx={{
@@ -353,7 +413,7 @@ class InfoCard extends Component {
                     }}
                   />
 
-                  {/* START OF OVERVIEW TAB 
+{/* START OF OVERVIEW TAB 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -700,9 +760,9 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Grid container spacing={1}>
-                    <Grid xs={8} item>
-                      <Box
+                  <Grid container spacing={1} justifyContent="center">
+                    <Grid xs={12} item>
+                      <Grid
                         item
                         display="flex"
                         flexDirection="row"
@@ -721,7 +781,7 @@ class InfoCard extends Component {
                             },
                           }}
                         />
-                      </Box>
+                      </Grid>
                       <Box
                         display="flex"
                         flexDirection="row"
@@ -1181,9 +1241,21 @@ class InfoCard extends Component {
 
         {/* SNACKBARS THEIR POSITIONS DONT MATTER SO IM PUTTING THEM OUT HERE */}
         <Snackbar
+          open={this.state.directionError}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+          sx={{zIndex: 10000}}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="error">
+            You need to select an origin and destination!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
           open={this.state.snackbarOpen}
           autoHideDuration={2000}
           onClose={this.handleSnackbarClose}
+          sx={{zIndex: 10000}}
         >
           <Alert onClose={this.handleSnackbarClose} severity="warning">
             You need to be logged in to do that!
@@ -1201,134 +1273,115 @@ class InfoCard extends Component {
         </Snackbar>
 
         {/* Directions card idk how this will show on click yet */}
-        {this.state.directionsOpen && (
-          <Card
-            sx={{
-              maxWidth: { xs: "100vw", sm: 400, md: 400 },
-              maxHeight: "100%",
-              zIndex: 1000,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: "100%",
-              width: "clamp(320px, calc(100vw-90%), 100%)",
-              overflowY: "auto",
-            }}
-            directionsOpen={this.state.directionsOpen}
-          >
-            <CardContent>
-              <IconButton onClick={this.handleDirectionsClose}>
-                <CloseIcon />
-              </IconButton>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  mt: 3,
-                }}
-              >
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  justifyContent="space-around"
-                >
+        {this.state.directionsOpen && <Card
+          sx={{
+            maxWidth: { xs: "100vw", sm: 400, md: 400 },
+            maxHeight: "100%",
+            zIndex: 999,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "100%",
+            overflowY: "auto",
+          }}
+          directionsOpen={this.state.directionsOpen}
+        >
+          <CardContent>
+            <IconButton onClick={this.handleDirectionsClose}>
+              <CloseIcon />
+            </IconButton>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                mt: 3,
+
+              }}
+            >
+              <ToggleButtonGroup value={this.state.travelMode} exclusive onChange={this.handleModeChange} fullWidth>
+                <ToggleButton value="DRIVING">
                   <Tooltip title="Driving">
-                    <IconButton>
-                      <DirectionsCarIcon />
-                    </IconButton>
+                    <DirectionsCarIcon />
                   </Tooltip>
-
-                  <Tooltip title="Tranist">
-                    <IconButton>
-                      <DirectionsSubwayIcon />
-                    </IconButton>
+                </ToggleButton>
+                <ToggleButton value="TRANSIT">
+                  <Tooltip title="Transit">
+                    <DirectionsSubwayIcon />
                   </Tooltip>
-
+                </ToggleButton>
+                <ToggleButton value="WALKING">
                   <Tooltip title="Walking">
-                    <IconButton>
-                      <DirectionsWalkIcon />
-                    </IconButton>
+                    <DirectionsWalkIcon />
                   </Tooltip>
-
-                  <Tooltip title="Cycling">
-                    <IconButton>
-                      <DirectionsBikeIcon />
-                    </IconButton>
+                </ToggleButton>
+                <ToggleButton value="BICYCLING">
+                  <Tooltip title="bicycling">
+                    <DirectionsBikeIcon />
                   </Tooltip>
-                </Stack>
+                </ToggleButton>
+              </ToggleButtonGroup>
 
-                <Box>
-                  <Autocomplete>
-                    <Paper
-                      component="form"
-                      sx={{
-                        p: {
-                          md: "2px 4px",
-                        },
-                        display: "flex",
-                        alignItems: "center",
-                        width: {
-                          xs: 340,
-                          md: 350,
-                        },
-                        mt: { xs: 1, sm: 1, md: 1 },
-                        outline: "1px solid",
+              <Box sx={{mt:5}}>
+                <Autocomplete>
+                  <Paper
+                    component="form"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mt: { xs: 1, sm: 1, md: 1 },
+                      p: 1,
+                      outline: "1px solid"
+                    }}
+                  >
+                    <InputBase
+                      sx={{ ml: 1, flex: 1, }}
+                      placeholder="Choose a starting point, or click on the map"
+                      inputProps={{ "aria-label": "search google maps" }}
+                      onChange={(e) => {
+                        this.setOrigin(e.target.value)
                       }}
-                    >
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Choose a starting point, or click on the map"
-                        inputProps={{ "aria-label": "search google maps" }}
-                        onChange={(e) => {
-                          this.setOrigin(e.target.value);
-                        }}
-                      />
-                    </Paper>
-                  </Autocomplete>
-                </Box>
+                    />
 
-                <Box>
-                  <Autocomplete types={"secondary_school"}>
-                    <Paper
-                      component="form"
-                      sx={{
-                        p: {
-                          md: "2px 4px",
-                        },
-                        display: "flex",
-                        alignItems: "center",
-                        width: {
-                          xs: 340,
-                          md: 350,
-                        },
-                        mt: { xs: 1, sm: 1, md: 1 },
-                        p: 1,
-                        outline: "1px solid",
-                      }}
-                    >
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder={this.props.school.school_name}
-                        inputProps={{ "aria-label": "search google maps" }}
-                        defaultValue=""
-                        onChange={(e) => {
-                          this.setDestination(e.target.value);
-                        }}
-                      />
-                    </Paper>
-                  </Autocomplete>
-                </Box>
-                <Button
-                  variant="contained"
-                  onClick={this.handleDirectionsSubmit}
-                >
-                  Get Directions
-                </Button>
+                  </Paper>
+                </Autocomplete>
               </Box>
-            </CardContent>
-          </Card>
-        )}
+
+              <Box  sx={{mt:2}}>
+                <Autocomplete types={"secondary_school"}>
+                  <Paper
+                    component="form"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mt: { xs: 1, sm: 1, md: 1 },
+                      p: 1,
+                      outline: "1px solid"
+                    }}
+                  >
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder={this.props.school.school_name}
+                      inputProps={{ "aria-label": "search google maps" }}
+                      defaultValue=""
+                      onChange={(e) => {
+                        this.setDestination(e.target.value)
+                      }}
+                    />
+                  </Paper>
+                </Autocomplete>
+              </Box>
+              <Button sx={{mt:2}} variant="contained" onClick={this.handleDirectionsSubmit}>Get Directions</Button>
+              <Box sx={{mt:2}}>
+                <Typography variant="body1">Distance: {this.props.distance}</Typography>
+                <Typography variant="body1">Commute Time: {this.props.duration}</Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+        }
+        
       </>
     );
   }
