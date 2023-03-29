@@ -38,6 +38,8 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import DirectionsSubwayIcon from "@mui/icons-material/DirectionsSubway";
 import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
 import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -303,7 +305,15 @@ class InfoCard extends Component {
       console.log("Not complete yet")
     }
   }
+
+  profileOpen () {
+    
+  }
   
+  
+  compareOpen () {
+    
+  }
 
   render() {
     return (
@@ -368,13 +378,33 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Box>
-                    <IconButton size="large" onClick={this.handleSave}>
-                      <BookmarkBorderIcon />
-                    </IconButton>
-                    <IconButton size="large" onClick={this.openDirections}>
-                      <DirectionsIcon />
-                    </IconButton>
+                  <Box sx={{
+                    display: "flex",
+                    justifyContent: "space-around"
+                  }}>
+                    <Tooltip title="Bookmark">
+                      <IconButton size="large" onClick={this.handleSave}>
+                        <BookmarkBorderIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Directions">
+                      <IconButton size="large" onClick={this.openDirections}>
+                        <DirectionsIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Compare">
+                      <IconButton size="large" onClick={this.compareOpen}>
+                        <CompareArrowsIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Profile">
+                      <IconButton size="large" onClick={this.profileOpen}>
+                        <BarChartIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                   <Divider
                     sx={{

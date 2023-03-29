@@ -138,9 +138,13 @@ class Map extends Component {
 
   }
 
+  handleComparison = () => {
+
+  }
+
   render() {
     return (
-      <LoadScript googleMapsApiKey="AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI" libraries={lib}>
+      <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
@@ -327,6 +331,24 @@ class Map extends Component {
               distance={this.state.distance}
               duration={this.state.time}
               places={lib}
+            />
+          )}
+          
+           {this.state.card && (
+            <InfoCard
+              school={this.state.school}
+              key={this.state.school}
+              onDirectionsSubmit={this.handleDirections}
+              closeDirections={this.handleClose}
+              distance={this.state.distance}
+              duration={this.state.time}
+              places={lib}
+              position={"right: 500"}
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 500
+              }}
             />
           )}
         </GoogleMap>
