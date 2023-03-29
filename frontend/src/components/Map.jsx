@@ -21,8 +21,6 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 
-import schools from "../assets/schools.json";
-
 import InfoCard from "./Card";
 import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
@@ -53,6 +51,7 @@ class Map extends Component {
   constructor() {
     super();
     this.state = {
+      schools: [],
       card: false,
       school: null,
       drawer: false,
@@ -64,6 +63,15 @@ class Map extends Component {
     };
 
     this.directionsCallback = this.directionsCallback.bind(this)
+  }
+
+  componentDidMount() {
+    fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ schools: data });
+      })
+      .catch((error) => console.log(error));
   }
   
   showCard = (bool, obj) => {
@@ -143,6 +151,7 @@ class Map extends Component {
   }
 
   render() {
+    const { schools } = this.state;
     return (
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
