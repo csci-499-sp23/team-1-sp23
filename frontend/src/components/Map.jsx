@@ -69,10 +69,7 @@ class Map extends Component {
       directionsRenderer: true,
       activeFilters: [...boroughs],
     };
-    this.autocomplete = null
 
-    this.onLoad = this.onLoad.bind(this)
-    this.onPlaceChanged = this.onPlaceChanged.bind(this)
     this.directionsCallback = this.directionsCallback.bind(this)
   }
 
@@ -99,6 +96,7 @@ class Map extends Component {
     }else{
       activeFilters.push(borough);
     }
+    this.setState({ activeFilters, selectedBorough: borough });
   }
 
   openDrawer = (bool) => {
@@ -106,22 +104,32 @@ class Map extends Component {
       drawer: bool,
     });
   };
+  
+  // calculateRoute = async () => {
+  //   if (this.state.origin === "" || this.state.destination === "") {
+  //     console.log("failed route")
+  //     return
+  //   }
 
-  onPlaceChanged () {
-    if (this.autocomplete !== null) {
-      console.log(this.autocomplete.getPlace())
-    } else {
-      console.log('Autocomplete is not loaded yet!')
-    }
-  }
+  //   const directionsService = new google.maps.DirectionsService()
+
+  //   const results = await directionsService.route({
+  //     origin: this.state.origin,
+  //     destination: this.state.destination,
+  //     // eslint-disable-next-line no-undef
+  //     travelMode: this.state.travelMode,
+  //   })
+  //   console.log(results)
+  //   this.setState({
+  //     response: results
+  //   })
+  // }
 
   directionsCallback(response) {
     if (response !== null) {
       if (response.status === 'OK') {
         this.setState({
-            response: response,
-            distance: response.routes[0].legs[0].distance.text,
-            time: response.routes[0].legs[0].duration.text,
+            response: response
           })
       } else {
         console.log('response: ', response)
@@ -193,6 +201,7 @@ class Map extends Component {
                 // required
                 options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
                   directions: this.state.response
+
                 }}
                 // optional
                 onLoad={directionsRenderer => {
@@ -222,12 +231,10 @@ class Map extends Component {
                     maxWidth: "100%"
                   }}
                 >
-                  <Autocomplete onLoad={this.onLoad}
-                    onPlaceChanged={this.onPlaceChanged}>
+                  <Autocomplete>
                     <Paper
                       component="form"
                       sx={{
-                        
                         p: {
                           md: "2px 4px",
                         },
@@ -257,7 +264,6 @@ class Map extends Component {
                         type="button"
                         sx={{ p: "10px" }}
                         aria-label="search"
-                        onClick={this.handleSearch}
                       >
                         <SearchIcon />
                       </IconButton>
@@ -354,9 +360,6 @@ class Map extends Component {
               key={this.state.school + "2031"}
               onDirectionsSubmit={this.handleDirections}
               closeDirections={this.handleClose}
-              distance={this.state.distance}
-              duration={this.state.time}
-              places={lib}
             />
           )}
         </GoogleMap>
