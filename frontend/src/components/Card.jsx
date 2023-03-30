@@ -43,6 +43,7 @@ import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
+import Stats from "./Stats"
 
 import { Autocomplete, useJsApiLoader   } from "@react-google-maps/api";
 import { auth, db } from "../config/firebase";
@@ -85,10 +86,12 @@ class InfoCard extends Component {
       verified: null,
       currSchool: "",
       snackbarOpen: false,
-      snackbarSuccessOpen: false,
-      currentSchoolRatingAvg: [],
+      snackbarSuccessOpen: false,      
       directionsOpen: false,
       directionError: false,
+      profile: false,
+      compareInfo: false,
+      currentSchoolRatingAvg: [],
       origin: "",
       destination: "",
       travelMode: "DRIVING",
@@ -96,8 +99,6 @@ class InfoCard extends Component {
     this.autocomplete = null
     this.onPlaceChanged = this.onPlaceChanged.bind(this)
   }
-
-  setReviewData = (data) => {};
 
   setReviewData = (data, stars) => {
     this.setState(() => ({
@@ -221,6 +222,12 @@ class InfoCard extends Component {
     });
   };
 
+  handleCompareInfoOpen = () => {
+    this.setState({
+      compareInfo: true,
+    });
+  };
+
   handleSnackbarClose = (e, reason) => {
     if (reason === "clickaway") {
       return;
@@ -229,6 +236,7 @@ class InfoCard extends Component {
       snackbarOpen: false,
       snackbarSuccessOpen: false,
       directionError: false,
+      compareInfo: false
     });
   };
 
@@ -306,13 +314,16 @@ class InfoCard extends Component {
     }
   }
 
-  profileOpen () {
-    
+  profileOpen = () => {
+    this.setState({
+      profile: true
+    })
   }
   
-  
-  compareOpen () {
-    
+  compareOpen = () => {
+    this.setState({
+      compareInfo: true
+    })
   }
 
   render() {
@@ -1228,6 +1239,7 @@ class InfoCard extends Component {
             <Button size="small">Learn More</Button>
           </CardActions>
         </Card>
+        {this.state.profile && <Stats school={this.props.school.dbn} schoolName={this.props.school.school_name}/>}
         {this.state.modal && (
           <ReviewsModal
             name={this.props.school.school_name}
@@ -1271,6 +1283,17 @@ class InfoCard extends Component {
             Saved school!
           </Alert>
         </Snackbar>
+
+        <Snackbar
+          open={this.state.compareInfo}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="info">
+            Click on another marker to compare schools
+          </Alert>
+        </Snackbar>
+        
 
         {/* Directions card idk how this will show on click yet */}
         {this.state.directionsOpen && <Card
@@ -1381,7 +1404,6 @@ class InfoCard extends Component {
           </CardContent>
         </Card>
         }
-        
       </>
     );
   }
