@@ -21,8 +21,6 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 
-import schools from "../assets/schools.json";
-
 import InfoCard from "./Card";
 import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
@@ -39,13 +37,20 @@ const center = {
 };
 
 const boroughs = [
-  "Queens",
-  "Manhattan",
-  "Bronx",
-  "Brooklyn",
-  "Staten Island",
-  "More Filters",
+  "Q",
+  "M",
+  "X",
+  "K",
+  "R",
 ];
+
+const boroughNames = {
+  Q: "Queens",
+  M: "Manhattan",
+  X: "Bronx",
+  K: "Brooklyn",
+  R: "Staten Island",
+};
 
 const lib = ["places"];
 
@@ -53,6 +58,7 @@ class Map extends Component {
   constructor() {
     super();
     this.state = {
+      schools: [],
       card: false,
       school: null,
       drawer: false,
@@ -60,10 +66,20 @@ class Map extends Component {
       destination: "",
       travelMode: "DRIVING",
       response: null,
-      directionsRenderer: true
+      directionsRenderer: true,
+      activeFilters: [...boroughs],
     };
 
     this.directionsCallback = this.directionsCallback.bind(this)
+  }
+
+  componentDidMount() {
+    fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ schools: data });
+      })
+      .catch((error) => console.log(error));
   }
   
   showCard = (bool, obj) => {
@@ -74,20 +90,13 @@ class Map extends Component {
   };
 
   handleFilter(borough) {
-    switch (borough) {
-      case "Queens":
-        break;
-      case "Manhattan":
-        break;
-      case "Bronx":
-        break;
-      case "Brooklyn":
-        break;
-      case "Staten Island":
-        break;
-      default:
-        break;
+    let activeFilters = [...this.state.activeFilters];
+    if(activeFilters.includes(borough)){
+      activeFilters = activeFilters.filter((filter) => filter !== borough);
+    }else{
+      activeFilters.push(borough);
     }
+    this.setState({ activeFilters, selectedBorough: borough });
   }
 
   openDrawer = (bool) => {
@@ -141,8 +150,10 @@ class Map extends Component {
       directionsRenderer: bool
     })
   }
-
   render() {
+    const { schools, activeFilters } = this.state;
+    const schoolsFiltered = schools.filter(school => activeFilters.includes(school.borocode));
+
     return (
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
@@ -295,29 +306,43 @@ class Map extends Component {
                     }}
                   >
                     <Stack direction="row" spacing={2} sx={{ overflow: 'auto'}}>
-                      {boroughs.map((borough) => {
-                        return (
-                          <Chip
-                            label={borough}
-                            key={borough}
-                            sx={{
-                              backgroundColor: "#F8F9FA",
-                              color: "#1E1E1E",
-                              fontWeight: 500,
-                              padding: "2px 6px 2px 6px",
-                              cursor: "pointer",
-                            }}
-                            onClick={this.handleFilter(borough)}
-                          />
-                        );
-                      })}
+                      {boroughs.map((borough) => (
+                        <Chip 
+                          key={borough}
+                          label={boroughNames[borough]}
+                          variant={
+                            this.state.activeFilters.includes(borough) ? "filled" : "outlined"
+                          }
+                          onClick={() => this.handleFilter(borough)}
+                          sx={{ 
+                            mr: 2, 
+                            mb: 2,
+                            backgroundColor: this.state.activeFilters.includes(borough) ? "#2b2d42" : "#F8F9FA",
+                            color: this.state.activeFilters.includes(borough) ? "#FFFFFF" : "#1E1E1E",
+                            fontWeight: 500,
+                            padding: "2px 6px 2px 6px",
+                            cursor: "pointer"
+                          }}
+                        />
+                      ))}
                     </Stack>
                   </Box>
                 </Stack>
               </Toolbar>
             </AppBar>
           </Box>
-          {schools.map((school, key) => {
+          {schoolsFiltered.map((school, key) => (
+            <Marker
+              key={key}
+              position={{
+                lat: Number(school.latitude),
+                lng: Number(school.longitude),
+              }}
+              onClick={() => this.showCard(true, school)}
+            />
+          ))}
+
+          {/*schools.map((school, key) => {
             return (
               <Marker
                 key={key}
@@ -328,7 +353,7 @@ class Map extends Component {
                 }}
               ></Marker>
             );
-          })}
+          })*/}
           {this.state.card && (
             <InfoCard
               school={this.state.school}
