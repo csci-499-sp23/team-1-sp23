@@ -26,6 +26,8 @@ import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
 import { mK } from "../config/environment";
 
+import Button from "@mui/material/Button";
+
 const containerStyle = {
   width: "100%",
   height: "100%",
@@ -59,7 +61,8 @@ class Map extends Component {
       destination: "",
       travelMode: "DRIVING",
       response: null,
-      directionsRenderer: true
+      directionsRenderer: true,
+      activeFilters: [...boroughs]
     };
 
     this.directionsCallback = this.directionsCallback.bind(this)
@@ -82,20 +85,13 @@ class Map extends Component {
   };
 
   handleFilter(borough) {
-    switch (borough) {
-      case "Queens":
-        break;
-      case "Manhattan":
-        break;
-      case "Bronx":
-        break;
-      case "Brooklyn":
-        break;
-      case "Staten Island":
-        break;
-      default:
-        break;
+    let activeFilters = [...this.state.activeFilters];
+    if(activeFilters.includes(borough)){
+      activeFilters = activeFilters.filter((filter) => filter !== borough);
+    }else{
+      activeFilters.push(borough);
     }
+    this.setState({ activeFilters });
   }
 
   openDrawer = (bool) => {
@@ -149,7 +145,6 @@ class Map extends Component {
       directionsRenderer: bool
     })
   }
-
   render() {
     const { schools } = this.state;
     return (
@@ -304,22 +299,25 @@ class Map extends Component {
                     }}
                   >
                     <Stack direction="row" spacing={2} sx={{ overflow: 'auto'}}>
-                      {boroughs.map((borough) => {
-                        return (
-                          <Chip
-                            label={borough}
-                            key={borough}
-                            sx={{
-                              backgroundColor: "#F8F9FA",
-                              color: "#1E1E1E",
-                              fontWeight: 500,
-                              padding: "2px 6px 2px 6px",
-                              cursor: "pointer",
-                            }}
-                            onClick={this.handleFilter(borough)}
-                          />
-                        );
-                      })}
+                      {boroughs.map((borough) => (
+                        <Chip 
+                          key={borough}
+                          label={borough}
+                          variant={
+                            this.state.activeFilters.includes(borough) ? "filled" : "outlined"
+                          }
+                          onClick={() => this.handleFilter(borough)}
+                          sx={{ 
+                            mr: 2, 
+                            mb: 2,
+                            backgroundColor: this.state.activeFilters.includes(borough) ? "#2b2d42" : "#F8F9FA",
+                            color: this.state.activeFilters.includes(borough) ? "#FFFFFF" : "#1E1E1E",
+                            fontWeight: 500,
+                            padding: "2px 6px 2px 6px",
+                            cursor: "pointer"
+                          }}
+                        />
+                      ))}
                     </Stack>
                   </Box>
                 </Stack>
