@@ -26,8 +26,6 @@ import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
 import { mK } from "../config/environment";
 
-import Button from "@mui/material/Button";
-
 const containerStyle = {
   width: "100%",
   height: "100%",
@@ -39,13 +37,20 @@ const center = {
 };
 
 const boroughs = [
-  "Queens",
-  "Manhattan",
-  "Bronx",
-  "Brooklyn",
-  "Staten Island",
-  "More Filters",
+  "Q",
+  "M",
+  "X",
+  "K",
+  "R",
 ];
+
+const boroughNames = {
+  Q: "Queens",
+  M: "Manhattan",
+  X: "Bronx",
+  K: "Brooklyn",
+  R: "Staten Island",
+};
 
 const lib = ["places"];
 
@@ -62,7 +67,7 @@ class Map extends Component {
       travelMode: "DRIVING",
       response: null,
       directionsRenderer: true,
-      activeFilters: [...boroughs]
+      activeFilters: [...boroughs],
     };
 
     this.directionsCallback = this.directionsCallback.bind(this)
@@ -91,7 +96,7 @@ class Map extends Component {
     }else{
       activeFilters.push(borough);
     }
-    this.setState({ activeFilters });
+    this.setState({ activeFilters, selectedBorough: borough });
   }
 
   openDrawer = (bool) => {
@@ -146,7 +151,9 @@ class Map extends Component {
     })
   }
   render() {
-    const { schools } = this.state;
+    const { schools, activeFilters } = this.state;
+    const schoolsFiltered = schools.filter(school => activeFilters.includes(school.borocode));
+
     return (
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
@@ -302,7 +309,7 @@ class Map extends Component {
                       {boroughs.map((borough) => (
                         <Chip 
                           key={borough}
-                          label={borough}
+                          label={boroughNames[borough]}
                           variant={
                             this.state.activeFilters.includes(borough) ? "filled" : "outlined"
                           }
@@ -324,7 +331,18 @@ class Map extends Component {
               </Toolbar>
             </AppBar>
           </Box>
-          {schools.map((school, key) => {
+          {schoolsFiltered.map((school, key) => (
+            <Marker
+              key={key}
+              position={{
+                lat: Number(school.latitude),
+                lng: Number(school.longitude),
+              }}
+              onClick={() => this.showCard(true, school)}
+            />
+          ))}
+
+          {/*schools.map((school, key) => {
             return (
               <Marker
                 key={key}
@@ -335,7 +353,7 @@ class Map extends Component {
                 }}
               ></Marker>
             );
-          })}
+          })*/}
           {this.state.card && (
             <InfoCard
               school={this.state.school}
