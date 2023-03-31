@@ -9,6 +9,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import LiveSearch from "./LiveSearch";
+import Link from "@mui/material/Link"
 import {
   FooterBox,
   Container,
@@ -135,12 +136,9 @@ export default function HomepageView() {
           <Row>
             <Column>
               <Heading>Queens</Heading>
-              <FooterLink href="#"></FooterLink>
-              <FooterLink href="#"></FooterLink>
-              <FooterLink href="#"></FooterLink>
               {filteredArr.map((school, key) => {
                 if (school.borocode === "Q") {
-                  return <p key={key}>{school.neighborhood}</p>;
+                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
                 }
               })}
             </Column>
@@ -148,7 +146,7 @@ export default function HomepageView() {
               <Heading>Brooklyn</Heading>
               {filteredArr.map((school, key) => {
                 if (school.borocode === "K") {
-                  return <p key={key}>{school.neighborhood}</p>;
+                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
                 }
               })}
             </Column>
@@ -156,7 +154,7 @@ export default function HomepageView() {
               <Heading>Bronx</Heading>
               {filteredArr.map((school, key) => {
                 if (school.borocode === "X") {
-                  return <p key={key}>{school.neighborhood}</p>;
+                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
                 }
               })}
             </Column>
@@ -164,7 +162,7 @@ export default function HomepageView() {
               <Heading>Manhattan</Heading>
               {filteredArr.map((school, key) => {
                 if (school.borocode === "M") {
-                  return <p key={key}>{school.neighborhood}</p>;
+                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
                 }
               })}
             </Column>
@@ -172,7 +170,7 @@ export default function HomepageView() {
               <Heading>Staten Island</Heading>
               {filteredArr.map((school, key) => {
                 if (school.borocode === "R") {
-                  return <p key={key}>{school.neighborhood}</p>;
+                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
                 }
               })}
             </Column>
