@@ -1239,7 +1239,7 @@ class InfoCard extends Component {
             <Button size="small">Learn More</Button>
           </CardActions>
         </Card>
-        {this.state.profile && <Stats school={this.props.school.dbn} schoolName={this.props.school.school_name}/>}
+        {this.state.profile && <Stats onClose={() => this.setState({ profile: false })} school={this.props.school.dbn} schoolName={this.props.school.school_name}/>}
         {this.state.modal && (
           <ReviewsModal
             name={this.props.school.school_name}

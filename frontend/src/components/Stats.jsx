@@ -160,6 +160,7 @@ class Stats extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            profile: true,
             selectedTab: 0,
             loaded: false,
             regentsData: [],
@@ -239,7 +240,8 @@ class Stats extends Component {
                         </Typography>
                         <IconButton sx={{
                             borderRadius: 0,
-                        }}>
+                        }}
+                        onClick={this.props.onClose}>
                             <CloseIcon />
                         </IconButton>
                     </Box>
