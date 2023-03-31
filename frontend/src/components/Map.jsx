@@ -316,13 +316,13 @@ class Map extends Component {
                           }
                           onClick={() => this.handleFilter(borough)}
                           sx={{ 
-                            mr: 2, 
-                            mb: 2,
+
                             backgroundColor: this.state.activeFilters.includes(borough) ? "#2b2d42" : "#F8F9FA",
                             color: this.state.activeFilters.includes(borough) ? "#FFFFFF" : "#1E1E1E",
                             fontWeight: 500,
                             padding: "2px 6px 2px 6px",
-                            cursor: "pointer"
+                            cursor: "pointer",
+                            alignItems: "center"
                           }}
                         />
                       ))}
