@@ -1,7 +1,6 @@
 import { describe, expect, it, test } from "vitest";
 import {render, screen} from '@testing-library/react';
 
-import Map from "../components/Map";
 import ReviewsModal from "../components/ReviewsModal";
 
 describe("should render ReviewsModal", () => {

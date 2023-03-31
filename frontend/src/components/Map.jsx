@@ -1,11 +1,5 @@
-import React, { Component, useState } from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  LoadScript,
-  DirectionsService,
-  DirectionsRenderer,
-} from "@react-google-maps/api";
+import React, { Component } from "react";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { Autocomplete } from "@react-google-maps/api";
 import { Marker } from "@react-google-maps/api";
 import Paper from "@mui/material/Paper";
@@ -20,11 +14,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
-
 import InfoCard from "./Card";
-import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
 import { mK } from "../config/environment";
+import Directions from "./Directions";
 
 const containerStyle = {
   width: "100%",
@@ -36,13 +29,7 @@ const center = {
   lng: -73.89347,
 };
 
-const boroughs = [
-  "Q",
-  "M",
-  "X",
-  "K",
-  "R",
-];
+const boroughs = ["Q", "M", "X", "K", "R"];
 
 const boroughNames = {
   Q: "Queens",
@@ -62,15 +49,17 @@ class Map extends Component {
       card: false,
       school: null,
       drawer: false,
-      origin: "",
-      destination: "",
-      travelMode: "DRIVING",
+      dirOpts: {
+        origin: "",
+        destination: "",
+        travelMode: "DRIVING",
+      },
       response: null,
       directionsRenderer: true,
       activeFilters: [...boroughs],
     };
 
-    this.directionsCallback = this.directionsCallback.bind(this)
+    this.directionsCallback = this.directionsCallback.bind(this);
   }
 
   componentDidMount() {
@@ -81,7 +70,7 @@ class Map extends Component {
       })
       .catch((error) => console.log(error));
   }
-  
+
   showCard = (bool, obj) => {
     this.setState({
       card: bool,
@@ -91,9 +80,9 @@ class Map extends Component {
 
   handleFilter(borough) {
     let activeFilters = [...this.state.activeFilters];
-    if(activeFilters.includes(borough)){
+    if (activeFilters.includes(borough)) {
       activeFilters = activeFilters.filter((filter) => filter !== borough);
-    }else{
+    } else {
       activeFilters.push(borough);
     }
     this.setState({ activeFilters, selectedBorough: borough });
@@ -104,55 +93,39 @@ class Map extends Component {
       drawer: bool,
     });
   };
-  
-  // calculateRoute = async () => {
-  //   if (this.state.origin === "" || this.state.destination === "") {
-  //     console.log("failed route")
-  //     return
-  //   }
-
-  //   const directionsService = new google.maps.DirectionsService()
-
-  //   const results = await directionsService.route({
-  //     origin: this.state.origin,
-  //     destination: this.state.destination,
-  //     // eslint-disable-next-line no-undef
-  //     travelMode: this.state.travelMode,
-  //   })
-  //   console.log(results)
-  //   this.setState({
-  //     response: results
-  //   })
-  // }
 
   directionsCallback(response) {
     if (response !== null) {
-      if (response.status === 'OK') {
+      if (response.status === "OK") {
         this.setState({
-            response: response
-          })
+          response: response,
+        });
       } else {
-        console.log('response: ', response)
+        console.log("response: ", response);
       }
     }
   }
 
-  handleDirections = (origin, destination, mode) => {
+  handleDirections = (type, val) => {
     this.setState({
-      origin: origin,
-      destination: destination,
-      travelMode: mode
-    })
-  }
+      dirOpts: {
+        ...this.state.dirOpts,
+        [type]: val,
+      },
+    });
+  };
 
   handleClose = (bool) => {
     this.setState({
-      directionsRenderer: bool
-    })
-  }
+      directionsRenderer: bool,
+    });
+  };
+
   render() {
     const { schools, activeFilters } = this.state;
-    const schoolsFiltered = schools.filter(school => activeFilters.includes(school.borocode));
+    const schoolsFiltered = schools.filter((school) =>
+      activeFilters.includes(school.borocode)
+    );
 
     return (
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
@@ -162,58 +135,17 @@ class Map extends Component {
           zoom={11}
           clickableIcons={false}
           onClick={this.showCard.bind(null, false)}
-          options= {{
+          options={{
             zoomControl: false,
             mapTypeControl: false,
             fullscreenControl: false,
           }}
-        > 
-          {
-            (
-              this.state.destination !== '' &&
-              this.state.origin !== '' && 
-              this.state.directionsRenderer == true
-            ) && (
-              <DirectionsService
-                // required
-                options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
-                  destination: this.state.destination,
-                  origin: this.state.origin,
-                  travelMode: this.state.travelMode
-                }}
-                // required
-                callback={this.directionsCallback}
-                // optional
-                onLoad={directionsService => {
-                  console.log('DirectionsService onLoad directionsService: ', directionsService)
-                }}
-                // optional
-                onUnmount={directionsService => {
-                  console.log('DirectionsService onUnmount directionsService: ', directionsService)
-                }}
-              />
-            )
-          }
-
-          {
-            (this.state.response !== null && this.state.directionsRenderer == true) && (
-              <DirectionsRenderer
-                // required
-                options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
-                  directions: this.state.response
-
-                }}
-                // optional
-                onLoad={directionsRenderer => {
-                  console.log('DirectionsRenderer onLoad directionsRenderer: ', directionsRenderer)
-                }}
-                // optional
-                onUnmount={directionsRenderer => {
-                  console.log('DirectionsRenderer onUnmount directionsRenderer: ', directionsRenderer)
-                }}
-              />
-            )
-          }
+        >
+          <Directions
+            destination={this.state.destination}
+            origin={this.state.origin}
+            travelMode={this.state.travelMode}
+          />
           {/* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -228,7 +160,7 @@ class Map extends Component {
                       xs: "flex-start",
                       md: "center",
                     },
-                    maxWidth: "100%"
+                    maxWidth: "100%",
                   }}
                 >
                   <Autocomplete>
@@ -302,26 +234,38 @@ class Map extends Component {
                         xs: 0,
                         md: 2,
                       },
-                      maxWidth: "100%"
+                      maxWidth: "100%",
                     }}
                   >
-                    <Stack direction="row" spacing={2} sx={{ overflow: 'auto'}}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{ overflow: "auto" }}
+                    >
                       {boroughs.map((borough) => (
-                        <Chip 
+                        <Chip
                           key={borough}
                           label={boroughNames[borough]}
                           variant={
-                            this.state.activeFilters.includes(borough) ? "filled" : "outlined"
+                            this.state.activeFilters.includes(borough)
+                              ? "filled"
+                              : "outlined"
                           }
                           onClick={() => this.handleFilter(borough)}
-                          sx={{ 
-                            mr: 2, 
+                          sx={{
+                            mr: 2,
                             mb: 2,
-                            backgroundColor: this.state.activeFilters.includes(borough) ? "#2b2d42" : "#F8F9FA",
-                            color: this.state.activeFilters.includes(borough) ? "#FFFFFF" : "#1E1E1E",
+                            backgroundColor: this.state.activeFilters.includes(
+                              borough
+                            )
+                              ? "#2b2d42"
+                              : "#F8F9FA",
+                            color: this.state.activeFilters.includes(borough)
+                              ? "#FFFFFF"
+                              : "#1E1E1E",
                             fontWeight: 500,
                             padding: "2px 6px 2px 6px",
-                            cursor: "pointer"
+                            cursor: "pointer",
                           }}
                         />
                       ))}
@@ -338,28 +282,19 @@ class Map extends Component {
                 lat: Number(school.latitude),
                 lng: Number(school.longitude),
               }}
-              onClick={() => this.showCard(true, school)}
+              onClick={() => {
+                this.showCard(true, school);
+                this.handleDirections("destination", school.school_name);
+              }}
             />
           ))}
-
-          {/*schools.map((school, key) => {
-            return (
-              <Marker
-                key={key}
-                onClick={this.showCard.bind(null, true, school)}
-                position={{
-                  lat: Number(school.latitude),
-                  lng: Number(school.longitude),
-                }}
-              ></Marker>
-            );
-          })*/}
           {this.state.card && (
             <InfoCard
               school={this.state.school}
               key={this.state.school + "2031"}
-              onDirectionsSubmit={this.handleDirections}
+              updateDirOpts={this.handleDirections}
               closeDirections={this.handleClose}
+              {...this.state.dirOpts}
             />
           )}
         </GoogleMap>
