@@ -172,7 +172,8 @@ class Map extends Component {
             (
               this.state.destination !== '' &&
               this.state.origin !== '' && 
-              this.state.directionsRenderer == true
+              this.state.directionsRenderer == true &&
+              this.state.card == true
             ) && (
               <DirectionsService
                 // required

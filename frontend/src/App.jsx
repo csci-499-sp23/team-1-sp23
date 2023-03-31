@@ -5,6 +5,7 @@ import {
   SignupContainer, 
   MapContainer, 
   ProfileContainer, 
+  NeighborhoodContainer,
 } from './components/containers'
 import './App.css'
 
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/login" element={<LoginContainer />} />
         <Route path="/map" element={<MapContainer />} />
         <Route path="/profile" element={<ProfileContainer />} />
+        <Route path="/neighborhood/:neighborhood" element ={<NeighborhoodContainer />} />
       </Routes>
     </div>
   )
