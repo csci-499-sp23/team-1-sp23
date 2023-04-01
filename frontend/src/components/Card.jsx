@@ -91,7 +91,9 @@ class InfoCard extends Component {
       compareInfo: false,
       currentSchoolRatingAvg: 3,
     };
+
     this.autocomplete = null;
+    this.onLoad = this.onLoad.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
   }
 
@@ -253,9 +255,13 @@ class InfoCard extends Component {
     arr.reduce((a, b) => a + b) / arr.length;
   };
 
+  onLoad(autocomplete) {
+    this.autocomplete = autocomplete;
+  }
+
   onPlaceChanged() {
     if (this.autocomplete !== null) {
-      console.log(this.autocomplete.getPlace());
+      this.props.updateDirOpts("origin", this.autocomplete.getPlace().formatted_address);
     } else {
       console.log("Not complete yet");
     }
@@ -1321,7 +1327,10 @@ class InfoCard extends Component {
                 </ToggleButtonGroup>
 
                 <Box sx={{ mt: 5 }}>
-                  <Autocomplete onPlaceChanged={this.onPlaceChanged}>
+                  <Autocomplete
+                    onLoad={this.onLoad}
+                    onPlaceChanged={this.onPlaceChanged}
+                  >
                     <Paper
                       component="form"
                       sx={{
