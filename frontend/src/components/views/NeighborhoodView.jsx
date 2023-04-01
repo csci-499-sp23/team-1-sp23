@@ -61,13 +61,16 @@ const NeighborhoodView = () => {
         <Grid container columns={{ xs: 4, sm: 8, md: 16 }}>
             <Grid item xs={8}>
                 <Box sx={{m: 10}}>
-                    <Typography variant="h3">Highschools around {neighborhood}</Typography>
+                    <Typography variant="h4" fontWeight="400">Highschools around {neighborhood}</Typography>
 
                     <Box sx={{mt: 5}}>
                         {schools.map((school, key) => {
                             console.log(school);
                             return <Typography key={key} variant="body1" sx={{mt: 1}}>{school.school_name}</Typography>
                         })}
+                    </Box>
+                    <Box sx={{mt: 5}}>
+                        <Typography variant="h4" fontWeight="400">Homes for sale/rent around {neighborhood}</Typography>
                     </Box>
                 </Box>
             </Grid >

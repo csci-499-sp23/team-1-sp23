@@ -31,11 +31,6 @@ const containerStyle = {
   height: "100%",
 };
 
-const center = {
-  lat: 40.702944,
-  lng: -73.89347,
-};
-
 const boroughs = [
   "Q",
   "M",
@@ -68,9 +63,20 @@ class Map extends Component {
       response: null,
       directionsRenderer: true,
       activeFilters: [...boroughs],
+      searchQuery: null,
+      center: {
+        lat: 40.702944,
+        lng: -73.89347,
+      },
+      zoom: 11,
     };
-
+    this.autocomplete= null
     this.directionsCallback = this.directionsCallback.bind(this)
+    this.onPlaceChanged = this.onPlaceChanged.bind(this)
+  }
+
+  onLoad = (autocomplete) => {
+    this.autocomplete = autocomplete
   }
 
   componentDidMount() {
@@ -104,26 +110,6 @@ class Map extends Component {
       drawer: bool,
     });
   };
-  
-  // calculateRoute = async () => {
-  //   if (this.state.origin === "" || this.state.destination === "") {
-  //     console.log("failed route")
-  //     return
-  //   }
-
-  //   const directionsService = new google.maps.DirectionsService()
-
-  //   const results = await directionsService.route({
-  //     origin: this.state.origin,
-  //     destination: this.state.destination,
-  //     // eslint-disable-next-line no-undef
-  //     travelMode: this.state.travelMode,
-  //   })
-  //   console.log(results)
-  //   this.setState({
-  //     response: results
-  //   })
-  // }
 
   directionsCallback(response) {
     if (response !== null) {
@@ -150,6 +136,31 @@ class Map extends Component {
       directionsRenderer: bool
     })
   }
+
+  onPlaceChanged = () => {
+    if(this.autocomplete !== null) { 
+      this.setState({
+        searchQuery: this.autocomplete.getPlace().formatted_address
+      })
+    }
+    else {
+      console.log("not loaded")
+    }
+  }
+
+  handleSearch = () => {
+    this.setState(prevState => ({
+      ...prevState.center,
+      center: {
+        lat: this.autocomplete.getPlace().geometry.viewport.Va.hi,
+        lng: this.autocomplete.getPlace().geometry.viewport.Ga.hi
+      }
+    }))
+    this.setState({
+      zoom: 16
+    })
+  }
+
   render() {
     const { schools, activeFilters } = this.state;
     const schoolsFiltered = schools.filter(school => activeFilters.includes(school.borocode));
@@ -158,8 +169,8 @@ class Map extends Component {
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
           mapContainerStyle={containerStyle}
-          center={center}
-          zoom={11}
+          center={this.state.center}
+          zoom={this.state.zoom}
           clickableIcons={false}
           onClick={this.showCard.bind(null, false)}
           options= {{
@@ -232,7 +243,7 @@ class Map extends Component {
                     maxWidth: "100%"
                   }}
                 >
-                  <Autocomplete>
+                  <Autocomplete onLoad={this.onLoad} onPlaceChanged = {this.onPlaceChanged} onUnmount={() => console.log("unmounted")}>
                     <Paper
                       component="form"
                       sx={{
@@ -265,6 +276,7 @@ class Map extends Component {
                         type="button"
                         sx={{ p: "10px" }}
                         aria-label="search"
+                        onClick={this.handleSearch}
                       >
                         <SearchIcon />
                       </IconButton>
