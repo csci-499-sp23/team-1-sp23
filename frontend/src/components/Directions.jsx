@@ -6,21 +6,38 @@ class Directions extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.def = {
       response: null,
+      oriId: null,
+      destId: null,
+      trvl: null,
     };
 
-    this.directionCallback = this.directionCallback.bind(this);
+    this.state = this.def;
+
+    this.directionsCallback = this.directionsCallback.bind(this);
   }
 
-  directionCallback(response) {
-    console.log(response);
-
+  directionsCallback(response) {
     if (response !== null) {
       if (response.status === "OK") {
-        this.setState(() => {
-          response;
-        });
+        const oriId = response.geocoded_waypoints.at(0).place_id;
+        const destId = response.geocoded_waypoints.at(1).place_id;
+        const trvl = response.request.travelMode;
+        if (
+          this.state.oriId !== oriId ||
+          this.state.destId !== destId ||
+          this.state.trvl !== trvl
+        ) {
+          this.setState(() => {
+            return {
+              response: response,
+              oriId,
+              destId,
+              trvl,
+            };
+          });
+        }
       } else {
         console.log("response", response);
       }
@@ -30,24 +47,35 @@ class Directions extends Component {
   render() {
     return (
       <>
-        {this.props.destination && this.props.origin && (
-          <DirectionsService
-            options={{
-              destination: this.props.destination,
-              origin: this.props.origin,
-              travelMode: this.props.travelMode,
-            }}
-            callback={this.directionsCallback}
-          />
-        )}
+        {this.props.send &&
+          this.props.destination &&
+          this.props.origin &&
+          this.props.travelMode &&
+          this.props.opened && (
+            <DirectionsService
+              options={{
+                origin: this.props.origin,
+                destination: this.props.destCoor,
+                travelMode: this.props.travelMode,
+              }}
+              callback={this.directionsCallback}
+            />
+          )}
 
-        {this.state.response && (
-          <DirectionsRenderer
-            options={{
-              directions: this.state.response,
-            }}
-          />
-        )}
+        {this.state.response &&
+          this.props.opened &&
+          this.props.card &&
+          this.props.send && (
+            <DirectionsRenderer
+              options={{
+                directions: this.state.response,
+              }}
+              onUnmount={() => {
+                this.setState(this.def);
+                this.props.reset("send", false);
+              }}
+            />
+          )}
       </>
     );
   }

@@ -86,7 +86,6 @@ class InfoCard extends Component {
       currSchool: "",
       snackbarOpen: false,
       snackbarSuccessOpen: false,
-      directionsOpen: false,
       directionError: false,
       profile: false,
       compareInfo: false,
@@ -254,60 +253,6 @@ class InfoCard extends Component {
     arr.reduce((a, b) => a + b) / arr.length;
   };
 
-  setOrigin = (origin) => {
-    console.log(origin);
-    this.setState({
-      origin: origin,
-    });
-  };
-
-  setDestination = (destination) => {
-    this.setState({
-      destination: destination,
-    });
-  };
-
-  setDirectionsError = () => {
-    this.setState({
-      directionError: true,
-    });
-  };
-
-  handleModeChange = (e, mode) => {
-    console.log(this.state.travelMode);
-    this.setState({
-      travelMode: mode,
-    });
-  };
-
-  handleDirectionsSubmit = () => {
-    if (this.props.origin && this.props.destination && this.props.travelMode) {
-      this.setState({
-        directionError: false,
-      });
-      this.props.updateDirOpts(
-        this.state.origin,
-        this.state.destination,
-        this.state.travelMode
-      );
-    } else {
-      this.setDirectionsError();
-    }
-  };
-
-  openDirections = () => {
-    this.setState({
-      directionsOpen: true,
-    });
-  };
-
-  handleDirectionsClose = () => {
-    this.setState({
-      directionsOpen: false,
-    });
-    this.props.closeDirections(false);
-  };
-
   onPlaceChanged() {
     if (this.autocomplete !== null) {
       console.log(this.autocomplete.getPlace());
@@ -404,7 +349,10 @@ class InfoCard extends Component {
                     </Tooltip>
 
                     <Tooltip title="Directions">
-                      <IconButton size="large" onClick={this.openDirections}>
+                      <IconButton
+                        size="large"
+                        onClick={() => this.props.handleDirPanel(true)}
+                      >
                         <DirectionsIcon />
                       </IconButton>
                     </Tooltip>
@@ -1249,6 +1197,7 @@ class InfoCard extends Component {
             <Button size="small">Learn More</Button>
           </CardActions>
         </Card>
+
         {this.state.profile && (
           <Stats
             onClose={() => this.setState({ profile: false })}
@@ -1256,6 +1205,7 @@ class InfoCard extends Component {
             schoolName={this.props.school.school_name}
           />
         )}
+
         {this.state.modal && (
           <ReviewsModal
             name={this.props.school.school_name}
@@ -1310,7 +1260,7 @@ class InfoCard extends Component {
           </Alert>
         </Snackbar>
 
-        {this.state.directionsOpen && (
+        {this.props.opened && (
           <Card
             sx={{
               maxWidth: { xs: "100vw", sm: 400, md: 400 },
@@ -1325,7 +1275,11 @@ class InfoCard extends Component {
             }}
           >
             <CardContent>
-              <IconButton onClick={this.handleDirectionsClose}>
+              <IconButton
+                onClick={() => {
+                  this.props.handleDirPanel(false);
+                }}
+              >
                 <CloseIcon />
               </IconButton>
               <Box
@@ -1359,7 +1313,7 @@ class InfoCard extends Component {
                       <DirectionsWalkIcon />
                     </Tooltip>
                   </ToggleButton>
-                  <ToggleButton value="CYCLING">
+                  <ToggleButton value="BICYCLING">
                     <Tooltip title="Cycling">
                       <DirectionsBikeIcon />
                     </Tooltip>
@@ -1367,7 +1321,7 @@ class InfoCard extends Component {
                 </ToggleButtonGroup>
 
                 <Box sx={{ mt: 5 }}>
-                  <Autocomplete onPlaceChanged={(e) => console.log(e)}>
+                  <Autocomplete onPlaceChanged={this.onPlaceChanged}>
                     <Paper
                       component="form"
                       sx={{
@@ -1380,9 +1334,11 @@ class InfoCard extends Component {
                     >
                       <InputBase
                         sx={{ ml: 1, flex: 1 }}
-                        placeholder="Choose a starting point, or click on the map"
+                        placeholder="Please enter your starting position"
                         inputProps={{ "aria-label": "search google maps" }}
                         onChange={(e) => {
+                          if (this.props.send)
+                            this.props.updateDirOpts("send", false);
                           this.props.updateDirOpts("origin", e.target.value);
                         }}
                         onKeyPress={(e) => {
@@ -1410,25 +1366,25 @@ class InfoCard extends Component {
                         "aria-label": "search google maps",
                         readOnly: true,
                       }}
-                      defaultValue={this.props.school.school_name}
+                      value={this.props.school.school_name}
                     />
                   </Paper>
                 </Box>
                 <Button
                   sx={{ mt: 2 }}
                   variant="contained"
-                  onClick={this.handleDirectionsSubmit}
+                  onClick={() => this.props.updateDirOpts("send", true)}
                 >
                   Get Directions
                 </Button>
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="body1">
-                    Distance: {this.props.distance}
-                  </Typography>
-                  <Typography variant="body1">
-                    Commute Time: {this.props.duration}
-                  </Typography>
-                </Box>
+                {/* <Box sx={{ mt: 2 }}> */}
+                {/*   <Typography variant="body1"> */}
+                {/*     Distance: {this.props.distance} */}
+                {/*   </Typography> */}
+                {/*   <Typography variant="body1"> */}
+                {/*     Commute Time: {this.props.duration} */}
+                {/*   </Typography> */}
+                {/* </Box> */}
               </Box>
             </CardContent>
           </Card>

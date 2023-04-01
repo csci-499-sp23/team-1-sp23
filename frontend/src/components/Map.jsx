@@ -52,14 +52,14 @@ class Map extends Component {
       dirOpts: {
         origin: "",
         destination: "",
+        destCoor: null,
         travelMode: "DRIVING",
+        send: false,
       },
       response: null,
-      directionsRenderer: true,
+      directionsRenderer: false,
       activeFilters: [...boroughs],
     };
-
-    this.directionsCallback = this.directionsCallback.bind(this);
   }
 
   componentDidMount() {
@@ -94,28 +94,16 @@ class Map extends Component {
     });
   };
 
-  directionsCallback(response) {
-    if (response !== null) {
-      if (response.status === "OK") {
-        this.setState({
-          response: response,
-        });
-      } else {
-        console.log("response: ", response);
-      }
-    }
-  }
-
   handleDirections = (type, val) => {
-    this.setState({
+    this.setState((x) => ({
       dirOpts: {
-        ...this.state.dirOpts,
+        ...x.dirOpts,
         [type]: val,
       },
-    });
+    }));
   };
 
-  handleClose = (bool) => {
+  handleDirectionsPanel = (bool) => {
     this.setState({
       directionsRenderer: bool,
     });
@@ -134,7 +122,10 @@ class Map extends Component {
           center={center}
           zoom={11}
           clickableIcons={false}
-          onClick={this.showCard.bind(null, false)}
+          onClick={() => {
+            this.showCard(false, null);
+            this.handleDirectionsPanel(false);
+          }}
           options={{
             zoomControl: false,
             mapTypeControl: false,
@@ -142,9 +133,10 @@ class Map extends Component {
           }}
         >
           <Directions
-            destination={this.state.destination}
-            origin={this.state.origin}
-            travelMode={this.state.travelMode}
+            reset={this.handleDirections}
+            card={this.state.card}
+            opened={this.state.directionsRenderer}
+            {...this.state.dirOpts}
           />
           {/* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
@@ -283,8 +275,13 @@ class Map extends Component {
                 lng: Number(school.longitude),
               }}
               onClick={() => {
+                const coord = school.geocoded_column.coordinates;
                 this.showCard(true, school);
                 this.handleDirections("destination", school.school_name);
+                this.handleDirections("destCoor", {
+                  lng: coord.at(0),
+                  lat: coord.at(1),
+                });
               }}
             />
           ))}
@@ -293,7 +290,8 @@ class Map extends Component {
               school={this.state.school}
               key={this.state.school + "2031"}
               updateDirOpts={this.handleDirections}
-              closeDirections={this.handleClose}
+              handleDirPanel={this.handleDirectionsPanel}
+              opened={this.state.directionsRenderer}
               {...this.state.dirOpts}
             />
           )}
