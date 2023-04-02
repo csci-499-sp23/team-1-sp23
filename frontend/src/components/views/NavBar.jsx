@@ -46,7 +46,7 @@ export default function Navbar({ loggedIn, handleLogout }) {
             </Typography>
         </Link>
         
-        <Box sx={{display: { xs: 'flex', md: 'none' } }}>
+        <Box sx={{marginLeft: "auto", display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-controls="menu-appbar"
@@ -58,7 +58,6 @@ export default function Navbar({ loggedIn, handleLogout }) {
             </IconButton>
             <Menu
               id="menu-appbar"
-              color="#2b2d42"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
