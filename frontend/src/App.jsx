@@ -6,6 +6,7 @@ import {
   MapContainer, 
   ProfileContainer, 
   NeighborhoodContainer,
+  SchoolpageContainer,
 } from './components/containers'
 import './App.css'
 
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/map" element={<MapContainer />} />
         <Route path="/profile" element={<ProfileContainer />} />
         <Route path="/neighborhood/:neighborhood" element ={<NeighborhoodContainer />} />
+        <Route path="/school/:schoolName" element={<SchoolpageContainer/>} />
       </Routes>
     </div>
   )
