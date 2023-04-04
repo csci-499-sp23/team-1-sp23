@@ -24,19 +24,24 @@ class Directions extends Component {
         const oriId = response.geocoded_waypoints.at(0).place_id;
         const destId = response.geocoded_waypoints.at(1).place_id;
         const trvl = response.request.travelMode;
+        const legs = response.routes.at(0).legs.at(0);
         if (
           this.state.oriId !== oriId ||
           this.state.destId !== destId ||
           this.state.trvl !== trvl
         ) {
-          this.setState(() => {
-            return {
-              response,
-              oriId,
-              destId,
-              trvl,
-            };
-          });
+          this.props.modify("dist", legs.distance.text);
+          this.props.modify("time", legs.duration.text);
+          setTimeout(() => {
+            this.setState(() => {
+              return {
+                response,
+                oriId,
+                destId,
+                trvl,
+              };
+            });
+          }, 50);
         }
       } else {
         console.log("response", response);
@@ -72,7 +77,7 @@ class Directions extends Component {
               }}
               onUnmount={() => {
                 this.setState(this.def);
-                this.props.reset("send", false);
+                this.props.modify("send", false);
               }}
             />
           )}

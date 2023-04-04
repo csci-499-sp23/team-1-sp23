@@ -44,6 +44,7 @@ const lib = ["places"];
 class Map extends Component {
   constructor() {
     super();
+
     this.state = {
       schools: [],
       card: false,
@@ -55,6 +56,8 @@ class Map extends Component {
         destCoor: null,
         travelMode: "DRIVING",
         send: false,
+        dist: "",
+        time: "",
       },
       response: null,
       directionsRenderer: false,
@@ -70,7 +73,7 @@ class Map extends Component {
           this.setState({ schools: data });
         })
         .catch((error) => console.log(error));
-    }, 200);
+    }, 100);
   }
 
   showCard = (bool, obj) => {
@@ -135,7 +138,7 @@ class Map extends Component {
           }}
         >
           <Directions
-            reset={this.handleDirections}
+            modify={this.handleDirections}
             card={this.state.card}
             opened={this.state.directionsRenderer}
             {...this.state.dirOpts}
@@ -284,6 +287,8 @@ class Map extends Component {
                   lng: coord.at(0),
                   lat: coord.at(1),
                 });
+                this.handleDirections("dist", "");
+                this.handleDirections("time", "");
               }}
             />
           ))}

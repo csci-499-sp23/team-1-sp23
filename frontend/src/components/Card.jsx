@@ -1391,14 +1391,32 @@ class InfoCard extends Component {
                 >
                   Get Directions
                 </Button>
-                {/* <Box sx={{ mt: 2 }}> */}
-                {/*   <Typography variant="body1"> */}
-                {/*     Distance: {this.props.distance} */}
-                {/*   </Typography> */}
-                {/*   <Typography variant="body1"> */}
-                {/*     Commute Time: {this.props.duration} */}
-                {/*   </Typography> */}
-                {/* </Box> */}
+                <Box
+                  sx={{
+                    mt: 3,
+                  }}
+                >
+                  <Typography variant="body1" sx={{ mt: 2 }}>
+                    Distance
+                    <Typography
+                      variant="h4"
+                      component="span"
+                      sx={{ display: "block" }}
+                    >
+                      {this.props.dist}
+                    </Typography>
+                  </Typography>
+                  <Typography variant="body1" sx={{ mt: 2 }}>
+                    Commute Time
+                    <Typography
+                      variant="h4"
+                      component="span"
+                      sx={{ display: "block" }}
+                    >
+                      {this.props.time}
+                    </Typography>
+                  </Typography>
+                </Box>
               </Box>
             </CardContent>
           </Card>
