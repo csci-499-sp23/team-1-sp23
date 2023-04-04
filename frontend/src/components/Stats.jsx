@@ -20,6 +20,11 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from '@mui/material/CircularProgress';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
 
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from '@mui/material/TextField';
@@ -43,8 +48,8 @@ class Stats extends Component {
             examTypes: [],
             selectedCategory: "Living Environment",
             category: "English Proficient",
-            inputValue: "",
         }
+        this.inputValue = null
     }
 
     componentDidMount() {
@@ -66,17 +71,18 @@ class Stats extends Component {
     }
 
     setExamTypes = (e, type) => {
-        console.log(type)
         this.setState({
             selectedCategory: type
         })
+        console.log(this.state.selectedCategory)
     }
-    // setInputExamTypes = (e, newValue) => {
+    setInputExamTypes = (e, newValue) => {
+        this.setState({
+            inputValue: newValue
+        })
+        console.log(this.state.selectedCategory)
 
-    //     this.setState({
-    //         inputValue: newValue
-    //     })
-    // }
+    }
 
     handleTab = (_, value) => {
         this.setState(() => ({
@@ -90,13 +96,20 @@ class Stats extends Component {
         })
     }
 
+    handleExamChange = (e) => {
+        console.log(e.target.value)
+        this.setState({
+            selectedCategory: e.target.value
+        })
+    }
+
     render() {
-        if (this.state.loaded != true) {
-            <Box sx={{
-                display: 'flex',
-            }}>
-                <CircularProgress />
-            </Box>
+        if (this.state.loaded == false) {
+            return (
+                <Box>
+
+                </Box>
+            )
         }
         else {
             return (
@@ -129,7 +142,7 @@ class Stats extends Component {
                         <IconButton sx={{
                             borderRadius: 0,
                         }}
-                        onClick={this.props.onClose}>
+                            onClick={this.props.onClose}>
                             <CloseIcon />
                         </IconButton>
                     </Box>
@@ -148,7 +161,7 @@ class Stats extends Component {
                             <Tab sx={{ fontWeight: "500", mx: 2 }} label="AP Exams Results" />
                             <Tab sx={{ fontWeight: "500", ml: 2 }} label="SAT Exams Results" />
                         </Tabs>
-                        <Box>
+                        <Box sx={{pr: 4}}>
                             <ToggleButtonGroup value={this.state.category} onChange={this.handleCategoryChange} exclusive>
                                 <ToggleButton value="English Proficient">
                                     English Proficient
@@ -156,27 +169,43 @@ class Stats extends Component {
                                 <ToggleButton value="Former ELL">
                                     Former ELL
                                 </ToggleButton>
-                                <ToggleButton value = "ELL">
+                                <ToggleButton value="ELL">
                                     ELL
                                 </ToggleButton>
                             </ToggleButtonGroup>
                         </Box>
-                        <Autocomplete
+
+                        <FormControl sx={{pr: 4}}>
+                            <InputLabel id="demo-simple-select-label">Exam Type</InputLabel>
+                            <Select
+                                value={this.state.selectedCategory}
+                                label="Exam"
+                                onChange={this.handleExamChange}
+                            >
+                                {this.state.examTypes.map((exam, index) => (
+                                    <MenuItem key={index} value={exam} sx={{color: "red", p: 5}}>
+                                        {exam}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        {/* <Autocomplete
                             disablePortal
-                            value={this.state.selectedCategory}
+                            value={this.state.selectedCategory || null}
                             onChange={(e, newValue) => {
-                                this.setExamTypes(newValue)
+                                this.setExamTypes(newValue);
                             }}
                             inputValue={this.state.inputValue}
-                            // onInputChange={(e, newInputValue) => {
-                            //     this.setInputExamTypes(newInputValue);
-                            // }}
-                            options={this.state.examTypes}
+                            onInputChange={(e, newInputValue) => {
+                                console.log(newInputValue)
+                                this.setInputExamTypes(newInputValue);
+                            }}
                             sx={{ width: 300, pr: 4 }}
+                            options={this.state.examTypes}
                             renderInput={(params) =>
                                 <TextField {...params} label="Exam type" />
                             }
-                        />
+                        /> */}
                     </Box>
 
                     <TabPanel
@@ -186,7 +215,7 @@ class Stats extends Component {
                     >
                         {
                             this.state.regentsData.map(school => {
-                                school.forEach(exam => {
+                                school.forEach((exam) => {
                                     if (exam.regents_exam == this.state.selectedCategory && exam.category == this.state.category) {
                                         this.state.filteredData.push(exam)
                                     }
@@ -275,6 +304,7 @@ class Stats extends Component {
                     </TabPanel>
                 </Box>
             )
+
         }
     }
 }
