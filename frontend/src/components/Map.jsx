@@ -1,11 +1,5 @@
-import React, { Component, useState } from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  LoadScript,
-  DirectionsService,
-  DirectionsRenderer,
-} from "@react-google-maps/api";
+import React, { Component } from "react";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { Autocomplete } from "@react-google-maps/api";
 import { Marker } from "@react-google-maps/api";
 import Paper from "@mui/material/Paper";
@@ -20,24 +14,17 @@ import SearchIcon from "@mui/icons-material/Search";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
-
 import InfoCard from "./Card";
-import FiltersModal from "./MoreFilters";
 import Drawerbar from "./views/DrawerNavBar";
 import { mK } from "../config/environment";
+import Directions from "./Directions";
 
 const containerStyle = {
   width: "100%",
   height: "100%",
 };
 
-const boroughs = [
-  "Q",
-  "M",
-  "X",
-  "K",
-  "R",
-];
+const boroughs = ["Q", "M", "X", "K", "R"];
 
 const boroughNames = {
   Q: "Queens",
@@ -52,16 +39,23 @@ const lib = ["places"];
 class Map extends Component {
   constructor() {
     super();
+
     this.state = {
       schools: [],
       card: false,
       school: null,
       drawer: false,
-      origin: "",
-      destination: "",
-      travelMode: "DRIVING",
+      dirOpts: {
+        origin: "",
+        destination: "",
+        destCoor: null,
+        travelMode: "DRIVING",
+        send: false,
+        dist: "",
+        time: "",
+      },
       response: null,
-      directionsRenderer: true,
+      directionsRenderer: false,
       activeFilters: [...boroughs],
       searchQuery: null,
       center: {
@@ -70,24 +64,25 @@ class Map extends Component {
       },
       zoom: 11,
     };
-    this.autocomplete= null
-    this.directionsCallback = this.directionsCallback.bind(this)
-    this.onPlaceChanged = this.onPlaceChanged.bind(this)
-  }
-
-  onLoad = (autocomplete) => {
-    this.autocomplete = autocomplete
+    this.autocomplete = null;
+    this.onPlaceChanged = this.onPlaceChanged.bind(this);
   }
 
   componentDidMount() {
-    fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ schools: data });
-      })
-      .catch((error) => console.log(error));
+    setTimeout(() => {
+      fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({ schools: data });
+        })
+        .catch((error) => console.log(error));
+    }, 100);
   }
-  
+
+  onLoad = (autocomplete) => {
+    this.autocomplete = autocomplete;
+  };
+
   showCard = (bool, obj) => {
     this.setState({
       card: bool,
@@ -97,9 +92,9 @@ class Map extends Component {
 
   handleFilter(borough) {
     let activeFilters = [...this.state.activeFilters];
-    if(activeFilters.includes(borough)){
+    if (activeFilters.includes(borough)) {
       activeFilters = activeFilters.filter((filter) => filter !== borough);
-    }else{
+    } else {
       activeFilters.push(borough);
     }
     this.setState({ activeFilters, selectedBorough: borough });
@@ -111,42 +106,30 @@ class Map extends Component {
     });
   };
 
-  directionsCallback(response) {
-    if (response !== null) {
-      if (response.status === 'OK') {
-        this.setState({
-            response: response
-          })
-      } else {
-        console.log('response: ', response)
-      }
-    }
-  }
+  handleDirections = (type, val) => {
+    this.setState((x) => ({
+      dirOpts: {
+        ...x.dirOpts,
+        [type]: val,
+      },
+    }));
+  };
 
-  handleDirections = (origin, destination, mode) => {
+  handleDirectionsPanel = (bool) => {
     this.setState({
-      origin: origin,
-      destination: destination,
-      travelMode: mode
-    })
-  }
-
-  handleClose = (bool) => {
-    this.setState({
-      directionsRenderer: bool
-    })
-  }
+      directionsRenderer: bool,
+    });
+  };
 
   onPlaceChanged = () => {
-    if(this.autocomplete !== null) { 
+    if (this.autocomplete !== null) {
       this.setState({
-        searchQuery: this.autocomplete.getPlace().formatted_address
-      })
+        searchQuery: this.autocomplete.getPlace().formatted_address,
+      });
+    } else {
+      console.log("not loaded");
     }
-    else {
-      console.log("not loaded")
-    }
-  }
+  };
 
   handleSearch = () => {
     this.setState(
@@ -154,17 +137,19 @@ class Map extends Component {
       ...prevState.center,
       center: {
         lat: this.autocomplete.getPlace().geometry.viewport.Va.hi,
-        lng: this.autocomplete.getPlace().geometry.viewport.Ga.hi
-      }
-    }))
+        lng: this.autocomplete.getPlace().geometry.viewport.Ga.hi,
+      },
+    }));
     this.setState({
-      zoom: 16
-    })
-  }
+      zoom: 16,
+    });
+  };
 
   render() {
     const { schools, activeFilters } = this.state;
-    const schoolsFiltered = schools.filter(school => activeFilters.includes(school.borocode));
+    const schoolsFiltered = schools.filter((school) =>
+      activeFilters.includes(school.borocode)
+    );
 
     return (
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
@@ -173,60 +158,22 @@ class Map extends Component {
           center={this.state.center}
           zoom={this.state.zoom}
           clickableIcons={false}
-          onClick={this.showCard.bind(null, false)}
-          options= {{
+          onClick={() => {
+            this.showCard(false, null);
+            this.handleDirectionsPanel(false);
+          }}
+          options={{
             zoomControl: false,
             mapTypeControl: false,
             fullscreenControl: false,
           }}
-        > 
-          {
-            (
-              this.state.destination !== '' &&
-              this.state.origin !== '' && 
-              this.state.directionsRenderer == true &&
-              this.state.card == true
-            ) && (
-              <DirectionsService
-                // required
-                options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
-                  destination: this.state.destination,
-                  origin: this.state.origin,
-                  travelMode: this.state.travelMode
-                }}
-                // required
-                callback={this.directionsCallback}
-                // optional
-                onLoad={directionsService => {
-                  console.log('DirectionsService onLoad directionsService: ', directionsService)
-                }}
-                // optional
-                onUnmount={directionsService => {
-                  console.log('DirectionsService onUnmount directionsService: ', directionsService)
-                }}
-              />
-            )
-          }
-
-          {
-            (this.state.response !== null && this.state.directionsRenderer == true) && (
-              <DirectionsRenderer
-                // required
-                options={{ // eslint-disable-line react-perf/jsx-no-new-object-as-prop
-                  directions: this.state.response
-
-                }}
-                // optional
-                onLoad={directionsRenderer => {
-                  console.log('DirectionsRenderer onLoad directionsRenderer: ', directionsRenderer)
-                }}
-                // optional
-                onUnmount={directionsRenderer => {
-                  console.log('DirectionsRenderer onUnmount directionsRenderer: ', directionsRenderer)
-                }}
-              />
-            )
-          }
+        >
+          <Directions
+            modify={this.handleDirections}
+            card={this.state.card}
+            opened={this.state.directionsRenderer}
+            {...this.state.dirOpts}
+          />
           {/* Child components, such as markers, info windows, etc. */}
           <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -241,10 +188,14 @@ class Map extends Component {
                       xs: "flex-start",
                       md: "center",
                     },
-                    maxWidth: "100%"
+                    maxWidth: "100%",
                   }}
                 >
-                  <Autocomplete onLoad={this.onLoad} onPlaceChanged = {this.onPlaceChanged} onUnmount={() => console.log("unmounted")}>
+                  <Autocomplete
+                    onLoad={this.onLoad}
+                    onPlaceChanged={this.onPlaceChanged}
+                    onUnmount={() => console.log("unmounted")}
+                  >
                     <Paper
                       component="form"
                       sx={{
@@ -316,26 +267,38 @@ class Map extends Component {
                         xs: 0,
                         md: 2,
                       },
-                      maxWidth: "100%"
+                      maxWidth: "100%",
                     }}
                   >
-                    <Stack direction="row" spacing={2} sx={{ overflow: 'auto'}}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{ overflow: "auto" }}
+                    >
                       {boroughs.map((borough) => (
-                        <Chip 
+                        <Chip
                           key={borough}
                           label={boroughNames[borough]}
                           variant={
-                            this.state.activeFilters.includes(borough) ? "filled" : "outlined"
+                            this.state.activeFilters.includes(borough)
+                              ? "filled"
+                              : "outlined"
                           }
                           onClick={() => this.handleFilter(borough)}
-                          sx={{ 
-
-                            backgroundColor: this.state.activeFilters.includes(borough) ? "#2b2d42" : "#F8F9FA",
-                            color: this.state.activeFilters.includes(borough) ? "#FFFFFF" : "#1E1E1E",
+                          sx={{
+                            mr: 2,
+                            mb: 2,
+                            backgroundColor: this.state.activeFilters.includes(
+                              borough
+                            )
+                              ? "#2b2d42"
+                              : "#F8F9FA",
+                            color: this.state.activeFilters.includes(borough)
+                              ? "#FFFFFF"
+                              : "#1E1E1E",
                             fontWeight: 500,
                             padding: "2px 6px 2px 6px",
                             cursor: "pointer",
-                            alignItems: "center"
                           }}
                         />
                       ))}
@@ -352,28 +315,27 @@ class Map extends Component {
                 lat: Number(school.latitude),
                 lng: Number(school.longitude),
               }}
-              onClick={() => this.showCard(true, school)}
+              onClick={() => {
+                const coord = school.geocoded_column.coordinates;
+                this.showCard(true, school);
+                this.handleDirections("destination", school.school_name);
+                this.handleDirections("destCoor", {
+                  lng: coord.at(0),
+                  lat: coord.at(1),
+                });
+                this.handleDirections("dist", "");
+                this.handleDirections("time", "");
+              }}
             />
           ))}
-
-          {/*schools.map((school, key) => {
-            return (
-              <Marker
-                key={key}
-                onClick={this.showCard.bind(null, true, school)}
-                position={{
-                  lat: Number(school.latitude),
-                  lng: Number(school.longitude),
-                }}
-              ></Marker>
-            );
-          })*/}
           {this.state.card && (
             <InfoCard
               school={this.state.school}
               key={this.state.school + "2031"}
-              onDirectionsSubmit={this.handleDirections}
-              closeDirections={this.handleClose}
+              updateDirOpts={this.handleDirections}
+              handleDirPanel={this.handleDirectionsPanel}
+              opened={this.state.directionsRenderer}
+              {...this.state.dirOpts}
             />
           )}
         </GoogleMap>
