@@ -24,11 +24,6 @@ const containerStyle = {
   height: "100%",
 };
 
-const center = {
-  lat: 40.702944,
-  lng: -73.89347,
-};
-
 const boroughs = ["Q", "M", "X", "K", "R"];
 
 const boroughNames = {
@@ -69,6 +64,8 @@ class Map extends Component {
       },
       zoom: 11,
     };
+    this.autocomplete = null;
+    this.onPlaceChanged = this.onPlaceChanged.bind(this);
   }
 
   componentDidMount() {
@@ -81,6 +78,10 @@ class Map extends Component {
         .catch((error) => console.log(error));
     }, 100);
   }
+
+  onLoad = (autocomplete) => {
+    this.autocomplete = autocomplete;
+  };
 
   showCard = (bool, obj) => {
     this.setState({
@@ -117,6 +118,29 @@ class Map extends Component {
   handleDirectionsPanel = (bool) => {
     this.setState({
       directionsRenderer: bool,
+    });
+  };
+
+  onPlaceChanged = () => {
+    if (this.autocomplete !== null) {
+      this.setState({
+        searchQuery: this.autocomplete.getPlace().formatted_address,
+      });
+    } else {
+      console.log("not loaded");
+    }
+  };
+
+  handleSearch = () => {
+    this.setState((prevState) => ({
+      ...prevState.center,
+      center: {
+        lat: this.autocomplete.getPlace().geometry.viewport.Va.hi,
+        lng: this.autocomplete.getPlace().geometry.viewport.Ga.hi,
+      },
+    }));
+    this.setState({
+      zoom: 16,
     });
   };
 
@@ -166,7 +190,11 @@ class Map extends Component {
                     maxWidth: "100%",
                   }}
                 >
-                  <Autocomplete onLoad={this.onLoad} onPlaceChanged = {this.onPlaceChanged} onUnmount={() => console.log("unmounted")}>
+                  <Autocomplete
+                    onLoad={this.onLoad}
+                    onPlaceChanged={this.onPlaceChanged}
+                    onUnmount={() => console.log("unmounted")}
+                  >
                     <Paper
                       component="form"
                       sx={{
