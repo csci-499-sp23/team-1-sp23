@@ -282,6 +282,24 @@ class InfoCard extends Component {
     });
   };
 
+  onOriginChanged = () => {
+    if(this.autocomplete !== null) { 
+      console.log(this.autocomplete.getPlace())
+    }
+    else {
+      console.log("not loaded")
+    }
+  }  
+
+  onDestinationChanged = () => {
+    if(this.autocomplete !== null) { 
+      console.log(this.autocomplete.getPlace())
+    }
+    else {
+      console.log("not loaded")
+    }
+  }  
+
   render() {
     return (
       <>

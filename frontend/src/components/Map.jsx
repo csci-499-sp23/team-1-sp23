@@ -62,6 +62,12 @@ class Map extends Component {
       response: null,
       directionsRenderer: false,
       activeFilters: [...boroughs],
+      searchQuery: null,
+      center: {
+        lat: 40.702944,
+        lng: -73.89347,
+      },
+      zoom: 11,
     };
   }
 
@@ -124,8 +130,8 @@ class Map extends Component {
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
         <GoogleMap
           mapContainerStyle={containerStyle}
-          center={center}
-          zoom={11}
+          center={this.state.center}
+          zoom={this.state.zoom}
           clickableIcons={false}
           onClick={() => {
             this.showCard(false, null);
@@ -160,7 +166,7 @@ class Map extends Component {
                     maxWidth: "100%",
                   }}
                 >
-                  <Autocomplete>
+                  <Autocomplete onLoad={this.onLoad} onPlaceChanged = {this.onPlaceChanged} onUnmount={() => console.log("unmounted")}>
                     <Paper
                       component="form"
                       sx={{
@@ -193,6 +199,7 @@ class Map extends Component {
                         type="button"
                         sx={{ p: "10px" }}
                         aria-label="search"
+                        onClick={this.handleSearch}
                       >
                         <SearchIcon />
                       </IconButton>
