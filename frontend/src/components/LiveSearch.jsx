@@ -15,7 +15,7 @@ function LiveSearch() {
   
   const handleSchoolSelection = (event, value) => {
     setSelectedSchool(value);
-    navigate(`/test/${value.school_name}`, {state: {school: value} });
+    navigate(`/school/${value.school_name}`, {state: {school: value} });
   }
 
   return (
@@ -56,8 +56,8 @@ function LiveSearch() {
         onChange={handleSchoolSelection}
       />
       {selectedSchool && (
-        <Link to={{ pathname: `/test/${selectedSchool.school_name}`, state:{school: selectedSchool} }}>
-          Go to test page
+        <Link to={{ pathname: `/school/${selectedSchool.school_name}`, state:{school: selectedSchool} }}>
+          Go to School page
         </Link>
       )}
     </Stack>

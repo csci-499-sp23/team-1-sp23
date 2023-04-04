@@ -6,7 +6,7 @@ import {
   MapContainer, 
   ProfileContainer, 
   NeighborhoodContainer,
-  TestContainer,
+  SchoolpageContainer,
 } from './components/containers'
 import './App.css'
 
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/map" element={<MapContainer />} />
         <Route path="/profile" element={<ProfileContainer />} />
         <Route path="/neighborhood/:neighborhood" element ={<NeighborhoodContainer />} />
-        <Route path="/test/:schoolName" element={<TestContainer/>} />
+        <Route path="/school/:schoolName" element={<SchoolpageContainer/>} />
       </Routes>
     </div>
   )

@@ -4,5 +4,4 @@ export {default as LoginContainer} from "./LoginContainer"
 export {default as MapContainer} from "./MapContainer"
 export {default as ProfileContainer} from "./ProfileContainer"
 export {default as NeighborhoodContainer} from "./NeighborhoodContainer"
-
-export {default as TestContainer} from "./TestContainer"
+export {default as SchoolpageContainer} from "./SchoolpageContainer"
