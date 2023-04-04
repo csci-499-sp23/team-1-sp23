@@ -342,19 +342,6 @@ class Map extends Component {
               onClick={() => this.showCard(true, school)}
             />
           ))}
-
-          {/*schools.map((school, key) => {
-            return (
-              <Marker
-                key={key}
-                onClick={this.showCard.bind(null, true, school)}
-                position={{
-                  lat: Number(school.latitude),
-                  lng: Number(school.longitude),
-                }}
-              ></Marker>
-            );
-          })*/}
           {this.state.card && (
             <InfoCard
               school={this.state.school}
