@@ -266,30 +266,8 @@ class InfoCard extends Component {
     })
   }
 
-  setOrigin = (origin) => {
-    console.log(origin);
-    this.setState({
-      origin: origin,
-    });
-  };
-
-  setDestination = (destination) => {
-    this.setState({
-      destination: destination,
-    });
-  };
-  
-  setDirectionsError = () => {
-    this.setState({
-      directionError: true,
-    });
-  }; 
-
-  handleModeChange = (e, mode) => {
-    console.log(this.state.travelMode)
-    this.setState({
-      travelMode: mode
-    })
+  onLoad(autocomplete) {
+    this.autocomplete = autocomplete;
   }
 
   onPlaceChanged() {
