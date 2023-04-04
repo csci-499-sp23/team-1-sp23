@@ -63,12 +63,14 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ schools: data });
-      })
-      .catch((error) => console.log(error));
+    setTimeout(() => {
+      fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({ schools: data });
+        })
+        .catch((error) => console.log(error));
+    }, 200);
   }
 
   showCard = (bool, obj) => {

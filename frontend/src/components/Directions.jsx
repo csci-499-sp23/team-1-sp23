@@ -31,7 +31,7 @@ class Directions extends Component {
         ) {
           this.setState(() => {
             return {
-              response: response,
+              response,
               oriId,
               destId,
               trvl,

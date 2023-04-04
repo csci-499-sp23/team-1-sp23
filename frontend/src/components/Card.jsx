@@ -261,7 +261,10 @@ class InfoCard extends Component {
 
   onPlaceChanged() {
     if (this.autocomplete !== null) {
-      this.props.updateDirOpts("origin", this.autocomplete.getPlace().formatted_address);
+      this.props.updateDirOpts(
+        "origin",
+        this.autocomplete.getPlace().formatted_address
+      );
     } else {
       console.log("Not complete yet");
     }
@@ -1327,6 +1330,7 @@ class InfoCard extends Component {
                 </ToggleButtonGroup>
 
                 <Box sx={{ mt: 5 }}>
+                  <Typography>From:</Typography>
                   <Autocomplete
                     onLoad={this.onLoad}
                     onPlaceChanged={this.onPlaceChanged}
@@ -1359,6 +1363,7 @@ class InfoCard extends Component {
                 </Box>
 
                 <Box sx={{ mt: 2 }}>
+                  <Typography>To:</Typography>
                   <Paper
                     component="form"
                     sx={{
