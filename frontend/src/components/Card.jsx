@@ -257,6 +257,15 @@ class InfoCard extends Component {
     }
   }
 
+  reviewsAvg = (arr) => {
+    for (const num of arr) {
+      this.state.reviewCounts[num] = this.state.reviewCounts[num] ? this.state.reviewCounts[num] + 1 : 1;
+    }
+    this.setState({
+      avg: (arr.reduce((a, b) => a + b) / arr.length).toFixed(1)
+    })
+  }
+
   setOrigin = (origin) => {
     console.log(origin);
     this.setState({
