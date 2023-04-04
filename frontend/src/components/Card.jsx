@@ -704,7 +704,7 @@ class InfoCard extends Component {
                           fontSize="3.6rem"
                           component="div"
                         >
-                          {this.state.avg}
+                          {this.state.avg == null ? 0 : this.state.avg}
                         </Typography>
                         <Grid item>
                           <Rating

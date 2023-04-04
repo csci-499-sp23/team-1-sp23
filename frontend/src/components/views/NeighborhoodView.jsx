@@ -69,9 +69,9 @@ const NeighborhoodView = () => {
                             return <Typography key={key} variant="body1" sx={{mt: 1}}>{school.school_name}</Typography>
                         })}
                     </Box>
-                    <Box sx={{mt: 5}}>
+                    {/* <Box sx={{mt: 5}}>
                         <Typography variant="h4" fontWeight="400">Homes for sale/rent around {neighborhood}</Typography>
-                    </Box>
+                    </Box> */}
                 </Box>
             </Grid >
             <Grid item xs={8} sx={{

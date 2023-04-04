@@ -149,7 +149,8 @@ class Map extends Component {
   }
 
   handleSearch = () => {
-    this.setState(prevState => ({
+    this.setState(
+      prevState => ({
       ...prevState.center,
       center: {
         lat: this.autocomplete.getPlace().geometry.viewport.Va.hi,
