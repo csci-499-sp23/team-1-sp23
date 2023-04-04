@@ -96,8 +96,15 @@ class InfoCard extends Component {
       destination: "",
       travelMode: "DRIVING",
     };
-    this.autocomplete = null
-    this.onPlaceChanged = this.onPlaceChanged.bind(this)
+
+    this.autocomplete= null
+    this.onDestinationChanged = this.onDestinationChanged.bind(this)
+    this.onOriginChanged = this.onOriginChanged.bind(this)
+  }
+
+  onLoad = (autocomplete) => {
+    console.log('autocomplete: ', autocomplete)
+    this.autocomplete = autocomplete
   }
 
   setReviewData = (data, stars) => {
@@ -305,15 +312,6 @@ class InfoCard extends Component {
     this.props.closeDirections(false)
   }
 
-  onPlaceChanged () {
-    if(this.autocomplete !== null) {
-      console.log(this.autocomplete.getPlace())
-    }
-    else {
-      console.log("Not complete yet")
-    }
-  }
-
   profileOpen = () => {
     this.setState({
       profile: true
@@ -325,6 +323,24 @@ class InfoCard extends Component {
       compareInfo: true
     })
   }
+
+  onOriginChanged = () => {
+    if(this.autocomplete !== null) { 
+      console.log(this.autocomplete.getPlace())
+    }
+    else {
+      console.log("not loaded")
+    }
+  }  
+
+  onDestinationChanged = () => {
+    if(this.autocomplete !== null) { 
+      console.log(this.autocomplete.getPlace())
+    }
+    else {
+      console.log("not loaded")
+    }
+  }  
 
   render() {
     return (
@@ -1347,7 +1363,7 @@ class InfoCard extends Component {
               </ToggleButtonGroup>
 
               <Box sx={{mt:5}}>
-                <Autocomplete>
+                <Autocomplete onLoad={this.onLoad} onPlaceChanged = {this.onOriginChanged}>
                   <Paper
                     component="form"
                     sx={{
@@ -1366,13 +1382,12 @@ class InfoCard extends Component {
                         this.setOrigin(e.target.value)
                       }}
                     />
-
                   </Paper>
                 </Autocomplete>
               </Box>
 
               <Box  sx={{mt:2}}>
-                <Autocomplete types={"secondary_school"}>
+                <Autocomplete onLoad={this.onLoad} onPlaceChanged = {this.onDestinationChanged}>
                   <Paper
                     component="form"
                     sx={{
