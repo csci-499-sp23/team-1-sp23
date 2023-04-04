@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { Autocomplete } from "@mui/material/";
 import { Box } from "@mui/system";
 import SchoolsData from "../schoolData";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 function LiveSearch() {
+  const [selectedSchool, setSelectedSchool] = useState(null);
   const Schools = SchoolsData();
   const navigate = useNavigate();
-
-  const handleChange = (event, value) => {
-    if(value){
-      navigate(`/test/${value.school_name}`)
-    }
-  };
+  
+  const handleSchoolSelection = (event, value) => {
+    setSelectedSchool(value);
+    navigate(`/test/${value.school_name}`, {state: {school: value} });
+  }
 
   return (
     <Stack
@@ -52,8 +53,13 @@ function LiveSearch() {
             }}
           />
         )}
-        onChange={handleChange}
+        onChange={handleSchoolSelection}
       />
+      {selectedSchool && (
+        <Link to={{ pathname: `/test/${selectedSchool.school_name}`, state:{school: selectedSchool} }}>
+          Go to test page
+        </Link>
+      )}
     </Stack>
   );
 }
