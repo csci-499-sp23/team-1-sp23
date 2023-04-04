@@ -6,6 +6,7 @@ import {
   Tab,
   Tabs,
   Typography,
+  Grid
 } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, doc, getDoc, query, where } from "firebase/firestore";
@@ -95,15 +96,19 @@ export default function ProfileView() {
             </Tabs>
             <Box sx={{ my: 3 }}>
               <TabPanel value={value} index={0}>
-                {reviews.length === 0 ? (
-                  <Typography sx={{ color: colors.black }}>
-                    You do not have any reviews.
-                  </Typography>
-                ) : (
-                  reviews.map((data) => (
-                    <ReviewCard {...data} key={data.school} open={open}/>
-                  ))
-                )}
+                <Grid container spacing={0}>
+                  {reviews.length === 0 ? (
+                    <Typography sx={{ color: colors.black }}>
+                      You do not have any reviews.
+                    </Typography>
+                  ) : (
+                    reviews.map((data) => (
+                      <Grid item xs={6}>
+                        <ReviewCard {...data} key={data.school} open={open} />
+                      </Grid>
+                    ))
+                  )}
+                </Grid>
               </TabPanel>
               <TabPanel value={value} index={1}>
                 {savedSchools.length === 0 ? (
@@ -136,12 +141,12 @@ const ReviewCard = ({
   return (
     <>
       <Box sx={{ my: 5 }}>
-        <Paper sx={{ borderRadius: "0.5rem" }} elevation={5}>
+        <Paper sx={{ borderRadius: "0.5rem", width: "40dvw" }} elevation={5}>
           <Box
             sx={{
               background: `no-repeat center`,
               backgroundSize: "cover",
-              height: "5rem",
+              height: "9rem",
               borderRadius: "0.5rem 0.5rem 0 0",
             }}
             className={"alt-school-banner"}
@@ -175,7 +180,7 @@ const ReviewCard = ({
           </IconButton>
         </Paper>
       </Box>
-      {open && (<EditModal user={school} name={school} role={role}/>)}
+      {/* {open && (<EditModal user={school} name={school} role={role}/>)} */}
       
     </>
   );

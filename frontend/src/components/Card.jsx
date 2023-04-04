@@ -89,7 +89,12 @@ class InfoCard extends Component {
       directionError: false,
       profile: false,
       compareInfo: false,
-      currentSchoolRatingAvg: 3,
+      currentSchoolRatingAvg: [],
+      origin: "",
+      destination: "",
+      travelMode: "DRIVING",
+      avg: null,
+      reviewCounts: {},
     };
 
     this.autocomplete = null;
@@ -102,6 +107,7 @@ class InfoCard extends Component {
       reviewData: data,
       currentSchoolRatingAvg: stars,
     }));
+    this.reviewsAvg(this.state.currentSchoolRatingAvg)
   };
 
   getReviews = async () => {
@@ -249,11 +255,16 @@ class InfoCard extends Component {
       console.log("you are not logged in!");
       this.handleSnackbarOpen();
     }
-  };
+  }
 
   reviewsAvg = (arr) => {
-    arr.reduce((a, b) => a + b) / arr.length;
-  };
+    for (const num of arr) {
+      this.state.reviewCounts[num] = this.state.reviewCounts[num] ? this.state.reviewCounts[num] + 1 : 1;
+    }
+    this.setState({
+      avg: (arr.reduce((a, b) => a + b) / arr.length).toFixed(1)
+    })
+  }
 
   onLoad(autocomplete) {
     this.autocomplete = autocomplete;
@@ -390,7 +401,7 @@ class InfoCard extends Component {
                       </IconButton>
                     </Tooltip>
 
-                    <Tooltip title="Profile">
+                    <Tooltip title="Statistics">
                       <IconButton size="large" onClick={this.profileOpen}>
                         <BarChartIcon />
                       </IconButton>
@@ -547,7 +558,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>5</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={100}
+                          value={this.state.reviewCounts[5] == null || "" ? 0 : this.state.reviewCounts[5]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -568,7 +579,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>4</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={75}
+                          value={this.state.reviewCounts[4] == null || "" ? 0 : this.state.reviewCounts[4]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -589,7 +600,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>3</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={50}
+                          value={this.state.reviewCounts[3] == null || "" ? 0 : this.state.reviewCounts[3]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -610,7 +621,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>2</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={25}
+                          value={this.state.reviewCounts[2] == null || "" ? 0 : this.state.reviewCounts[2]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -631,7 +642,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>1</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={0}
+                          value={this.state.reviewCounts[1] == null || "" ? 0 : this.state.reviewCounts[1]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -659,12 +670,12 @@ class InfoCard extends Component {
                           fontSize="3.6rem"
                           component="div"
                         >
-                          4.1
+                          {this.state.avg == null ? 0 : this.state.avg}
                         </Typography>
                         <Grid item>
                           <Rating
                             name="read-only"
-                            value={3}
+                            value={this.state.avg}
                             readOnly
                             size="small"
                           />
@@ -750,10 +761,11 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Grid container spacing={1} justifyContent="center">
-                    <Grid xs={12} item>
+                 <Grid container spacing={1} justifyContent="center">
+                    <Grid item xs={12} sm container>
                       <Grid
                         item
+                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -761,7 +773,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>5</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={100}
+                          value={this.state.reviewCounts[5] == null || "" ? 0 : this.state.reviewCounts[5]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -772,7 +784,9 @@ class InfoCard extends Component {
                           }}
                         />
                       </Grid>
-                      <Box
+                      <Grid
+                        item
+                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -780,7 +794,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>4</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={75}
+                          value={this.state.reviewCounts[4] == null || "" ? 0 : this.state.reviewCounts[4]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -789,9 +803,11 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        />
-                      </Box>
-                      <Box
+                        ></LinearProgress>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -799,7 +815,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>3</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={50}
+                          value={this.state.reviewCounts[3] == null || "" ? 0 : this.state.reviewCounts[3]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -808,10 +824,11 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        />
-                      </Box>
+                        ></LinearProgress>
+                      </Grid>
                       <Grid
                         item
+                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -819,7 +836,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>2</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={25}
+                          value={this.state.reviewCounts[2] == null || "" ? 0 : this.state.reviewCounts[2]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -828,10 +845,11 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        />
+                        ></LinearProgress>
                       </Grid>
                       <Grid
                         item
+                        xs={12}
                         display="flex"
                         flexDirection="row"
                         alignItems="center"
@@ -839,7 +857,7 @@ class InfoCard extends Component {
                         <Typography sx={{ mr: 1 }}>1</Typography>
                         <LinearProgress
                           variant="determinate"
-                          value={0}
+                          value={this.state.reviewCounts[1] == null || "" ? 0 : this.state.reviewCounts[1]}
                           sx={{
                             height: 10,
                             borderRadius: 5,
@@ -848,7 +866,7 @@ class InfoCard extends Component {
                               md: 220,
                             },
                           }}
-                        />
+                        ></LinearProgress>
                       </Grid>
                     </Grid>
                     <Grid xs={4} item>
@@ -866,14 +884,14 @@ class InfoCard extends Component {
                           fontSize="3.6rem"
                           component="div"
                         >
-                          4.1
+                          {this.state.avg == null ? 0 : this.state.avg}
                         </Typography>
                         <Box>
                           <Rating
                             name="read-only"
-                            value={3}
+                            value={this.state.avg}
                             readOnly
-                            precision={0.5}
+                            precision={0.1}
                           />
                         </Box>
                       </Box>
