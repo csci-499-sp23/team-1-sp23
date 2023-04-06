@@ -23,11 +23,14 @@ export default function Navbar({ loggedIn, handleLogout }) {
     setAnchorElNav(null);
   };
 
+  const handleClickTitle = () => {
+    document.title = "SchoolsDB";
+  };
     return(
   <Box sx={{ width: "100%" }}>
     <AppBar position="sticky" style={{ background: "#2b2d42" }}>
       <Toolbar>
-        <Link to="/" >
+        <Link to="/" onClick={handleClickTitle} >
             <Typography
               variant="h6"
               component="p"

@@ -29,6 +29,7 @@ import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
+import Navbar from "./NavBar";
 
 const containerStyle = {
     width: "100%",
@@ -58,6 +59,8 @@ const NeighborhoodView = () => {
     }, []);
 
     return (
+        <>
+        <Navbar/>
         <Grid container columns={{ xs: 4, sm: 8, md: 16 }}>
             <Grid item xs={8}>
                 <Box sx={{m: 10}}>
@@ -107,7 +110,9 @@ const NeighborhoodView = () => {
                 </LoadScript>
             </Grid>
         </Grid>
+        </>
     )
+
 }
 
 export default NeighborhoodView;

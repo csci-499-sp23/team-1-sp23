@@ -1,19 +1,17 @@
-import SchoolpageView from "../views/SchoolpageView"
-import React, { useEffect, useState } from 'react';
+import SchoolpageView from "../views/SchoolpageView";
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function SchoolpageContainer() {
-  const [selectedSchool, setSelectedSchool] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
-    if (selectedSchool) {
-      document.title = selectedSchool.school_name;
+    if (location.state && location.state.school) {
+      document.title = `${location.state.school.school_name} | School Name`;
     }
-  }, [selectedSchool]);
+  }, [location]);
 
   return (
-    <SchoolpageView
-      onSchoolSelection={setSelectedSchool}
-      selectedSchool={selectedSchool}
-    />
+    <SchoolpageView />
   );
 }
