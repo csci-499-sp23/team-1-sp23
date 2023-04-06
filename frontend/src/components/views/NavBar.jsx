@@ -24,7 +24,7 @@ export default function Navbar({ loggedIn, handleLogout }) {
   };
 
   const handleClickTitle = () => {
-    setAnchorElNav(null);
+    document.title = "SchoolsDB";
   };
     return(
   <Box sx={{ width: "100%" }}>
