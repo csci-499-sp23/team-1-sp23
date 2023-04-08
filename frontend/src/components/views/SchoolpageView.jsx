@@ -23,7 +23,7 @@ function SchoolpageView() {
                 display: 'flex',
                 alignItems: 'center',
                 marginLeft: '1in',
-                fontFamily: 'Futura',
+                
                 fontSize: 45,
                 fontWeight: '',
               }}

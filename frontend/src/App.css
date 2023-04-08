@@ -27,7 +27,6 @@
   background-color: #FAFAFA;
   height: 100vh;
   width: 2in;
-  
   bottom: 0;
   overflow: auto;
   padding: 1em;
@@ -38,7 +37,6 @@
   font-family: "Open Sans", sans-serif;
   display: block;
   flex-direction: column;
-
   margin-left: 1in;
   margin-top: 2rem;
 
@@ -91,6 +89,9 @@
   margin-top: 2rem;
 }
 
+.schoolpage-header {
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+}
 
 @media (max-width: 1260px) {
   .schoolpage-header {
@@ -146,7 +147,6 @@
 
 @media (max-width: 900px) {
   .schoolpage-subtitle {
-    
     font-size: 90%;
     transition: all 0.3s ease;
   }
