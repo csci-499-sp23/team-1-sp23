@@ -2,20 +2,19 @@ import React from 'react';
 import NavBar from "./NavBar";
 import { useLocation } from 'react-router-dom';
 
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, List, ListItemButton, ListItemText, Typography } from '@mui/material';
+
 import { LocationOn, Phone } from '@mui/icons-material';
 
-import { styled } from '@mui/material/styles';
-import Drawer from '@mui/material/Drawer';
-import Grid from "@mui/material/Grid";
+
 
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
   return (
     <>
-    <NavBar />
-    <Grid container>
+      <NavBar />
+      <Grid container>
         <Grid item xs={12} sm={12} md={12}>
           <Box sx={{ bgcolor: '#194973', py: 3.5 }}>
             <Typography
@@ -30,7 +29,6 @@ function SchoolpageView() {
                 fontFamily: 'Futura',
                 fontSize: 45,
                 fontWeight: '',
-                
               }}
             >
               {school?.school_name}
@@ -101,6 +99,49 @@ function SchoolpageView() {
             </Typography>
           </Box>
         </Grid>
+
+        <Grid item xs={12} sm={12} md={2}>
+          <Box className="leftwing-container">
+            <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
+            <List sx={{ mb: 3 }}>
+              <ListItemButton sx={{ pl: 0 }}>
+                data 1
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }}>
+                data 2
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }}>
+                data 3
+              </ListItemButton>
+            </List>
+            <Typography variant="h6" sx={{ mb: 2 }}>Environment</Typography>
+            <List>
+              <ListItemButton sx={{ pl: 0 }}>
+                data 1
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }}>
+                data 2
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }}>
+                data 3
+              </ListItemButton>
+            </List>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={12} md={8}>
+          <Box className="middle-container-wrapper">
+            <Box className="middle-container">
+              Hello
+            </Box>
+            <Box className="middle-container">
+              Goodbye
+            </Box>
+            <Box className="middle-container">
+              Goodbye
+            </Box>
+          </Box>
+        </Grid>
+
       </Grid>
     </>
   );
