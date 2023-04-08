@@ -23,13 +23,11 @@
 }
 
 
-.leftwing-container {
+.left-container {
   background-color: #FAFAFA;
   height: 100vh;
-  width: 15%;
-  position: absolute;
-  left: 1in;
-  top: 3.4in;
+  width: 2in;
+  
   bottom: 0;
   overflow: auto;
   padding: 1em;
@@ -40,9 +38,13 @@
   font-family: "Open Sans", sans-serif;
   display: block;
   flex-direction: column;
+
+  margin-left: 1in;
+  margin-top: 2rem;
+
 }
 
-.leftwing-container h6 {
+.left-container h6 {
   text-transform: uppercase;
   font-size: 12px;
   font-weight: bold;
@@ -54,34 +56,31 @@
   color:rgb(80, 80, 80);
 }
   
-  .leftwing-container .Mui-selected {
+  .left-container .Mui-selected {
   background-color: #e0f2f1 !important;
   }
   
-  .leftwing-container .Mui-selected:hover {
+  .left-container .Mui-selected:hover {
   background-color: #0f9ec6 !important;
   }
     
-  .leftwing-container .MuiListItemButton-root:hover {
+  .left-container .MuiListItemButton-root:hover {
     background-color: #ffffff;
     color: rgb(22, 161, 221);
-  }
-
-@media (max-width: 768px) { 
-  .leftwing-container {
-    display: none;
-  }
-}
+  } 
 
 .middle-containers-wrapper {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2em;
 }
 
 .middle-container {
   background-color: #ffffff;
   height: 50vh;
-  width: 80%;
+  width: 8in;
   overflow: auto;
   padding: 1em;
   border-radius: 15px;
@@ -91,5 +90,82 @@
   margin-left: 10em;
   margin-top: 2rem;
 }
+
+
+@media (max-width: 1260px) {
+  .schoolpage-header {
+    margin: 0;
+    padding-left: 0.2in;
+    transition: all 0.3s ease;
+  }
+}
+
+@media (max-width: 1260px) {
+  .schoolpage-subtitle {
+    margin: 0;
+    padding-left: 0.2in;
+    transition: all 0.3s ease;
+  }
+}
+
+@media (max-width: 1260px) { 
+  .left-container {
+    margin-left: 0.2in;
+    transition: all 0.5s ease;
+  }
+}
+
+@media (max-width: 1260px) {
+  .middle-container {
+    margin-left: 8em;
+    transition: all 0.5s ease;
+  }
+}
+
+@media (max-width: 1175px) {
+  .middle-container {
+    width: 90%;
+    transition: all 0.5s ease;
+  }
+}
+
+@media (max-width: 1000px) {
+  .middle-container {
+    width: 85%;
+    transition: all 0.5s ease;
+  }
+}
+
+@media (max-width: 900px) {
+  .schoolpage-header {
+    
+    font-size: 200%;
+    transition: all 0.3s ease;
+  }
+}
+
+@media (max-width: 900px) {
+  .schoolpage-subtitle {
+    
+    font-size: 90%;
+    transition: all 0.3s ease;
+  }
+}
+
+
+@media (max-width: 900px) { 
+  .left-container {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .middle-container {
+    width: 90%;
+    margin: 2rem auto;
+    transition: all 0.5s ease;
+  }
+}
+
 
 

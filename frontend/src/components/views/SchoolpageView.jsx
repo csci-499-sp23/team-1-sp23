@@ -1,12 +1,9 @@
 import React from 'react';
-import NavBar from "./NavBar";
 import { useLocation } from 'react-router-dom';
-
-import { Box, Grid, List, ListItemButton, ListItemText, Typography } from '@mui/material';
-
+import { Box, Grid, List, ListItemButton, Typography } from '@mui/material';
 import { LocationOn, Phone } from '@mui/icons-material';
 
-
+import NavBar from "./NavBar";
 
 function SchoolpageView() {
   const location = useLocation();
@@ -30,6 +27,7 @@ function SchoolpageView() {
                 fontSize: 45,
                 fontWeight: '',
               }}
+              className="schoolpage-header"
             >
               {school?.school_name}
             </Typography>
@@ -45,6 +43,7 @@ function SchoolpageView() {
                 display: 'flex',
                 alignItems: 'center',
               }}
+              className="schoolpage-subtitle"
             >
               <Box
                 component="span"
@@ -86,6 +85,7 @@ function SchoolpageView() {
                 display: 'flex',
                 alignItems: 'center',
               }}
+              className="schoolpage-subtitle"
             >
               <span>
                 District: <strong style={{ color: 'white' }}>#{school?.dbn.slice(0, 2)}</strong>
@@ -101,7 +101,7 @@ function SchoolpageView() {
         </Grid>
 
         <Grid item xs={12} sm={12} md={2}>
-          <Box className="leftwing-container">
+          <Box className="left-container">
             <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
             <List sx={{ mb: 3 }}>
               <ListItemButton sx={{ pl: 0 }}>
@@ -131,13 +131,13 @@ function SchoolpageView() {
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
             <Box className="middle-container">
-              Hello
+              Test 1
             </Box>
             <Box className="middle-container">
-              Goodbye
+              Test 2
             </Box>
             <Box className="middle-container">
-              Goodbye
+              Test 3
             </Box>
           </Box>
         </Grid>
