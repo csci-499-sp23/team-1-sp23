@@ -102,10 +102,10 @@ function SchoolpageView() {
 
         <Grid item xs={12} sm={12} md={2}>
           <Box className="left-container">
-            <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>School Profile</Typography>
             <List sx={{ mb: 3 }}>
               <ListItemButton sx={{ pl: 0 }}>
-                data 1
+                Overview
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
                 data 2
@@ -130,8 +130,10 @@ function SchoolpageView() {
         </Grid>
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
-            <Box className="middle-container">
-              Test 1
+            <Box className="middle-container school-profile-overview">
+              <h3>School Profile</h3>
+              <h2>Overview</h2>
+              <p>{school?.overview_paragraph}</p>
             </Box>
             <Box className="middle-container">
               Test 2

@@ -7,7 +7,7 @@ export default function SchoolpageContainer() {
 
   useEffect(() => {
     if (location.state && location.state.school) {
-      document.title = `${location.state.school.school_name} | School Name`;
+      document.title = `${location.state.school.school_name} | School Page`;
     }
   }, [location]);
 
