@@ -167,7 +167,7 @@
   }
 }
 
-.school-profile-overview {
+.school-profile {
   color: black;
   font-family: 'Open Sans', sans-serif;
   padding-left: 25px;
@@ -175,13 +175,13 @@
   border-bottom: 10px solid #ccc;
 }
 
-.school-profile-overview h2 {
+.school-profile h2 {
   font-size: 28px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-top: 0;
 }
 
-.school-profile-overview h3 {
+.school-profile h3 {
   font-size: 18px;
   margin-top: 10px;
   margin-bottom: 0.1px;
@@ -189,7 +189,12 @@
   text-transform: uppercase;
 }
 
-.school-profile-overview p {
+.school-profile h4 {
+  font-size: 15px;
+  margin: 0px; 
+}
+
+.school-profile p {
   color: #3a3a3a;
   font-size: 16px;
   margin-top: 5px;

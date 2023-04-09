@@ -1,13 +1,14 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Grid, List, ListItemButton, Typography } from '@mui/material';
-import { LocationOn, Phone } from '@mui/icons-material';
+import { Box, Grid, List, ListItem, ListItemButton, Typography } from '@mui/material';
+import { LocationOn, Phone, AccessTime } from '@mui/icons-material';
 
 import NavBar from "./NavBar";
 
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
+  
   return (
     <>
       <NavBar />
@@ -108,13 +109,13 @@ function SchoolpageView() {
                 Overview
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
-                data 2
+                Schedule & Navigation
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
-                data 3
+                Contact Information
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Environment</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
             <List>
               <ListItemButton sx={{ pl: 0 }}>
                 data 1
@@ -126,17 +127,41 @@ function SchoolpageView() {
                 data 3
               </ListItemButton>
             </List>
+            <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
-            <Box className="middle-container school-profile-overview">
+            <Box className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Overview</h2>
               <p>{school?.overview_paragraph}</p>
             </Box>
-            <Box className="middle-container">
-              Test 2
+            <Box className="middle-container school-profile">
+              <h3>School Profile</h3>
+              <h2>Schedule and Navigation</h2>
+              <h4>Start and End Time</h4>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <ListItem>
+                  <AccessTime sx={{ fontSize: '1.5rem', pr: '15px' }} />
+                  <p>{school?.start_time} - {school?.end_time}</p>
+                </ListItem>
+              </Box>
+              <h4>Nearby Transportation</h4>
+              <List>
+                {school?.subway && school.subway !== "N/A" && (
+                  <ListItem>
+                    <Typography variant="p">Subway: {school.subway}</Typography>
+                  </ListItem>
+                )}
+                {school?.bus && school.bus !== "N/A" && (
+                  <ListItem>
+                    <Typography variant="p">Bus: {school.bus}</Typography>
+                  </ListItem>
+                )}
+              </List>
             </Box>
             <Box className="middle-container">
               Test 3
