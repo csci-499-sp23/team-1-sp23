@@ -3,12 +3,51 @@ import { useLocation } from 'react-router-dom';
 import { Box, Grid, List, ListItem, ListItemButton, Typography } from '@mui/material';
 import { LocationOn, Phone, AccessTime } from '@mui/icons-material';
 
+
 import NavBar from "./NavBar";
+
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker
+} from '@react-google-maps/api';
+import { mK } from "../../config/environment";
 
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
+
+  const containerStyle = {
+    width: '100%',
+    height: '400px'
+  };
+
+  const center = {
+    lat: Number(school?.latitude),
+    lng: Number(school?.longitude)
+  };
   
+  const Map = () => {
+    const { isLoaded } = useJsApiLoader({
+      id: 'google-map-script',
+      googleMapsApiKey: mK
+    });
+  
+    const renderMap = () => {
+      return (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={15}
+        >
+          <Marker position={center} />
+        </GoogleMap>
+      );
+    };
+    return isLoaded ? renderMap() : null;
+  };
+
+
   return (
     <>
       <NavBar />
@@ -109,10 +148,10 @@ function SchoolpageView() {
                 Overview
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
-                Schedule & Navigation
+                Schedule and Contact
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
-                Contact Information
+                Navigation
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
@@ -139,9 +178,10 @@ function SchoolpageView() {
               <h2>Overview</h2>
               <p>{school?.overview_paragraph}</p>
             </Box>
+    
             <Box className="middle-container school-profile">
               <h3>School Profile</h3>
-              <h2>Schedule and Navigation</h2>
+              <h2>Schedule and Contact Information</h2>
               <h4>Start and End Time</h4>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <ListItem>
@@ -149,6 +189,11 @@ function SchoolpageView() {
                   <p>{school?.start_time} - {school?.end_time}</p>
                 </ListItem>
               </Box>
+            </Box>
+
+            <Box className="middle-container school-profile">
+              <h3>School Profile</h3>
+              <h2>Navigation</h2>
               <h4>Nearby Transportation</h4>
               <List>
                 {school?.subway && school.subway !== "N/A" && (
@@ -162,9 +207,8 @@ function SchoolpageView() {
                   </ListItem>
                 )}
               </List>
-            </Box>
-            <Box className="middle-container">
-              Test 3
+              <h4>Map, Directions and More Information</h4>
+              <Map />
             </Box>
           </Box>
         </Grid>
