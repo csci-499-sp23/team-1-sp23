@@ -2,52 +2,17 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Grid, List, ListItem, ListItemButton, Typography } from '@mui/material';
 import { LocationOn, Phone, AccessTime } from '@mui/icons-material';
-
-
 import NavBar from "./NavBar";
 
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Marker
-} from '@react-google-maps/api';
-import { mK } from "../../config/environment";
+import Iframe from 'react-iframe';
 
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
-
-  const containerStyle = {
-    width: '100%',
-    height: '400px'
-  };
-
-  const center = {
-    lat: Number(school?.latitude),
-    lng: Number(school?.longitude)
-  };
+  const latitude = Number(school?.latitude);
+  const longitude = Number(school?.longitude);
+  const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
   
-  const Map = () => {
-    const { isLoaded } = useJsApiLoader({
-      id: 'google-map-script',
-      googleMapsApiKey: mK
-    });
-  
-    const renderMap = () => {
-      return (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={15}
-        >
-          <Marker position={center} />
-        </GoogleMap>
-      );
-    };
-    return isLoaded ? renderMap() : null;
-  };
-
-
   return (
     <>
       <NavBar />
@@ -207,8 +172,16 @@ function SchoolpageView() {
                   </ListItem>
                 )}
               </List>
-              <h4>Map, Directions and More Information</h4>
-              <Map />
+              <h4>Map, Directions, and More</h4>
+              <Iframe
+                url={url}
+                width="80%"
+                height="400"
+                frameborder="0"
+                scrolling="no"
+                marginheight="0"
+                marginwidth="0"
+              />
             </Box>
           </Box>
         </Grid>
