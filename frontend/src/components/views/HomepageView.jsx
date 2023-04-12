@@ -32,9 +32,10 @@ export default function HomepageView() {
     const x = acc.find((item) => item.neighborhood === current.neighborhood);
     if (!x) {
       return acc.concat([current]);
+    } else {
+      return acc;
     }
-    return acc;
-  },[]);
+  }, []);
 
   const [open, setOpen] = React.useState(false);
   const [borough, setBorough] = React.useState("");
@@ -47,7 +48,7 @@ export default function HomepageView() {
   }, []);
 
   const handleChange = (event) => {
-    setBorough(Number(event.target.value) || "");
+    setBorough(Number(event.target.value));
   };
 
   const handleClickOpen = () => {
@@ -124,58 +125,11 @@ export default function HomepageView() {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleClose}>Search</Button>
+              <Button onClick={handleClose} href="/map">Search</Button>
             </DialogActions>
           </Dialog>
         </div>
       </Box>
-
-      <FooterBox>
-        <Container>
-          <Row>
-            <Column>
-              <Heading>Queens</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "Q") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Brooklyn</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "K") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Bronx</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "X") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Manhattan</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "M") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Staten Island</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "R") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-          </Row>
-        </Container>
-      </FooterBox>
     </>
   );
 }
