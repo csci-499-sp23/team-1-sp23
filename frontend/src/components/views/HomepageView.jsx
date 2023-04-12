@@ -130,53 +130,6 @@ export default function HomepageView() {
           </Dialog>
         </div>
       </Box>
-
-      <FooterBox>
-        <Container>
-          <Row>
-            <Column>
-              <Heading>Queens</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "Q") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Brooklyn</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "K") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Bronx</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "X") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Manhattan</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "M") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-            <Column>
-              <Heading>Staten Island</Heading>
-              {filteredArr.map((school, key) => {
-                if (school.borocode === "R") {
-                  return <Link key={key} href={`neighborhood/${school.neighborhood}`} underline="none">{school.neighborhood}</Link>
-                }
-              })}
-            </Column>
-          </Row>
-        </Container>
-      </FooterBox>
     </>
   );
 }
