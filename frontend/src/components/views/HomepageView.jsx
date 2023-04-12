@@ -8,7 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import LiveSearch from "./LiveSearch";
+import LiveSearch from "../LiveSearch";
 import Link from "@mui/material/Link"
 import {
   FooterBox,
