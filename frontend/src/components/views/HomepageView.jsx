@@ -8,7 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import LiveSearch from "../LiveSearch";
+import LiveSearch from "./LiveSearch";
 import Link from "@mui/material/Link"
 import {
   FooterBox,
@@ -32,9 +32,10 @@ export default function HomepageView() {
     const x = acc.find((item) => item.neighborhood === current.neighborhood);
     if (!x) {
       return acc.concat([current]);
+    } else {
+      return acc;
     }
-    return acc;
-  },[]);
+  }, []);
 
   const [open, setOpen] = React.useState(false);
   const [borough, setBorough] = React.useState("");
@@ -47,7 +48,7 @@ export default function HomepageView() {
   }, []);
 
   const handleChange = (event) => {
-    setBorough(Number(event.target.value) || "");
+    setBorough(Number(event.target.value));
   };
 
   const handleClickOpen = () => {
@@ -124,7 +125,7 @@ export default function HomepageView() {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleClose}>Search</Button>
+              <Button onClick={handleClose} href="/map">Search</Button>
             </DialogActions>
           </Dialog>
         </div>
