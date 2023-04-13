@@ -5,6 +5,7 @@ import { LocationOn, Phone, AccessTime } from '@mui/icons-material';
 import NavBar from "./NavBar";
 
 import Iframe from 'react-iframe';
+import { Link } from 'react-router-dom';
 
 function SchoolpageView() {
   const location = useLocation();
@@ -12,7 +13,7 @@ function SchoolpageView() {
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
-  
+
   return (
     <>
       <NavBar />
@@ -172,16 +173,19 @@ function SchoolpageView() {
                   </ListItem>
                 )}
               </List>
-              <h4>Map, Directions, and More</h4>
-              <Iframe
-                url={url}
-                width="80%"
-                height="400"
-                frameborder="0"
-                scrolling="no"
-                marginheight="0"
-                marginwidth="0"
-              />
+              <Link to="/map">
+              <h4>Click here for more maps, and directs information</h4>
+                <div className="map-wrapper">
+                  <Iframe
+                    url={url}
+                    className="map-iframe"
+                    width="80%"
+                    height="400"
+                    frameborder="0"
+                    scrolling="no"
+                  />
+                </div>
+              </Link>
             </Box>
           </Box>
         </Grid>
