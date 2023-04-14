@@ -55,6 +55,7 @@ import {
   getDocs,
   updateDoc,
   arrayUnion,
+  onSnapshot
 } from "firebase/firestore";
 
 const urlFix = (url) => {
@@ -102,12 +103,18 @@ class InfoCard extends Component {
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
   }
 
+  onLoad = (autocomplete) => {
+    console.log('autocomplete: ', autocomplete)
+    this.autocomplete = autocomplete;
+  }
+
   setReviewData = (data, stars) => {
     this.setState(() => ({
       reviewData: data,
       currentSchoolRatingAvg: stars,
     }));
-    this.reviewsAvg(this.state.currentSchoolRatingAvg)
+    console.log(stars)
+    this.reviewsAvg(stars)
   };
 
   getReviews = async () => {
@@ -261,15 +268,18 @@ class InfoCard extends Component {
     for (const num of arr) {
       this.state.reviewCounts[num] = this.state.reviewCounts[num] ? this.state.reviewCounts[num] + 1 : 1;
     }
-    this.setState({
-      avg: (arr.reduce((a, b) => a + b) / arr.length).toFixed(1)
-    })
+    if (arr.length != 0) {
+      this.setState({
+        avg: (arr.reduce((a, b) => a + b) / arr.length).toFixed(1)
+      })
+    }
+    else {
+      this.setState({
+        avg: 0
+      })
+    }
   }
-
-  onLoad(autocomplete) {
-    this.autocomplete = autocomplete;
-  }
-
+  
   onPlaceChanged() {
     if (this.autocomplete !== null) {
       this.props.updateDirOpts(
@@ -547,7 +557,7 @@ class InfoCard extends Component {
                   </Typography>
 
                   <Grid container spacing={1} justifyContent="center">
-                    <Grid item xs={12} sm container>
+                    <Grid item xs={8} sm container>
                       <Grid
                         item
                         xs={12}
@@ -685,7 +695,7 @@ class InfoCard extends Component {
                     <Grid item sx={{ width: "100%", mt: 2 }}>
                       {this.state.reviewData.slice(0, 3).map((data) => {
                         return (
-                          <Grid container sx={{ m: 1 }}>
+                          <Grid container key={data} sx={{ m: 1 }}>
                             <Grid
                               item
                               sx={{
