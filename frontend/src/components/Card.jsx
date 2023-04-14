@@ -57,15 +57,17 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 
-const urlFix = (url) => {
-  return url
+const urlFix = (schoolUrl) => {
+  let fixedUrl = schoolUrl
     .split("http://")
     .at(-1)
     .split("https://")
     .at(-1)
-    .split("www.")
-    .at(-1)
     .toLowerCase();
+  if (!fixedUrl.startsWith("www.")) {
+    fixedUrl = `www.${fixedUrl}`;
+  }
+  return fixedUrl;
 };
 
 const TabPanel = ({ children, value, index }) => {
