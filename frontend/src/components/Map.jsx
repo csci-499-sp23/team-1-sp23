@@ -180,7 +180,7 @@ class Map extends Component {
               <Toolbar sx={{ zIndex: `100` }} disableGutters>
                 <Stack
                   direction={{ xs: "column", sm: "column", md: "row" }}
-                  spacing={{ xs: 2, sm: 2, md: 5 }}
+                  spacing={{ xs: 2, sm: 2, md: 4 }}
                   sx={{
                     display: "flex",
                     justifyContent: "center",
@@ -272,8 +272,8 @@ class Map extends Component {
                   >
                     <Stack
                       direction="row"
-                      spacing={2}
-                      sx={{ overflow: "auto" }}
+                      spacing={1}
+                      sx={{ overflow: "auto"}}
                     >
                       {boroughs.map((borough) => (
                         <Chip
@@ -286,8 +286,7 @@ class Map extends Component {
                           }
                           onClick={() => this.handleFilter(borough)}
                           sx={{
-                            mr: 2,
-                            mb: 2,
+                            mr: 1,
                             backgroundColor: this.state.activeFilters.includes(
                               borough
                             )

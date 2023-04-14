@@ -14,7 +14,9 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
-    ResponsiveContainer
+    ResponsiveContainer,
+    BarChart,
+    Bar,
 } from 'recharts'
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from '@mui/material/CircularProgress';
@@ -24,7 +26,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
 
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from '@mui/material/TextField';
@@ -48,16 +49,17 @@ class Stats extends Component {
             examTypes: [],
             selectedCategory: "Living Environment",
             category: "English Proficient",
+            selected: "",
         }
         this.inputValue = null
     }
 
     componentDidMount() {
+        //GETS REGENTS DATA
         fetch(`https://data.cityofnewyork.us/resource/2h3w-9uj9.json?school_dbn=${this.props.school}`)
             .then((response) => response.json())
             .then((data) => {
                 this.state.regentsData.push(data)
-                console.log(data)
                 data.map((exam) => {
                     this.state.examTypes.indexOf(exam.regents_exam) === -1 ? this.state.examTypes.push(exam.regents_exam) : console.log("This item already exists");
                 })
@@ -68,20 +70,50 @@ class Stats extends Component {
             .catch((error) => {
                 console.log(error)
             })
+
+        //GETS 2012 AP DATA 
+        fetch(`https://data.cityofnewyork.us/resource/9ct9-prf9.json?dbn=${this.props.school}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if(data[0].num_of_ap_exams_passed !== "s" || "S" || null || undefined) {
+                    this.state.apData.push(data)
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+
+        //GETS 2010 AP DATA 
+        fetch(`https://data.cityofnewyork.us/resource/itfs-ms3e.json?dbn=${this.props.school}`)
+            .then((response) => response.json())
+            .then((data) => {
+
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+
+
+        //GETS 2012 SAT DATA 
+        fetch(`https://data.cityofnewyork.us/resource/f9bf-2cp4.json?dbn=${this.props.school}`)
+            .then((response) => response.json())
+            .then((data) => {
+                this.state.satData.push(data)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     setExamTypes = (e, type) => {
         this.setState({
             selectedCategory: type
         })
-        console.log(this.state.selectedCategory)
     }
     setInputExamTypes = (e, newValue) => {
         this.setState({
             inputValue: newValue
         })
-        console.log(this.state.selectedCategory)
-
     }
 
     handleTab = (_, value) => {
@@ -97,9 +129,15 @@ class Stats extends Component {
     }
 
     handleExamChange = (e) => {
-        console.log(e.target.value)
         this.setState({
+            filteredData: [],
             selectedCategory: e.target.value
+        })
+    }
+
+    selectionChangeHandler = (e) => {
+        this.setState({ 
+            selected: e.target.value
         })
     }
 
@@ -114,7 +152,7 @@ class Stats extends Component {
         else {
             return (
                 <Box sx={{
-                    zIndex: 100000,
+                    zIndex: 100,
                     position: "absolute",
                     left: "50%",
                     top: "50%",
@@ -149,8 +187,11 @@ class Stats extends Component {
 
                     <Box sx={{
                         display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between"
+                        flexDirection: {
+                            xs: "column",
+                            sm: "row"
+                        },
+                        justifyContent: "space-between",
                     }}>
                         <Tabs
                             sx={{ alignSelf: "center", mb: 2, pl: 4 }}
@@ -161,7 +202,12 @@ class Stats extends Component {
                             <Tab sx={{ fontWeight: "500", mx: 2 }} label="AP Exams Results" />
                             <Tab sx={{ fontWeight: "500", ml: 2 }} label="SAT Exams Results" />
                         </Tabs>
-                        <Box sx={{pr: 4}}>
+
+
+                        <Box sx={{ pl: {
+                            xs: 0,
+                            sm: 84,
+                        } }}>
                             <ToggleButtonGroup value={this.state.category} onChange={this.handleCategoryChange} exclusive>
                                 <ToggleButton value="English Proficient">
                                     English Proficient
@@ -175,39 +221,27 @@ class Stats extends Component {
                             </ToggleButtonGroup>
                         </Box>
 
-                        <FormControl sx={{pr: 4}}>
-                            <InputLabel id="demo-simple-select-label">Exam Type</InputLabel>
+                        <FormControl sx={{ pr: 4 }}>
+                            <InputLabel id="simple-select-label">Exam Type</InputLabel>
                             <Select
                                 value={this.state.selectedCategory}
                                 label="Exam"
                                 onChange={this.handleExamChange}
+                                sx={{ zIndex: 1000 }}
                             >
-                                {this.state.examTypes.map((exam, index) => (
-                                    <MenuItem key={index} value={exam} sx={{color: "red", p: 5}}>
-                                        {exam}
-                                    </MenuItem>
-                                ))}
+                                {this.state.examTypes.map((exam, index) => {
+                                    return (
+                                        <MenuItem key={index} value={exam}>
+                                            {exam}
+                                        </MenuItem>
+                                    )
+                                })}
                             </Select>
                         </FormControl>
-                        {/* <Autocomplete
-                            disablePortal
-                            value={this.state.selectedCategory || null}
-                            onChange={(e, newValue) => {
-                                this.setExamTypes(newValue);
-                            }}
-                            inputValue={this.state.inputValue}
-                            onInputChange={(e, newInputValue) => {
-                                console.log(newInputValue)
-                                this.setInputExamTypes(newInputValue);
-                            }}
-                            sx={{ width: 300, pr: 4 }}
-                            options={this.state.examTypes}
-                            renderInput={(params) =>
-                                <TextField {...params} label="Exam type" />
-                            }
-                        /> */}
+
                     </Box>
 
+                    {/* REGENTS DATA TAB */}
                     <TabPanel
                         value={0}
                         index={this.state.selectedTab}
@@ -217,89 +251,102 @@ class Stats extends Component {
                             this.state.regentsData.map(school => {
                                 school.forEach((exam) => {
                                     if (exam.regents_exam == this.state.selectedCategory && exam.category == this.state.category) {
+                                        
                                         this.state.filteredData.push(exam)
                                     }
                                 })
                             })
                         }
 
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart
-                                width={500}
-                                height={100}
-                                data={this.state.filteredData}
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="year" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="mean_score" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        {this.state.filteredData != null || "" || undefined ?
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart
+                                    width={500}
+                                    height={100}
+                                    data={this.state.filteredData}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="year" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="mean_score" stroke="#8884d8" activeDot={{ r: 8 }} />
 
-                            </LineChart>
-                        </ResponsiveContainer>
+                                </LineChart>
+                            </ResponsiveContainer>
+                            
+                            :
+
+                            <Typography sx = {{width:"100%", height: "100%"}}>No data available for this</Typography>
+
+                        }
+                       
                     </TabPanel>
 
+                    {/* AP DATA TAB */}
                     <TabPanel
                         value={1}
                         index={this.state.selectedTab}
                         sx={{ p: 2 }}
                     >
+                        {this.state.apData.length !== 0 || "" || undefined ? 
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart
+                            <BarChart
                                 width={500}
                                 height={100}
-                                data={this.state.apData}
+                                data={this.state.apData[0]}
                                 margin={{
                                     top: 5,
                                     right: 30,
                                     left: 20,
                                     bottom: 5,
-                                }}
-                            >
+                                }}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="year" />
+                                <XAxis dataKey="" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Line type="monotone" dataKey="mean_score" stroke="#8884d8" activeDot={{ r: 8 }} />
-
-                            </LineChart>
-                        </ResponsiveContainer>
+                                <Bar dataKey="num_of_ap_total_exams_taken" fill="#8884d8" />
+                                <Bar dataKey="num_of_ap_exams_passed" fill="#82ca9d" />
+                            </BarChart>
+                        </ResponsiveContainer> :
+                            <Typography color = "text.primary">No data available for this</Typography>
+                        }
 
                     </TabPanel>
 
+                    {/* SAT DATA TAB */}
                     <TabPanel
                         value={2}
                         index={this.state.selectedTab}
                         sx={{ p: 2 }}
                     >
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart
+                        <BarChart
                                 width={500}
                                 height={100}
-                                data={this.state.satData}
+                                data={this.state.satData[0]}
                                 margin={{
                                     top: 5,
                                     right: 30,
                                     left: 20,
                                     bottom: 5,
-                                }}
-                            >
+                                }}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="year" />
+                                <XAxis dataKey="" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Line type="monotone" dataKey="mean_score" stroke="#8884d8" activeDot={{ r: 8 }} />
-
-                            </LineChart>
+                                <Bar dataKey="sat_critical_reading_avg_score" fill="#8884d8" />
+                                <Bar dataKey="sat_math_avg_score" fill="#82ca9d" />
+                                <Bar dataKey="sat_writing_avg_score" fill="#23b5d3" />
+                            </BarChart>
                         </ResponsiveContainer>
                     </TabPanel>
                 </Box>
