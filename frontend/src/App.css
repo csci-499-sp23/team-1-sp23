@@ -76,7 +76,7 @@
 
 .middle-container {
   background-color: #ffffff;
-  height: 50vh;
+  height: auto;
   width: 8in;
   overflow: auto;
   padding: 1em;
@@ -86,6 +86,7 @@
   font-family: "Open Sans", sans-serif;
   margin-left: 10em;
   margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .schoolpage-header {
@@ -166,5 +167,44 @@
   }
 }
 
+.school-profile {
+  color: black;
+  font-family: 'Open Sans', sans-serif;
+  padding-left: 25px;
+  padding-right: 25px;
+  border-bottom: 10px solid #ccc;
+}
 
+.school-profile h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
 
+.school-profile h3 {
+  font-size: 18px;
+  margin-top: 10px;
+  margin-bottom: 0.1px;
+  font-weight: 500; 
+  text-transform: uppercase;
+}
+
+.school-profile h4 {
+  font-size: 15px;
+  margin: 0px; 
+}
+
+.school-profile p {
+  color: #3a3a3a;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: justify;
+}
+
+.map-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
