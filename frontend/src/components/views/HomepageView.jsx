@@ -71,7 +71,7 @@ export default function HomepageView() {
     <>
       <Navbar loggedIn={loggedIn} handleLogout={handleLogout} />
       <Box className="home-banner">
-        <Box sx={{ mt: "10%" }}>
+        <Box sx={{ mt: {xs: "30%", sm:"15%"} }}>
           <Typography
             variant="h1"
             component="h1"
