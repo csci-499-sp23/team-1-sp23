@@ -98,6 +98,7 @@ class InfoCard extends Component {
       travelMode: "DRIVING",
       avg: null,
       reviewCounts: {},
+      nearbySchools: [],
     };
 
     this.autocomplete = null;
@@ -115,7 +116,6 @@ class InfoCard extends Component {
       reviewData: data,
       currentSchoolRatingAvg: stars,
     }));
-    console.log(stars)
     this.reviewsAvg(stars)
   };
 
@@ -143,6 +143,12 @@ class InfoCard extends Component {
     this.setReviewData(toAdd, stars);
   };
 
+  getNearbySchools = async () => {
+    const response = await fetch(`https://data.cityofnewyork.us/resource/23z9-6uk9.json?neighborhood=${this.props.school.neighborhood}`);
+    const data = await response.json();
+    this.setNearbySchools(data)
+  }
+
   badVerificationMethod = (email, query) => {
     return query
       .split(" ")
@@ -157,6 +163,7 @@ class InfoCard extends Component {
 
   componentDidMount() {
     this.getReviews();
+    this.getNearbySchools();
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -184,8 +191,10 @@ class InfoCard extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.school.school_name !== this.state.currSchool)
+    if (this.props.school.school_name !== this.state.currSchool) {
       this.getReviews();
+      this.getNearbySchools();
+    }
   }
 
   setUsername = (name) => {
@@ -210,6 +219,12 @@ class InfoCard extends Component {
       verified: verify,
     });
   };
+
+  setNearbySchools = (data) => {
+    this.setState({
+      nearbySchools: data
+    })
+  }
 
   showModal = (bool) => {
     this.setState({
@@ -335,7 +350,6 @@ class InfoCard extends Component {
             top: 0,
             left: 0,
             height: "100%",
-            width: "100%",
             overflowY: "auto",
           }}
         >
@@ -695,9 +709,9 @@ class InfoCard extends Component {
                       </Grid>
                     </Grid>
                     <Grid item sx={{ width: "100%", mt: 2 }}>
-                      {this.state.reviewData.slice(0, 3).map((data) => {
+                      {this.state.reviewData.slice(0, 3).map((data, key) => {
                         return (
-                          <Grid container key={data} sx={{ m: 1 }}>
+                          <Grid container key={key} sx={{ m: 1 }}>
                             <Grid
                               item
                               sx={{
@@ -740,6 +754,32 @@ class InfoCard extends Component {
                   >
                     Nearby Schools
                   </Typography>
+                  <Box sx={{
+                    maxWidth: { xs: "100vw", sm: 350, md: 350 },
+                    display: "flex",
+                    overflowX: "auto",
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {this.state.nearbySchools.map((data, key) => {
+                      return (
+                        data.school_name != this.props.school.school_name && this.state.nearbySchools.length != 0 ?
+                          <Paper key={key} elevation={1} sx={{m: 2,}}>
+                            <Card  sx={{ width: 135, cursor: "pointer"}} onClick={() => this.props.goToSchool(data.geocoded_column.coordinates.at(0), data.geocoded_column.coordinates.at(1), data)}>
+                              <CardMedia
+                              sx= {{height: 140,}}
+                                image="./src/assets/highschool.png"
+                                title="school" 
+                              />
+                              <CardContent>
+                                <Typography variant="body2" sx={{textOverflow: 'ellipsis', overflow: 'hidden' }}>{data.school_name}</Typography>
+                              </CardContent>
+                            </Card>
+                          </Paper>
+                        :
+                        this.state.nearbySchools.length != 1 ? null : <Typography variant="body2">No nearby schools</Typography>
+                      )
+                    })}
+                  </Box>
 
                   <Divider
                     sx={{
@@ -939,7 +979,7 @@ class InfoCard extends Component {
                   {/* PUT REVIEWS CARD CODE HERE */}
                   <Box>
                     {this.state.reviewData != 0 || null || undefined ? (
-                      this.state.reviewData.map((data) => {
+                      this.state.reviewData.map((data, key) => {
                         return (
                           <>
                             <Divider
@@ -953,6 +993,7 @@ class InfoCard extends Component {
                               columns={12}
                               direction="column"
                               spacing={2}
+                              key={key}
                             >
                               <Grid
                                 item
