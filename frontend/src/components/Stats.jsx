@@ -75,7 +75,7 @@ class Stats extends Component {
         fetch(`https://data.cityofnewyork.us/resource/9ct9-prf9.json?dbn=${this.props.school}`)
             .then((response) => response.json())
             .then((data) => {
-                if(data[0].num_of_ap_exams_passed !== "s" || "S" || null || undefined) {
+                if(!isNaN(data[0].num_of_ap_exams_passed)) {
                     this.state.apData.push(data)
                 }
             })
@@ -119,6 +119,7 @@ class Stats extends Component {
     handleTab = (_, value) => {
         this.setState(() => ({
             selectedTab: value,
+            filteredData: [],
         }));
     };
 
@@ -130,14 +131,7 @@ class Stats extends Component {
 
     handleExamChange = (e) => {
         this.setState({
-            filteredData: [],
-            selectedCategory: e.target.value
-        })
-    }
-
-    selectionChangeHandler = (e) => {
-        this.setState({ 
-            selected: e.target.value
+            selectedCategory: e.target.value,
         })
     }
 
@@ -204,11 +198,8 @@ class Stats extends Component {
                         </Tabs>
 
 
-                        <Box sx={{ pl: {
-                            xs: 0,
-                            sm: 84,
-                        } }}>
-                            <ToggleButtonGroup value={this.state.category} onChange={this.handleCategoryChange} exclusive>
+                        <Box>
+                            <ToggleButtonGroup value={this.state.category} onChange={this.handleCategoryChange} exclusive sx={{pr: 4}}>
                                 <ToggleButton value="English Proficient">
                                     English Proficient
                                 </ToggleButton>
@@ -219,9 +210,8 @@ class Stats extends Component {
                                     ELL
                                 </ToggleButton>
                             </ToggleButtonGroup>
-                        </Box>
 
-                        <FormControl sx={{ pr: 4 }}>
+                            <FormControl sx={{ pr: 4 }}>
                             <InputLabel id="simple-select-label">Exam Type</InputLabel>
                             <Select
                                 value={this.state.selectedCategory}
@@ -238,6 +228,8 @@ class Stats extends Component {
                                 })}
                             </Select>
                         </FormControl>
+
+                        </Box>
 
                     </Box>
 
@@ -316,7 +308,16 @@ class Stats extends Component {
                                 <Bar dataKey="num_of_ap_exams_passed" fill="#82ca9d" />
                             </BarChart>
                         </ResponsiveContainer> :
-                            <Typography color = "text.primary">No data available for this</Typography>
+                            <Box sx= {{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}>
+                                <Typography color="text.primary" fontWeight={500}>No data available for this</Typography>
+                            </Box>
                         }
 
                     </TabPanel>
@@ -327,6 +328,7 @@ class Stats extends Component {
                         index={this.state.selectedTab}
                         sx={{ p: 2 }}
                     >
+                        {this.state.apData.length !== 0 || "" || undefined ?
                         <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                                 width={500}
@@ -348,6 +350,17 @@ class Stats extends Component {
                                 <Bar dataKey="sat_writing_avg_score" fill="#23b5d3" />
                             </BarChart>
                         </ResponsiveContainer>
+                        : <Box sx= {{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                            <Typography color="text.primary" fontWeight={500}>No data available for this</Typography>
+                        </Box>
+                    }
                     </TabPanel>
                 </Box>
             )
