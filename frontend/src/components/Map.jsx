@@ -131,6 +131,17 @@ class Map extends Component {
     }
   };
 
+  goToNearbySchool = (lng, lat, school) => {
+    this.setState({
+      center: {
+        lat: lat,
+        lng: lng,
+      },
+      school: school,
+      zoom: 16,
+    })
+  }
+
   handleSearch = () => {
     this.setState(
       prevState => ({
@@ -335,6 +346,7 @@ class Map extends Component {
               handleDirPanel={this.handleDirectionsPanel}
               opened={this.state.directionsRenderer}
               {...this.state.dirOpts}
+              goToSchool={this.goToNearbySchool}
             />
           )}
         </GoogleMap>

@@ -131,6 +131,7 @@ class Stats extends Component {
 
     handleExamChange = (e) => {
         this.setState({
+            filteredData: [],
             selectedCategory: e.target.value,
         })
     }
@@ -250,7 +251,6 @@ class Stats extends Component {
                             })
                         }
 
-                        {this.state.filteredData != null || "" || undefined ?
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
                                     width={500}
@@ -272,13 +272,6 @@ class Stats extends Component {
 
                                 </LineChart>
                             </ResponsiveContainer>
-                            
-                            :
-
-                            <Typography sx = {{width:"100%", height: "100%"}}>No data available for this</Typography>
-
-                        }
-                       
                     </TabPanel>
 
                     {/* AP DATA TAB */}
