@@ -40,6 +40,8 @@ import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
 import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -99,11 +101,16 @@ class InfoCard extends Component {
       avg: null,
       reviewCounts: {},
       nearbySchools: [],
+      scrollRight: false,
+      scrollLeft: false,
+      currentScrollPos: 0,
+      setscrolEnd: false,
     };
 
     this.autocomplete = null;
     this.onLoad = this.onLoad.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
+    this.scrollRef = React.createRef(null)
   }
 
   onLoad = (autocomplete) => {
@@ -120,6 +127,7 @@ class InfoCard extends Component {
   };
 
   getReviews = async () => {
+    console.log("getting reviews");
     const schoolRef = collection(
       db,
       `school/${this.props.school.school_name}/reviews`
@@ -162,8 +170,7 @@ class InfoCard extends Component {
   };
 
   componentDidMount() {
-    this.getReviews();
-    this.getNearbySchools();
+    console.log("componentDidMount")
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -188,10 +195,12 @@ class InfoCard extends Component {
         });
       }
     });
+    this.getReviews();
+    this.getNearbySchools();
   }
 
-  componentDidUpdate() {
-    if (this.props.school.school_name !== this.state.currSchool) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.school.school_name !== prevState.currSchool) {
       this.getReviews();
       this.getNearbySchools();
     }
@@ -283,6 +292,7 @@ class InfoCard extends Component {
 
   reviewsAvg = (arr) => {
     for (const num of arr) {
+      console.log(num)
       this.state.reviewCounts[num] = this.state.reviewCounts[num] ? this.state.reviewCounts[num] + 1 : 1;
     }
     if (arr.length != 0) {
@@ -337,6 +347,58 @@ class InfoCard extends Component {
       console.log("not loaded")
     }
   }  
+
+  handleMouseEnter = () => {
+    if(this.state.nearbySchools.length > 3) {
+      this.setState({
+        scrollRight: true,
+        scrollLeft: true,
+      });
+    }
+    else {
+      return;
+    }
+  }
+
+  handleMouseLeave = () => {
+    this.setState({
+      scrollRight: false,
+      scrollLeft: false,
+    });
+  }
+
+  moveHorizontally = (offset) => {
+    this.scrollRef.current.scrollLeft += offset;  
+    this.setState({
+      currentScrollPos: this.state.currentScrollPos + offset,
+    });
+    if(Math.floor(this.scrollRef.current.scrollWidth - this.scrollRef.current.scrollLeft) <= this.scrollRef.current.offsetWidth) {
+      this.setState({
+        setscrolEnd: true,
+      });
+    }
+    else {
+      this.setState({
+        setscrolEnd: false,
+      });
+    }
+  }
+
+  scrollCheck = () => {
+    this.setState({
+      currentScrollPos: this.scrollRef.current.scrollLeft,
+    })
+    if(Math.floor(this.scrollRef.current.scrollWidth - this.scrollRef.current.scrollLeft) <= this.scrollRef.current.offsetWidth) {
+      this.setState({
+        setscrolEnd: true,
+      });
+    }
+    else {
+      this.setState({
+        setscrolEnd: false,
+      });
+    }
+  }
 
   render() {
     return (
@@ -571,7 +633,6 @@ class InfoCard extends Component {
                   >
                     Reviews Overview
                   </Typography>
-
                   <Grid container spacing={1} justifyContent="center">
                     <Grid item xs={8} sm container>
                       <Grid
@@ -758,15 +819,40 @@ class InfoCard extends Component {
                     maxWidth: { xs: "100vw", sm: 350, md: 350 },
                     display: "flex",
                     overflowX: "auto",
-                    whiteSpace: 'nowrap'
-                  }}>
+                    whiteSpace: 'nowrap',
+                    textAlign: "center",
+                  }}
+                  onMouseEnter={this.handleMouseEnter}
+                  onMouseLeave={this.handleMouseLeave}
+                  ref={this.scrollRef}
+                  >
+                    {this.state.scrollLeft && this.state.currentScrollPos !== 0 &&
+                      <IconButton color="primary" sx={{
+                        borderRadius: "50%",
+                        height: 40,
+                        width: 40,
+                        position: "absolute",
+                        left: 0,
+                        mt: 8,
+                        zIndex: 3,
+                        backgroundColor: "white",
+                        color: "#222222",
+                        cursor: "pointer",
+                        "&:hover": { backgroundColor: "white", },
+                        boxShadow: "0px 4px 9px 4px rgba(0.1, 0.1, 0.1, .2)",
+                      }}
+                        onClick={() => this.moveHorizontally(-100)}
+                      >
+                        <KeyboardArrowLeftIcon />
+                      </IconButton >}
+
                     {this.state.nearbySchools.map((data, key) => {
                       return (
                         data.school_name != this.props.school.school_name && this.state.nearbySchools.length != 0 ?
-                          <Paper key={key} elevation={1} sx={{m: 2,}}>
-                            <Card  sx={{ width: 135, cursor: "pointer"}} onClick={() => this.props.goToSchool(data.geocoded_column.coordinates.at(0), data.geocoded_column.coordinates.at(1), data)}>
+                          <Paper key={key} elevation={1} sx={{m: .5,}}>
+                            <Card sx={{ width: 135, cursor: "pointer"}}  onClick={() => this.props.goToSchool(data.geocoded_column.coordinates.at(0), data.geocoded_column.coordinates.at(1), data)}>
                               <CardMedia
-                              sx= {{height: 140,}}
+                              sx= {{height: 120,}}
                                 image="./src/assets/highschool.png"
                                 title="school" 
                               />
@@ -776,9 +862,28 @@ class InfoCard extends Component {
                             </Card>
                           </Paper>
                         :
-                        this.state.nearbySchools.length != 1 ? null : <Typography variant="body2">No nearby schools</Typography>
+                        this.state.nearbySchools.length != 1 ? null : <Typography variant="body2" textAlign="center">No nearby schools</Typography>
                       )
                     })}
+                    {this.state.scrollRight && !this.state.setscrolEnd && <IconButton aria-label="right" color="primary" sx={{
+                      borderRadius: "50%",
+                      height: 40,
+                      width: 40,
+                      position: "absolute",
+                      right: 0,
+                      mt:8,
+                      zIndex: 3,
+                      backgroundColor: "white",
+                      color: "#222222",
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "#fffffa", },
+                      boxShadow: "0px 4px 9px 4px rgba(0.1, 0.1, 0.1, .2)",
+                    }}
+                      onClick={() => this.moveHorizontally(100)}
+                    >
+                      <KeyboardArrowRightIcon />
+                    </IconButton >}
+                    
                   </Box>
 
                   <Divider
