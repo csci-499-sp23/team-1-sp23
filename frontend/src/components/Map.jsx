@@ -6,7 +6,7 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Chip from "@mui/material/Chip";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -76,7 +76,7 @@ class Map extends Component {
           this.setState({ schools: data });
         })
         .catch((error) => console.log(error));
-    }, 100);
+    }, 300);
   }
 
   onLoad = (autocomplete) => {
@@ -143,17 +143,15 @@ class Map extends Component {
   }
 
   handleSearch = () => {
-    this.setState(
-      prevState => ({
-      ...prevState.center,
+    const place = this.autocomplete.getPlace().geometry;
+    this.setState((prevState) => ({
+      ...prevState,
       center: {
-        lat: this.autocomplete.getPlace().geometry.viewport.Va.hi,
-        lng: this.autocomplete.getPlace().geometry.viewport.Ga.hi,
+        lng: place.location.lng(),
+        lat: place.location.lat(),
       },
+      zoom: 17,
     }));
-    this.setState({
-      zoom: 16,
-    });
   };
 
   render() {
@@ -173,6 +171,14 @@ class Map extends Component {
             this.showCard(false, null);
             this.handleDirectionsPanel(false);
           }}
+          onZoomChanged={() => {
+            if (this.map && !this.state.directionsRenderer) {
+              this.setState({
+                zoom: this.map.getZoom(),
+              });
+            }
+          }}
+          onLoad={(map) => (this.map = map)}
           options={{
             zoomControl: false,
             mapTypeControl: false,
@@ -283,34 +289,38 @@ class Map extends Component {
                   >
                     <Stack
                       direction="row"
-                      spacing={1}
-                      sx={{ overflow: "auto"}}
+                      spacing={2}
+                      sx={{ overflow: "auto", p: "10px" }}
                     >
                       {boroughs.map((borough) => (
-                        <Chip
+                        <Button
                           key={borough}
-                          label={boroughNames[borough]}
-                          variant={
-                            this.state.activeFilters.includes(borough)
-                              ? "filled"
-                              : "outlined"
-                          }
+                          variant="contained"
                           onClick={() => this.handleFilter(borough)}
                           sx={{
-                            mr: 1,
                             backgroundColor: this.state.activeFilters.includes(
                               borough
                             )
-                              ? "#2b2d42"
-                              : "#F8F9FA",
+                              ? "#e1ecfc"
+                              : "#ffffff",
                             color: this.state.activeFilters.includes(borough)
-                              ? "#FFFFFF"
-                              : "#1E1E1E",
+                              ? "#256fd4"
+                              : "#000000",
                             fontWeight: 500,
-                            padding: "2px 6px 2px 6px",
+                            fontSize: 16,
+                            padding: "2px 10px 2px 10px",
                             cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            borderRadius: 5,
+                            "&:hover": {
+                              backgroundColor: "lightgray",
+                              color: "#256fd4",
+                            },
+                            textTransform: "none",
                           }}
-                        />
+                        >
+                          {boroughNames[borough]}
+                        </Button>
                       ))}
                     </Stack>
                   </Box>
