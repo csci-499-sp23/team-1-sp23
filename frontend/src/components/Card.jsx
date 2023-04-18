@@ -106,7 +106,6 @@ class InfoCard extends Component {
   }
 
   onLoad = (autocomplete) => {
-    console.log('autocomplete: ', autocomplete)
     this.autocomplete = autocomplete;
   }
 
@@ -115,7 +114,6 @@ class InfoCard extends Component {
       reviewData: data,
       currentSchoolRatingAvg: stars,
     }));
-    console.log(stars)
     this.reviewsAvg(stars)
   };
 
