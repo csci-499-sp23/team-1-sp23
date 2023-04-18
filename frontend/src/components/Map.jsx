@@ -301,19 +301,19 @@ class Map extends Component {
                             backgroundColor: this.state.activeFilters.includes(
                               borough
                             )
-                              ? "#e1ecfc"
+                              ? "white"
                               : "#ffffff",
                             color: this.state.activeFilters.includes(borough)
-                              ? "#256fd4"
+                              ? "gray"
                               : "#000000",
                             fontWeight: 500,
-                            fontSize: 16,
-                            padding: "2px 10px 2px 10px",
+                            fontSize: 14,
+                            padding: "2px 14px 2px 14px",
                             cursor: "pointer",
                             whiteSpace: "nowrap",
                             borderRadius: 5,
                             "&:hover": {
-                              backgroundColor: "lightgray",
+                              backgroundColor: "#efefef",
                               color: "#256fd4",
                             },
                             textTransform: "none",

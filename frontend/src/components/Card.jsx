@@ -111,6 +111,7 @@ class InfoCard extends Component {
     this.onLoad = this.onLoad.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
     this.scrollRef = React.createRef(null)
+    this.scrollToTop = React.createRef(null)
   }
 
   onLoad = (autocomplete) => {
@@ -169,7 +170,6 @@ class InfoCard extends Component {
   };
 
   componentDidMount() {
-    console.log("componentDidMount")
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -399,6 +399,10 @@ class InfoCard extends Component {
     }
   }
 
+  scrollToTopCard = () => {
+    this.scrollToTop.current.scrollIntoView({behavior: "auto"});
+  }
+
   render() {
     return (
       <>
@@ -418,6 +422,7 @@ class InfoCard extends Component {
             sx={{ height: 190 }}
             image="./src/assets/highschool.png"
             title="school"
+            ref={this.scrollToTop}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
@@ -849,7 +854,7 @@ class InfoCard extends Component {
                       return (
                         data.school_name != this.props.school.school_name && this.state.nearbySchools.length != 0 ?
                           <Paper key={key} elevation={1} sx={{m: .5,}}>
-                            <Card sx={{ width: 135, cursor: "pointer"}}  onClick={() => this.props.goToSchool(data.geocoded_column.coordinates.at(0), data.geocoded_column.coordinates.at(1), data)}>
+                            <Card sx={{ width: 135, cursor: "pointer"}}  onClick={() => {this.props.goToSchool(data.geocoded_column.coordinates.at(0), data.geocoded_column.coordinates.at(1), data); this.scrollToTopCard();}}>
                               <CardMedia
                               sx= {{height: 120,}}
                                 image="./src/assets/highschool.png"
