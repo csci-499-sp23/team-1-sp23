@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Grid, List, ListItem, ListItemButton, Typography } from '@mui/material';
-import { LocationOn, Phone, AccessTime, Fax, Email, Language } from '@mui/icons-material';
+import { Box, Grid, List, ListItem, ListItemText, ListItemButton, Typography, ListItemIcon } from '@mui/material';
+import { LocationOn, Phone, AccessTime, Fax, Email, Language, School } from '@mui/icons-material';
 import NavBar from "./NavBar";
 
 import Iframe from 'react-iframe';
@@ -136,7 +136,7 @@ function SchoolpageView() {
             <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
             <List>
               <ListItemButton sx={{ pl: 0 }}>
-                data 1
+                Academic Opportunities 
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
                 data 2
@@ -152,6 +152,8 @@ function SchoolpageView() {
         </Grid>
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
+
+            {/*SCHOOL PROFILE*/}
             <Box className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Overview</h2>
@@ -243,6 +245,63 @@ function SchoolpageView() {
                 </div>
               </Link>
             </Box>
+
+            {/*ACADEMICS*/}
+            <Box className="middle-container academics">
+              <h3>Academics</h3>
+              <h2>Academic Opportunities</h2>
+              <List>
+                {school?.academicopportunities1 && (
+                  <ListItem className="academic-list-items">
+                    <ListItemIcon>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary={school?.academicopportunities1} className="academic-list-items-text" />
+                  </ListItem>
+                )}
+                {school?.academicopportunities2 && (
+                  <ListItem className="academic-list-items">
+                    <ListItemIcon>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary={school?.academicopportunities2} className="academic-list-items-text" />
+                  </ListItem>
+                )}
+                {school?.academicopportunities3 && (
+                  <ListItem className="academic-list-items">
+                    <ListItemIcon>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary={school?.academicopportunities3} className="academic-list-items-text" />
+                  </ListItem>
+                )}
+                {school?.academicopportunities4 && (
+                  <ListItem className="academic-list-items">
+                    <ListItemIcon>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary={school?.academicopportunities4} className="academic-list-items-text" />
+                  </ListItem>
+                )}
+                {school?.academicopportunities5 && (
+                  <ListItem className="academic-list-items">
+                    <ListItemIcon>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary={school?.academicopportunities5} className="academic-list-items-text" />
+                  </ListItem>
+                )}
+                {school?.academicopportunities6 && (
+                  <ListItem className="academic-list-items">
+                    <ListItemIcon>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary={school?.academicopportunities6} className="academic-list-items-text" />
+                  </ListItem>
+                )}
+              </List>
+            </Box>
+
           </Box>
         </Grid>
 

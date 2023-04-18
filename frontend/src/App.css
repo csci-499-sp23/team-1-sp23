@@ -212,3 +212,51 @@
   align-items: center;
   margin-top: 10px;
 }
+
+.academics {
+  color: black;
+  font-family: 'Open Sans', sans-serif;
+  padding-left: 25px;
+  padding-right: 25px;
+  border-bottom: 10px solid #ccc;
+}
+
+.academics h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.academics h3 {
+  font-size: 18px;
+  margin-top: 10px;
+  margin-bottom: 0.1px;
+  font-weight: 500; 
+  text-transform: uppercase;
+}
+
+.academics h4 {
+  font-size: 15px;
+  margin: 0px; 
+}
+
+.academics p {
+  color: #3a3a3a;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: justify;
+}
+
+.academic-list-items{
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.academic-list-items-text{
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
