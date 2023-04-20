@@ -105,11 +105,9 @@ class Map extends Component {
   handleFilter(borough) {
     const boroughsCopy = ["Q", "M", "X", "K", "R"];
     let activeFilters = [...this.state.activeFilters];
-    console.log(activeFilters)
 
     if (activeFilters.includes(borough)) {
       if(borough === activeFilters[0] && activeFilters.length !== 5 ) {
-        console.log("remove filter")
         activeFilters = boroughsCopy
       }
       else {
@@ -220,7 +218,7 @@ class Map extends Component {
               m: 1,
             }}>
             <IconButton sx={{ color: "white" }}>
-              <Link to="/">
+              <Link href="/" sx={{ color: "white" }}>
                 <HomeIcon />
               </Link>
             </IconButton>
@@ -371,8 +369,8 @@ class Map extends Component {
                                 ? "white"
                                 : "#ffffff",
                               color: this.state.activeFilters.includes(borough)
-                                ? "gray"
-                                : "#000000",
+                                ? "#256fd4"
+                                : "gray",
                               fontWeight: 500,
                               fontSize: 14,
                               padding: "2px 14px 2px 14px",
