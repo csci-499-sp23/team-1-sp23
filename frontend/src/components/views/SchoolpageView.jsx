@@ -15,7 +15,7 @@ import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi
 import { RiGovernmentLine } from 'react-icons/ri';
 import { FaMoneyBillWave, FaPiedPiperHat} from 'react-icons/fa';
 import { SiMoleculer } from 'react-icons/si';
-
+import { GoComment } from 'react-icons/go';
 
 function SchoolpageView() {
   const location = useLocation();
@@ -84,14 +84,58 @@ function SchoolpageView() {
     'AP 3-D Art and Design': GiClayBrick,
   };
 
+  const iconsForLang = {
+    'Arabic': 'AR',
+    'Bengali': 'BN',
+    'Spanish': 'ES',
+    'French': 'FR',
+    'Italian': 'IT',
+    'German' : 'DE',
+    'Japanese' : 'JA',
+    'Latin': 'LA',
+    'Mandarin' : 'ZH',
+    'Korean': 'KO',
+    'American Sign Language': 'ASL',
+    'Greek': 'EL',
+    'Hebrew': 'IW',
+    'Hindi': 'HI',
+    'Haitian Creole': 'HT',
+    'Polish': 'PL',
+    'Portuguese': 'PT',
+    'Punjabi' : 'PA',
+    'Russian' : 'RU',
+    'Urdu' : 'UR'
+  };
+
   const getAPclassesIcon = (course) => {
     const Icon = iconsForAP[course.trim()] || School;
     return Icon;
   }
 
+  const getLangclassesIcon = (course) => {
+    return iconsForLang[course.trim()] || 'LN';
+  };
+
   const [showAllAPs, setShowAllAps] = useState(false);
   const visibleAPs = showAllAPs ? apClasses : apClasses.slice(0, 5);
 
+  const CommentIcon = ({ languageAbbreviation }) => (
+    <div style={{ position: 'relative', top: '7px' }}>
+      <GoComment size={28} />
+      <div style={{
+        position: 'absolute',
+        top: '38%',
+        left: '50%',
+        transform: 'translate(-50%, -60%)',
+        textAlign: 'center',
+        fontSize: '0.8rem',
+        fontWeight: 'bold'
+      }}>
+        {languageAbbreviation}
+      </div>
+    </div>
+  );
+  
   return (
     <>
       <NavBar />
@@ -253,29 +297,29 @@ function SchoolpageView() {
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <ListItem>
-                    <a href={`tel:${school?.phone_number}`} style={{ display: 'flex', alignItems: 'center' }}>
+                    <a href={`tel:${school?.phone_number}`} style={{ display: 'flex', alignItems: 'center', color: '#16A1DD', fontWeight: 'bold', textDecoration: 'none' }}>
                       <Phone sx={{ fontSize: '1.5rem', pr: '15px' }} />
-                      <p>{school?.phone_number}</p>
+                      {school?.phone_number}
                     </a>
                   </ListItem>
                   <ListItem>
-                    <a href={`fax:${school?.fax_number}`} style={{ display: 'flex', alignItems: 'center' }}>
+                    <a href={`fax:${school?.fax_number}`} style={{ display: 'flex', alignItems: 'center', color: '#16A1DD', fontWeight: 'bold', textDecoration: 'none' }}>
                       <Fax sx={{ fontSize: '1.5rem', pr: '15px' }} />
-                      <p>{school?.fax_number}</p>
+                      {school?.fax_number}
                     </a>
                   </ListItem>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                   <ListItem>
-                    <a href={`https://${urlFix(school?.website)}`} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
+                    <a href={`https://${urlFix(school?.website)}`} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', color: '#16A1DD', fontWeight: 'bold', textDecoration: 'none' }}>
                       <Language sx={{ fontSize: '1.5rem', pr: '15px' }} />
-                      <p>School's Website</p>
+                      School's Website
                     </a>
                   </ListItem>
                   <ListItem>
-                    <a href={`mailto:${school?.school_email}`} style={{ display: 'flex', alignItems: 'center' }}>
+                    <a href={`mailto:${school?.school_email}`} style={{ display: 'flex', alignItems: 'center', color: '#16A1DD', fontWeight: 'bold', textDecoration: 'none' }}>
                       <Email sx={ { fontSize: '1.5rem', pr: '15px' }} />
-                      <p>School's Email</p>
+                      School's Email
                     </a>
                   </ListItem>
                 </Box>
@@ -298,7 +342,7 @@ function SchoolpageView() {
                   </ListItem>
                 )}
               </List>
-              <Link to="/map">
+              <Link to="/map" style={{ color: '#16A1DD' }}>
               <h4>Click here for more map and direction information</h4>
                 <div className="map-wrapper">
                   <Iframe
@@ -384,7 +428,7 @@ function SchoolpageView() {
               </List>
               {!showAllAPs && apClasses.length > 5 && (
                 <Box display="flex" justifyContent="center">
-                  <Button variant="outlined" onClick={() => setShowAllAps(true)}>
+                  <Button variant="outlined" onClick={() => setShowAllAps(true)} color="primary" style={{ color: '#16A1DD', borderColor: '#16A1DD' }}>
                     Show all {apClasses.length} AP Courses
                   </Button>
                 </Box>
@@ -394,16 +438,18 @@ function SchoolpageView() {
             <Box className="middle-container academics">
               <h3>Academics</h3>
               <h2>Language Courses</h2>
-              <List>
+              <Grid container spacing={2}>
                 {langClasses.map((course) => (
-                  <ListItem key={course}>
-                    <ListItemIcon>
-                      
-                    </ListItemIcon>
-                    <ListItemText primary={course.trim()} />
-                  </ListItem>
+                  <Grid key={course} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      <ListItemIcon>
+                        <CommentIcon languageAbbreviation={getLangclassesIcon(course)} />
+                      </ListItemIcon>
+                      <ListItemText primary={course.trim()} />
+                    </Box>
+                  </Grid>
                 ))}
-              </List>
+              </Grid>
             </Box>
           </Box>
         </Grid>
