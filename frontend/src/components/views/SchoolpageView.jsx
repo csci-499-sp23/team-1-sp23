@@ -6,16 +6,16 @@ import { LocationOn, Phone, AccessTime, Fax, Email, Language, School } from '@mu
 import NavBar from "./NavBar";
 import Iframe from 'react-iframe';
 
-import { MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md';
-import { GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi';
-import { SlGraduation, SlCalculator } from 'react-icons/sl';
-import { BiDna, BiAtom, BiMagnet } from 'react-icons/bi';
-import { TbMathFunction, TbMap2 } from 'react-icons/tb';
-import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi2';
-import { RiGovernmentLine } from 'react-icons/ri';
-import { FaMoneyBillWave, FaPiedPiperHat} from 'react-icons/fa';
-import { SiMoleculer } from 'react-icons/si';
-import { GoComment } from 'react-icons/go';
+import { MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
+import { GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
+import { SlGraduation, SlCalculator } from 'react-icons/sl/index.js';
+import { BiDna, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
+import { TbMathFunction, TbMap2 } from 'react-icons/tb/index.js';
+import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi2/index.js';
+import { RiGovernmentLine } from 'react-icons/ri/index.js';
+import { FaMoneyBillWave, FaPiedPiperHat} from 'react-icons/fa/index.js';
+import { SiMoleculer } from 'react-icons/si/index.js';
+import { GoComment } from 'react-icons/go/index.js';
 
 function SchoolpageView() {
   const location = useLocation();
