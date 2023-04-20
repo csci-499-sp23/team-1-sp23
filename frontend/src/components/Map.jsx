@@ -14,6 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link"
 
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
@@ -102,13 +103,20 @@ class Map extends Component {
   };
 
   handleFilter(borough) {
+    const boroughsCopy = ["Q", "M", "X", "K", "R"];
     let activeFilters = [...this.state.activeFilters];
+
     if (activeFilters.includes(borough)) {
-      console.log(activeFilters)
-      activeFilters = activeFilters.filter((filter) => filter == borough);
-    } else {
-      console.log(activeFilters, borough);
-      activeFilters.push(borough);
+      if(borough === activeFilters[0] && activeFilters.length !== 5 ) {
+        activeFilters = boroughsCopy
+      }
+      else {
+        activeFilters = activeFilters.filter((filter) => filter == borough);
+      }
+    } 
+    else {
+        activeFilters.pop()
+        activeFilters.push(borough)
     }
     this.setState({ activeFilters, selectedBorough: borough });
   }
@@ -209,8 +217,10 @@ class Map extends Component {
             sx={{
               m: 1,
             }}>
-            <IconButton sx={{color: "white"}}>
-              <HomeIcon />
+            <IconButton sx={{ color: "white" }}>
+              <Link href="/" sx={{ color: "white" }}>
+                <HomeIcon />
+              </Link>
             </IconButton>
             <IconButton  sx={{color: "white"}}>
               <MapIcon />
@@ -359,8 +369,8 @@ class Map extends Component {
                                 ? "white"
                                 : "#ffffff",
                               color: this.state.activeFilters.includes(borough)
-                                ? "gray"
-                                : "#000000",
+                                ? "#256fd4"
+                                : "gray",
                               fontWeight: 500,
                               fontSize: 14,
                               padding: "2px 14px 2px 14px",
