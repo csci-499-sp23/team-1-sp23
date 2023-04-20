@@ -451,6 +451,83 @@ function SchoolpageView() {
                 ))}
               </Grid>
             </Box>
+
+            <Box className="middle-container academics">
+              <h3>Academics</h3>
+              <h2>Programs/Concentrations Offered</h2>
+              <List>
+                {school.program1 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program1}
+                    secondary={school.prgdesc1}
+                  />
+                )}
+                {school.program2 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program2}
+                    secondary={school.prgdesc2}
+                  />
+                )}
+                {school.program3 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program3}
+                    secondary={school.prgdesc3}
+                  />
+                )}
+                {school.program4 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program4}
+                    secondary={school.prgdesc4}
+                  />
+                )}
+                {school.program5 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program5}
+                    secondary={school.prgdesc5}
+                  />
+                )}
+                {school.program6 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program6}
+                    secondary={school.prgdesc6}
+                  />
+                )}
+                {school.program7 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program7}
+                    secondary={school.prgdesc7}
+                  />
+                )}
+                {school.program8 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program8}
+                    secondary={school.prgdesc8}
+                  />
+                )}
+                {school.program9 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program9}
+                    secondary={school.prgdesc9}
+                  />
+                )}
+                {school.program10 && (
+                  <ListItemText
+                    className="program-list-item"
+                    primary={school.program10}
+                    secondary={school.prgdesc10}
+                  />
+                )}
+              </List>
+            </Box>
           </Box>
         </Grid>
 
