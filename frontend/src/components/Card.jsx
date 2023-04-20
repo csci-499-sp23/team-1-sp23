@@ -170,6 +170,8 @@ class InfoCard extends Component {
   };
 
   componentDidMount() {
+    this.getReviews();
+    this.getNearbySchools();
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -194,8 +196,6 @@ class InfoCard extends Component {
         });
       }
     });
-    this.getReviews();
-    this.getNearbySchools();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -1041,20 +1041,19 @@ class InfoCard extends Component {
                         }}
                       >
                         <Typography
-                          variant="body"
+                          variant="body2"
                           fontSize="3.6rem"
-                          component="div"
                         >
                           {this.state.avg == null ? 0 : this.state.avg}
                         </Typography>
-                        <Box>
-                          <Rating
-                            name="read-only"
-                            value={this.state.avg}
-                            readOnly
-                            precision={0.1}
-                          />
-                        </Box>
+
+                        <Rating
+                          name="read-only"
+                          value={this.state.avg}
+                          readOnly
+                          precision={0.1}
+                          size="small"
+                        />
                       </Box>
                     </Grid>
                     <Grid
