@@ -7,13 +7,26 @@ import NavBar from "./NavBar";
 import Iframe from 'react-iframe';
 import { Link } from 'react-router-dom';
 
+import { Nature, Public } from '@mui/icons-material';
+
+import { MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md';
+import { GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi';
+import { SlGraduation, SlCalculator } from 'react-icons/sl';
+import { BiDna, BiAtom, BiMagnet } from 'react-icons/bi';
+import { TbMathFunction, TbMap2 } from 'react-icons/tb';
+import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi2';
+import { RiGovernmentLine } from 'react-icons/ri';
+import { FaMoneyBillWave, FaPiedPiperHat} from 'react-icons/fa';
+import { SiMoleculer } from 'react-icons/si';
+
+
+
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
-
 
   const urlFix = (schoolUrl) => {
     let fixedUrl = schoolUrl
@@ -27,6 +40,58 @@ function SchoolpageView() {
     }
     return fixedUrl;
   };
+
+  const splittingByComma = (str) => {
+    return str ? str.split(',') : [];
+  };
+
+  const apClasses = splittingByComma(school?.advancedplacement_courses);
+
+  const iconsForAP = {
+    'AP Art History': GiPaintBrush,
+    'AP Biology': BiDna,
+    'AP Calculus AB': SlCalculator,
+    'AP Calculus BC': TbMathFunction,
+    'AP Chemistry': HiBeaker,
+    'AP Chinese Language and Culture': GiSpikedDragonHead,
+    'AP Computer Science A': HiCodeBracket,
+    'AP Computer Science Principles': MdOutlineComputer,
+    'AP English Language and Composition': GiQuillInk,
+    'AP English Literature and Composition': GiBlackBook,
+    'AP Environmental Science': GiEarthAmerica,
+    'AP European History': GiCastle,
+    'AP French Language and Culture': GiFrance,
+    'AP German Language and Culture': FaPiedPiperHat,
+    'AP Comparative Government and Politics': RiGovernmentLine,
+    'AP U.S. Government and Politics': MdOutlineAccountBalance,
+    'AP Human Geography': TbMap2,
+    'AP Italian Language and Culture': GiItalia,
+    'AP Japanese Language and Culture': GiJapan,
+    'AP Latin': GiIonicColumn,
+    'AP Macroeconomics': FaMoneyBillWave,
+    'AP Microeconomics': HiOutlineCurrencyDollar,
+    'AP Music Theory': GiMusicalScore,
+    'AP Physics 1': BiAtom,
+    'AP Physics 2': SiMoleculer,
+    'AP Physics C: Electricity and Magnetism': BiMagnet,
+    'AP Physics C: Mechanics': GiGears,
+    'AP Psychology': MdOutlinePsychology,
+    'AP Spanish Language and Culture': GiSpain,
+    'AP Spanish Literature and Culture': GiBookPile,
+    'AP Statistics': MdOutlineQueryStats,
+    'AP United States History': GiUsaFlag,
+    'AP World History: Modern': MdOutlineHistoryEdu,
+    'AP Research': GiArchiveResearch,
+    'AP Seminar': SlGraduation,
+    'AP 2-D Art and Design': MdOutlinePalette,
+    
+  };
+
+  const getAPclassesIcon = (course) => {
+    const Icon = iconsForAP[course.trim()] || School;
+    return Icon;
+  }
+
 
   return (
     <>
@@ -139,10 +204,13 @@ function SchoolpageView() {
                 Academic Opportunities 
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
-                data 2
+                AP Courses
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }}>
-                data 3
+                Language Courses
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }}>
+                Programs Offered
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
@@ -302,6 +370,20 @@ function SchoolpageView() {
               </List>
             </Box>
 
+            <Box className="middle-container academics">
+              <h3>Academics</h3>
+              <h2>Advanced Placement (AP) Courses</h2>
+              <List>
+                {apClasses.map((course) => (
+                  <ListItem key={course}>
+                    <ListItemIcon>
+                      {React.createElement(getAPclassesIcon(course))}
+                    </ListItemIcon>
+                    <ListItemText primary={course.trim()} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           </Box>
         </Grid>
 
