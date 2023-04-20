@@ -13,7 +13,18 @@ export default defineConfig({
  },
  build: {
   rollupOptions:{
-    external: ["react-icons/md"],
+    external: [
+      'react-icons/md', 
+      'react-icons/gi', 
+      'react-icons/sl', 
+      'react-icons/bi', 
+      'react-icons/tb', 
+      'react-icons/hi2', 
+      'react-icons/ri',
+      'react-icons/fa',
+      'react-icons/si',
+      'react-icons/go',
+    ],
   }
  }
 })
