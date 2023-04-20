@@ -14,10 +14,19 @@ import SearchIcon from "@mui/icons-material/Search";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
-import InfoCard from "./Card";
-import Drawerbar from "./views/DrawerNavBar";
+
+import HomeIcon from "@mui/icons-material/Home";
+import MapIcon from "@mui/icons-material/Map";
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+
 import { mK } from "../config/environment";
+
+import { auth } from "../config/firebase";
+
+import Drawerbar from "./DrawerNavBar";
+import InfoCard from "./Card";
 import Directions from "./Directions";
+import SavedSchoolsList from "./SavedSchoolsList";
 
 const containerStyle = {
   width: "100%",
@@ -37,14 +46,14 @@ const boroughNames = {
 const lib = ["places"];
 
 class Map extends Component {
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);
     this.state = {
       schools: [],
       card: false,
       school: null,
       drawer: false,
+      savedSchools: false,
       dirOpts: {
         origin: "",
         destination: "",
@@ -63,9 +72,11 @@ class Map extends Component {
         lng: -73.89347,
       },
       zoom: 11,
+      saveList: false,
     };
     this.autocomplete = null;
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
+    this.goToNearbySchool = this.goToNearbySchool.bind(this);
   }
 
   componentDidMount() {
@@ -93,8 +104,10 @@ class Map extends Component {
   handleFilter(borough) {
     let activeFilters = [...this.state.activeFilters];
     if (activeFilters.includes(borough)) {
-      activeFilters = activeFilters.filter((filter) => filter !== borough);
+      console.log(activeFilters)
+      activeFilters = activeFilters.filter((filter) => filter == borough);
     } else {
+      console.log(activeFilters, borough);
       activeFilters.push(borough);
     }
     this.setState({ activeFilters, selectedBorough: borough });
@@ -105,6 +118,12 @@ class Map extends Component {
       drawer: bool,
     });
   };
+
+  handleListOpen = (bool) => {
+    this.setState({
+      saveList: bool,
+    });
+  }
 
   handleDirections = (type, val) => {
     this.setState((x) => ({
@@ -132,14 +151,27 @@ class Map extends Component {
   };
 
   goToNearbySchool = (lng, lat, school) => {
-    this.setState({
-      center: {
-        lat: lat,
-        lng: lng,
-      },
-      school: school,
-      zoom: 16,
-    })
+    if(this.state.card == false){
+      this.setState({
+        center: {
+          lat: lat,
+          lng: lng,
+        },
+        card: true,
+        school: school,
+        zoom: 16,
+      })
+    }
+    else {
+      this.setState({
+        center: {
+          lat: lat,
+          lng: lng,
+        },
+        school: school,
+        zoom: 16,
+      })
+    }
   }
 
   handleSearch = () => {
@@ -162,204 +194,234 @@ class Map extends Component {
 
     return (
       <LoadScript googleMapsApiKey={mK} libraries={lib}>
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={this.state.center}
-          zoom={this.state.zoom}
-          clickableIcons={false}
-          onClick={() => {
-            this.showCard(false, null);
-            this.handleDirectionsPanel(false);
-          }}
-          onZoomChanged={() => {
-            if (this.map && !this.state.directionsRenderer) {
-              this.setState({
-                zoom: this.map.getZoom(),
-              });
-            }
-          }}
-          onLoad={(map) => (this.map = map)}
-          options={{
-            zoomControl: false,
-            mapTypeControl: false,
-            fullscreenControl: false,
-          }}
-        >
-          <Directions
-            modify={this.handleDirections}
-            card={this.state.card}
-            opened={this.state.directionsRenderer}
-            {...this.state.dirOpts}
-          />
-          {/* Child components, such as markers, info windows, etc. */}
-          <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-              <Toolbar sx={{ zIndex: `100` }} disableGutters>
-                <Stack
-                  direction={{ xs: "column", sm: "column", md: "row" }}
-                  spacing={{ xs: 2, sm: 2, md: 4 }}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: {
-                      xs: "flex-start",
-                      md: "center",
-                    },
-                    maxWidth: "100%",
-                  }}
-                >
-                  <Autocomplete
-                    onLoad={this.onLoad}
-                    onPlaceChanged={this.onPlaceChanged}
-                    onUnmount={() => console.log("unmounted")}
-                  >
-                    <Paper
-                      component="form"
-                      sx={{
-                        p: {
-                          md: "2px 4px",
-                        },
-                        display: "flex",
-                        alignItems: "center",
-                        width: {
-                          xs: 360,
-                          md: 370,
-                        },
-                        ml: 1,
-                        mt: { xs: 1, sm: 1, md: 0 },
-                      }}
-                    >
-                      <IconButton
-                        sx={{ p: "10px" }}
-                        aria-label="menu"
-                        onClick={this.openDrawer.bind(null, true)}
-                      >
-                        <MenuIcon />
-                      </IconButton>
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Search For A School"
-                        inputProps={{ "aria-label": "search google maps" }}
-                      />
-                      <IconButton
-                        type="button"
-                        sx={{ p: "10px" }}
-                        aria-label="search"
-                        onClick={this.handleSearch}
-                      >
-                        <SearchIcon />
-                      </IconButton>
-                      <Divider
-                        sx={{ height: 28, m: 0.5 }}
-                        orientation="vertical"
-                      />
-                      <IconButton
-                        color="primary"
-                        sx={{ p: "10px" }}
-                        aria-label="directions"
-                      >
-                        <DirectionsIcon />
-                      </IconButton>
-                    </Paper>
-                  </Autocomplete>
-                  <Drawerbar
-                    status={this.state.drawer}
-                    toggle={this.openDrawer}
-                  />
-                  <Box
+        <Drawerbar
+          status={this.state.drawer}
+          toggle={this.openDrawer}
+        />
+        <Box sx={{ 
+          display: "flex", 
+          flexDirection: "row", 
+          backgroundColor: "#2b2d42", 
+          color: "white", 
+          height: "100%",
+          }}>
+          <Stack
+            sx={{
+              m: 1,
+            }}>
+            <IconButton sx={{color: "white"}}>
+              <HomeIcon />
+            </IconButton>
+            <IconButton  sx={{color: "white"}}>
+              <MapIcon />
+            </IconButton>
+            {auth.currentUser !== null ? 
+              <IconButton sx={{ color: "white" }} onClick={this.handleListOpen.bind(null, true)}>
+              <BookmarkBorderIcon />
+            </IconButton> : null}
+          </Stack>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={this.state.center}
+            zoom={this.state.zoom}
+            clickableIcons={false}
+            onClick={() => {
+              this.showCard(false, null);
+              this.handleDirectionsPanel(false);
+            }}
+            onZoomChanged={() => {
+              if (this.map && !this.state.directionsRenderer) {
+                this.setState({
+                  zoom: this.map.getZoom(),
+                });
+              }
+            }}
+            onLoad={(map) => (this.map = map)}
+            options={{
+              zoomControl: false,
+              mapTypeControl: false,
+              fullscreenControl: false,
+            }}
+          >
+            <Directions
+              modify={this.handleDirections}
+              card={this.state.card}
+              opened={this.state.directionsRenderer}
+              {...this.state.dirOpts}
+            />
+            {/* Child components, such as markers, info windows, etc. */}
+            <Box sx={{ flexGrow: 1 }}>
+
+              <AppBar position="static">
+                <Toolbar sx={{ zIndex: `100` }} disableGutters>
+                  <Stack
+                    direction={{ xs: "column", sm: "column", md: "row" }}
+                    spacing={{ xs: 2, sm: 2, md: 4 }}
                     sx={{
-                      position: {
-                        md: "relative",
-                      },
-                      display: {
-                        xs: "flex",
-                        md: "flex",
-                      },
-                      justifyContent: {
-                        xs: "space-evenly",
-                        md: "flex-start",
-                      },
-                      width: "100%",
-                      ml: {
-                        xs: 0,
-                        md: 2,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: {
+                        xs: "flex-start",
+                        md: "center",
                       },
                       maxWidth: "100%",
                     }}
                   >
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      sx={{ overflow: "auto", p: "10px" }}
+                    <Autocomplete
+                      onLoad={this.onLoad}
+                      onPlaceChanged={this.onPlaceChanged}
+                      onUnmount={() => console.log("unmounted")}
                     >
-                      {boroughs.map((borough) => (
-                        <Button
-                          key={borough}
-                          variant="contained"
-                          onClick={() => this.handleFilter(borough)}
-                          sx={{
-                            backgroundColor: this.state.activeFilters.includes(
-                              borough
-                            )
-                              ? "white"
-                              : "#ffffff",
-                            color: this.state.activeFilters.includes(borough)
-                              ? "gray"
-                              : "#000000",
-                            fontWeight: 500,
-                            fontSize: 14,
-                            padding: "2px 14px 2px 14px",
-                            cursor: "pointer",
-                            whiteSpace: "nowrap",
-                            borderRadius: 5,
-                            "&:hover": {
-                              backgroundColor: "#efefef",
-                              color: "#256fd4",
-                            },
-                            textTransform: "none",
-                          }}
+                      <Paper
+                        component="form"
+                        sx={{
+                          p: {
+                            md: "2px 4px",
+                          },
+                          display: "flex",
+                          alignItems: "center",
+                          width: {
+                            xs: 360,
+                            md: 370,
+                          },
+                          ml: 1,
+                          mt: { xs: 1, sm: 1, md: 0 },
+                        }}
+                      >
+                        {/* <IconButton
+                          sx={{ p: "10px" }}
+                          aria-label="menu"
+                          onClick={this.openDrawer.bind(null, true)}
                         >
-                          {boroughNames[borough]}
-                        </Button>
-                      ))}
-                    </Stack>
-                  </Box>
-                </Stack>
-              </Toolbar>
-            </AppBar>
-          </Box>
-          {schoolsFiltered.map((school, key) => (
-            <Marker
-              key={key}
-              position={{
-                lat: Number(school.latitude),
-                lng: Number(school.longitude),
-              }}
-              onClick={() => {
-                const coord = school.geocoded_column.coordinates;
-                this.showCard(true, school);
-                this.handleDirections("destination", school.school_name);
-                this.handleDirections("destCoor", {
-                  lng: coord.at(0),
-                  lat: coord.at(1),
-                });
-                this.handleDirections("dist", "");
-                this.handleDirections("time", "");
-              }}
+                          <MenuIcon />
+                        </IconButton> */}
+                        <InputBase
+                          sx={{ ml: 2, flex: 1 }}
+                          placeholder="Search For A School"
+                          inputProps={{ "aria-label": "search google maps" }}
+                        />
+                        <IconButton
+                          type="button"
+                          sx={{ p: "10px" }}
+                          aria-label="search"
+                          onClick={this.handleSearch}
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                        <Divider
+                          sx={{ height: 28, m: 0.5 }}
+                          orientation="vertical"
+                        />
+                        <IconButton
+                          color="primary"
+                          sx={{ p: "10px" }}
+                          aria-label="directions"
+                        >
+                          <DirectionsIcon />
+                        </IconButton>
+                      </Paper>
+                    </Autocomplete>
+                    <Box
+                      sx={{
+                        position: {
+                          md: "relative",
+                        },
+                        display: {
+                          xs: "flex",
+                          md: "flex",
+                        },
+                        justifyContent: {
+                          xs: "space-evenly",
+                          md: "flex-start",
+                        },
+                        width: "100%",
+                        ml: {
+                          xs: 0,
+                          md: 2,
+                        },
+                        maxWidth: "100%",
+                      }}
+                    >
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ overflow: "auto", p: "10px" }}
+                      >
+                        {boroughs.map((borough) => (
+                          <Button
+                            key={borough}
+                            variant="contained"
+                            onClick={() => this.handleFilter(borough)}
+                            sx={{
+                              backgroundColor: this.state.activeFilters.includes(
+                                borough
+                              )
+                                ? "white"
+                                : "#ffffff",
+                              color: this.state.activeFilters.includes(borough)
+                                ? "gray"
+                                : "#000000",
+                              fontWeight: 500,
+                              fontSize: 14,
+                              padding: "2px 14px 2px 14px",
+                              cursor: "pointer",
+                              whiteSpace: "nowrap",
+                              borderRadius: 5,
+                              "&:hover": {
+                                backgroundColor: "#efefef",
+                                color: "#256fd4",
+                              },
+                              textTransform: "none",
+                            }}
+                          >
+                            {boroughNames[borough]}
+                          </Button>
+                        ))}
+                      </Stack>
+                    </Box>
+                  </Stack>
+                </Toolbar>
+              </AppBar>
+            </Box>
+            {schoolsFiltered.map((school, key) => (
+              <Marker
+                key={key}
+                position={{
+                  lat: Number(school.latitude),
+                  lng: Number(school.longitude),
+                }}
+                onClick={() => {
+                  const coord = school.geocoded_column.coordinates;
+                  this.showCard(true, school);
+                  this.handleDirections("destination", school.school_name);
+                  this.handleDirections("destCoor", {
+                    lng: coord.at(0),
+                    lat: coord.at(1),
+                  });
+                  this.handleDirections("dist", "");
+                  this.handleDirections("time", "");
+                }}
+              />
+            ))}
+            {this.state.card && (
+              <InfoCard
+                school={this.state.school}
+                key={this.state.school + "2031"}
+                updateDirOpts={this.handleDirections}
+                handleDirPanel={this.handleDirectionsPanel}
+                opened={this.state.directionsRenderer}
+                {...this.state.dirOpts}
+                goToSchool={this.goToNearbySchool}
+              />
+            )}
+            {this.state.saveList  && 
+            <SavedSchoolsList
+              goToSchool={this.goToNearbySchool} 
+              onClose={() => this.setState({ saveList: false })}
             />
-          ))}
-          {this.state.card && (
-            <InfoCard
-              school={this.state.school}
-              key={this.state.school + "2031"}
-              updateDirOpts={this.handleDirections}
-              handleDirPanel={this.handleDirectionsPanel}
-              opened={this.state.directionsRenderer}
-              {...this.state.dirOpts}
-              goToSchool={this.goToNearbySchool}
-            />
-          )}
-        </GoogleMap>
+            }
+          </GoogleMap>
+        </Box>
       </LoadScript>
     );
   }

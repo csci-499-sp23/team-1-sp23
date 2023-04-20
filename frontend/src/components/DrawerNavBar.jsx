@@ -1,11 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { Box, Drawer, List, ListItem, ListItemIcon } from "@mui/material";
+import { Box, Drawer, List, ListItem, ListItemIcon, } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
 import MapIcon from "@mui/icons-material/Map";
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
-import { auth, db } from "../../config/firebase";
+import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 
@@ -37,7 +37,7 @@ export default function Drawerbar({ status, toggle }) {
             <a href="/profile">
               <ListItem>
                 <ListItemIcon>
-                  <PersonIcon sx={{ color: "white" }} />
+                  <BookmarkBorderIcon sx={{ color: "white" }} />
                 </ListItemIcon>
               </ListItem>
             </a>
