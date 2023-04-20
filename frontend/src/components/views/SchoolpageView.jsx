@@ -1,13 +1,10 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { Box, Grid, List, ListItem, ListItemText, ListItemButton, Typography, ListItemIcon } from '@mui/material';
+import { useState } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { Box, Button, Grid, List, ListItem, ListItemText, ListItemButton, Typography, ListItemIcon } from '@mui/material';
 import { LocationOn, Phone, AccessTime, Fax, Email, Language, School } from '@mui/icons-material';
 import NavBar from "./NavBar";
-
 import Iframe from 'react-iframe';
-import { Link } from 'react-router-dom';
-
-import { Nature, Public } from '@mui/icons-material';
 
 import { MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md';
 import { GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi';
@@ -18,7 +15,6 @@ import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi
 import { RiGovernmentLine } from 'react-icons/ri';
 import { FaMoneyBillWave, FaPiedPiperHat} from 'react-icons/fa';
 import { SiMoleculer } from 'react-icons/si';
-
 
 
 function SchoolpageView() {
@@ -46,6 +42,7 @@ function SchoolpageView() {
   };
 
   const apClasses = splittingByComma(school?.advancedplacement_courses);
+  const langClasses = splittingByComma(school?.language_classes);
 
   const iconsForAP = {
     'AP Art History': GiPaintBrush,
@@ -84,7 +81,7 @@ function SchoolpageView() {
     'AP Research': GiArchiveResearch,
     'AP Seminar': SlGraduation,
     'AP 2-D Art and Design': MdOutlinePalette,
-    
+    'AP 3-D Art and Design': GiClayBrick,
   };
 
   const getAPclassesIcon = (course) => {
@@ -92,6 +89,8 @@ function SchoolpageView() {
     return Icon;
   }
 
+  const [showAllAPs, setShowAllAps] = useState(false);
+  const visibleAPs = showAllAPs ? apClasses : apClasses.slice(0, 5);
 
   return (
     <>
@@ -374,10 +373,32 @@ function SchoolpageView() {
               <h3>Academics</h3>
               <h2>Advanced Placement (AP) Courses</h2>
               <List>
-                {apClasses.map((course) => (
+                {visibleAPs.map((course) => (
                   <ListItem key={course}>
                     <ListItemIcon>
                       {React.createElement(getAPclassesIcon(course))}
+                    </ListItemIcon>
+                    <ListItemText primary={course.trim()} />
+                  </ListItem>
+                ))}
+              </List>
+              {!showAllAPs && apClasses.length > 5 && (
+                <Box display="flex" justifyContent="center">
+                  <Button variant="outlined" onClick={() => setShowAllAps(true)}>
+                    Show all {apClasses.length} AP Courses
+                  </Button>
+                </Box>
+              )}
+            </Box>
+
+            <Box className="middle-container academics">
+              <h3>Academics</h3>
+              <h2>Language Courses</h2>
+              <List>
+                {langClasses.map((course) => (
+                  <ListItem key={course}>
+                    <ListItemIcon>
+                      
                     </ListItemIcon>
                     <ListItemText primary={course.trim()} />
                   </ListItem>
