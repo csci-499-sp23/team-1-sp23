@@ -135,6 +135,16 @@ function SchoolpageView() {
       </div>
     </div>
   );
+
+  const handleContactInfoClick = () => {
+    const contactInfo = document.getElementById('schedule-contact-info');
+    contactInfo.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleAddressClick = () => {
+    const address = document.getElementById('navigation');
+    address.scrollIntoView({ behavior: 'smooth' });
+  }
   
   return (
     <>
@@ -172,31 +182,35 @@ function SchoolpageView() {
               }}
               className="schoolpage-subtitle"
             >
-              <Box
-                component="span"
-                sx={{
-                  verticalAlign: 'middle',
-                  marginRight: 1,
-                  fontSize: 30,
-                  color: 'common.white',
-                }}
-              >
-                <LocationOn />
-              </Box>
-              <span>{school?.location.split('(')[0].trim()}</span>
-              <Box
-                component="span"
-                sx={{
-                  verticalAlign: 'middle',
-                  marginLeft: '1em',
-                  fontFamily: 'Arial',
-                  fontSize: 39,
-                  color: 'common.white',
-                }}
-              >
-                <Phone />
-              </Box>
-              <span style={{ marginLeft: '0.4em' }}>Contact Info</span>
+              <Button className="address-button" onClick={handleAddressClick}>
+                <Box
+                  component="span"
+                  sx={{
+                    verticalAlign: 'middle',
+                    marginRight: 1,
+                    fontSize: 30,
+                    color: 'common.white',
+                  }}
+                >
+                  <LocationOn />
+                </Box>
+                <span>{school?.location.split('(')[0].trim()}</span>
+              </Button>
+              <Button className="contact-info-button" onClick={handleContactInfoClick}>
+                <Box
+                  component="span"
+                  sx={{
+                    verticalAlign: 'middle',
+                    marginLeft: '1em',
+                    fontFamily: 'Arial',
+                    fontSize: 39,
+                    color: 'common.white',
+                  }}
+                >
+                  <Phone />
+                </Box>
+                <span style={{ marginLeft: '0.4em' }}>Contact Info</span>
+              </Button>
             </Typography>
           </Box>
 
@@ -271,7 +285,7 @@ function SchoolpageView() {
               <p>{school?.overview_paragraph}</p>
             </Box>
     
-            <Box className="middle-container school-profile">
+            <Box id= "schedule-contact-info" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Schedule and Contact Information</h2>
               <h4>Campus Address</h4>
@@ -326,7 +340,7 @@ function SchoolpageView() {
               </Box>
             </Box>
 
-            <Box className="middle-container school-profile">
+            <Box id= "navigation" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Navigation</h2>
               <h4>Nearby Transportation</h4>

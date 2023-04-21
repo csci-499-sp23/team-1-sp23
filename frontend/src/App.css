@@ -275,3 +275,32 @@
   margin-left: 25px;
   margin-right: 25px;
 }
+
+
+.contact-info-button {
+  text-decoration: none;
+  font-size: inherit; 
+  color: inherit;
+  text-transform: none;
+  font-family: inherit;
+}
+
+.contact-info-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.address-button {
+  text-decoration: none;
+  font-size: inherit; 
+  color: inherit;
+  text-transform: none;
+  font-family: inherit;
+}
+
+.address-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: transparent;
+}
