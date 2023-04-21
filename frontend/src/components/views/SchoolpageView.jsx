@@ -171,24 +171,31 @@ function SchoolpageView() {
     programs.scrollIntoView({ behavior: 'smooth' });
   }
 
+  window.addEventListener('scroll', function () {
+    const headerHeight = document.getElementById('header-container').offsetHeight;
+    const subheaderHeight = document.getElementById('subheader-container').offsetHeight;
+    const totalHeaderHeight = headerHeight + subheaderHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > totalHeaderHeight + 10) {
+      document.querySelector('.left-container').classList.add('fixed-left-container');
+    } else {
+      document.querySelector('.left-container').classList.remove('fixed-left-container');
+    }
+  });
+  
+
   return (
     <>
       <NavBar />
       <Grid container>
-        <Grid item xs={12} sm={12} md={12}>
+        <Grid item xs={12} sm={12} md={12} id="header-container">
+{/*MAIN HEADER*/}
           <Box sx={{ bgcolor: '#194973', py: 3.5 }}>
             <Typography
               variant="h4"
               component="h1"
               color="common.white"
               align="left"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                marginLeft: '1in',
-                fontSize: 45,
-                fontWeight: '',
-              }}
               className="schoolpage-header"
             >
               {school?.school_name}
@@ -211,6 +218,7 @@ function SchoolpageView() {
                 <Box
                   component="span"
                   sx={{
+                    marginLeft: -1,
                     verticalAlign: 'middle',
                     marginRight: 1,
                     fontSize: 30,
@@ -238,8 +246,8 @@ function SchoolpageView() {
               </Button>
             </Typography>
           </Box>
-
-          <Box sx={{ bgcolor: '#255478', py: 1.3 }}>
+{/*SUB HEADER*/}
+          <Box sx={{ bgcolor: '#255478', py: 1.3 }} id="subheader-container">
             <Typography
               variant="subtitle2"
               component="div"
@@ -265,7 +273,7 @@ function SchoolpageView() {
             </Typography>
           </Box>
         </Grid>
-
+{/*LEFT CONTAINER*/}
         <Grid item xs={12} sm={12} md={2}>
           <Box className="left-container">
             <Typography variant="h6" sx={{ mb: 2 }}>School Profile</Typography>
@@ -300,6 +308,7 @@ function SchoolpageView() {
             <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
           </Box>
         </Grid>
+{/*MIDDLE CONTAINER*/}
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
 {/*SCHOOL PROFILE*/}
@@ -568,7 +577,7 @@ function SchoolpageView() {
               </List>
             </Box>
 
-            
+
           </Box>
         </Grid>
 
