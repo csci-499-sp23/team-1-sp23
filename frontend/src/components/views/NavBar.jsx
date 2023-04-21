@@ -30,7 +30,7 @@ export default function Navbar({ loggedIn, handleLogout }) {
   <Box sx={{ width: "100%" }}>
     <AppBar position="sticky" style={{ background: "#2b2d42" }}>
       <Toolbar>
-        <Link to="/" onClick={handleClickTitle} >
+        <Link to="/" sx={{textDecoration: "none"}} onClick={handleClickTitle}>
             <Typography
               variant="h6"
               component="p"
@@ -42,7 +42,7 @@ export default function Navbar({ loggedIn, handleLogout }) {
                 color: "white",
                 border: "none",
                 backgroundColor: "transparent",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
             >
                 SchoolsDB

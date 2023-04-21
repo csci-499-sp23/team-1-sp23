@@ -101,20 +101,12 @@ const SavedSchoolsList = (props) => {
                 const uid = auth.currentUser.uid;
                 const docRef = doc(db, "users", uid);
 
-                getDoc(docRef).then((docSnap) => {
+                onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists()) {
                         setUsername(docSnap.data().username.split("@").at(0));
                         setRole(docSnap.data().role);
                         setSavedSchools(docSnap.data().saved_schools);
                         setReviews(docSnap.data().reviews);
-                    } else {
-                        console.log("document does not exist");
-                    }
-                });
-                onSnapshot(docRef, (doc) => {
-                    if (docSnap.exists()) {
-                        setSavedSchools(doc.data().saved_schools);
-                        setReviews(doc.data().reviews);
                     } else {
                         console.log("document does not exist");
                     }

@@ -81,7 +81,7 @@ export default function HomepageView() {
               filter: "drop-shadow(1px 1px 5px black)",
             }}
           >
-            The easiest way to find the school best suited for your needs.
+            The easiest way to find the NYC highschool suited for your needs.
           </Typography>
         </Box>
         <Box sx={{ mt: "5rem", width: "50%" }}>

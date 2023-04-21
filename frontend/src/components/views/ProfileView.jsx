@@ -18,6 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import EditModal from '../EditModal'
 
+import Navbar from "./NavBar";
 
 export default function ProfileView() {
   const [username, setUsername] = React.useState("");
@@ -25,11 +26,14 @@ export default function ProfileView() {
   const [savedSchools, setSavedSchools] = React.useState([]);
   const [reviews, setReviews] = React.useState([]);
   const [value, setValue] = React.useState(0)
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = auth.currentUser.uid;
+        user ? setLoggedIn(true) : setLoggedIn(false);
+
         const docRef = doc(db, "users", uid);
 
         getDoc(docRef).then((docSnap) => {
@@ -47,8 +51,17 @@ export default function ProfileView() {
       }
     });
   }, []);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    signOut(auth).then(() => {
+      console.log("signed out");
+    });
+  };
+  
   return (
     <>
+    <Navbar loggedIn={loggedIn} handleLogout={handleLogout}/>
       <Box
         sx={{
           minHeight: "100vh",
