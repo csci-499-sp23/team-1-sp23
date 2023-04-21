@@ -13,7 +13,7 @@ import { BiDna, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
 import { TbMathFunction, TbMap2 } from 'react-icons/tb/index.js';
 import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi2/index.js';
 import { RiGovernmentLine } from 'react-icons/ri/index.js';
-import { FaMoneyBillWave, FaPiedPiperHat} from 'react-icons/fa/index.js';
+import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
 import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
 
@@ -90,10 +90,10 @@ function SchoolpageView() {
     'Spanish': 'ES',
     'French': 'FR',
     'Italian': 'IT',
-    'German' : 'DE',
-    'Japanese' : 'JA',
+    'German': 'DE',
+    'Japanese': 'JA',
     'Latin': 'LA',
-    'Mandarin' : 'ZH',
+    'Mandarin': 'ZH',
     'Korean': 'KO',
     'American Sign Language': 'ASL',
     'Greek': 'EL',
@@ -102,9 +102,9 @@ function SchoolpageView() {
     'Haitian Creole': 'HT',
     'Polish': 'PL',
     'Portuguese': 'PT',
-    'Punjabi' : 'PA',
-    'Russian' : 'RU',
-    'Urdu' : 'UR'
+    'Punjabi': 'PA',
+    'Russian': 'RU',
+    'Urdu': 'UR'
   };
 
   const getAPclassesIcon = (course) => {
@@ -145,7 +145,32 @@ function SchoolpageView() {
     const address = document.getElementById('navigation');
     address.scrollIntoView({ behavior: 'smooth' });
   }
-  
+
+  const handleOverviewClick = () => {
+    const overview = document.getElementById('overview');
+    overview.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleOpportunitiesClick = () => {
+    const opportunities = document.getElementById('aca-opportunities');
+    opportunities.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleAPCoursesClick = () => {
+    const apCourses = document.getElementById('aca-apCourses');
+    apCourses.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleLanguageClick = () => {
+    const languageCourses = document.getElementById('aca-languages');
+    languageCourses.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleProgramsClick = () => {
+    const programs = document.getElementById('aca-programs');
+    programs.scrollIntoView({ behavior: 'smooth' });
+  }
+
   return (
     <>
       <NavBar />
@@ -245,28 +270,28 @@ function SchoolpageView() {
           <Box className="left-container">
             <Typography variant="h6" sx={{ mb: 2 }}>School Profile</Typography>
             <List sx={{ mb: 3 }}>
-              <ListItemButton sx={{ pl: 0 }}>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleOverviewClick}>
                 Overview
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleContactInfoClick}>
                 Schedule and Contact
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleAddressClick}>
                 Navigation
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Academics</Typography>
             <List>
-              <ListItemButton sx={{ pl: 0 }}>
-                Academic Opportunities 
+              <ListItemButton sx={{ pl: 0 }} onClick={handleOpportunitiesClick}>
+                Academic Opportunities
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleAPCoursesClick}>
                 AP Courses
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleLanguageClick}>
                 Language Courses
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleProgramsClick}>
                 Programs Offered
               </ListItemButton>
             </List>
@@ -277,15 +302,15 @@ function SchoolpageView() {
         </Grid>
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
-
-            {/*SCHOOL PROFILE*/}
-            <Box className="middle-container school-profile">
+{/*SCHOOL PROFILE*/}
+{/*Overview*/}
+            <Box id="overview" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Overview</h2>
               <p>{school?.overview_paragraph}</p>
             </Box>
-    
-            <Box id= "schedule-contact-info" className="middle-container school-profile">
+{/*Schedule and Contact*/}
+            <Box id="schedule-contact-info" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Schedule and Contact Information</h2>
               <h4>Campus Address</h4>
@@ -332,15 +357,15 @@ function SchoolpageView() {
                   </ListItem>
                   <ListItem>
                     <a href={`mailto:${school?.school_email}`} style={{ display: 'flex', alignItems: 'center', color: '#16A1DD', fontWeight: 'bold', textDecoration: 'none' }}>
-                      <Email sx={ { fontSize: '1.5rem', pr: '15px' }} />
+                      <Email sx={{ fontSize: '1.5rem', pr: '15px' }} />
                       School's Email
                     </a>
                   </ListItem>
                 </Box>
               </Box>
             </Box>
-
-            <Box id= "navigation" className="middle-container school-profile">
+{/*Navigation*/}
+            <Box id="navigation" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Navigation</h2>
               <h4>Nearby Transportation</h4>
@@ -357,7 +382,7 @@ function SchoolpageView() {
                 )}
               </List>
               <Link to="/map" style={{ color: '#16A1DD' }}>
-              <h4>Click here for more map and direction information</h4>
+                <h4>Click here for more map and direction information</h4>
                 <div className="map-wrapper">
                   <Iframe
                     url={url}
@@ -370,9 +395,9 @@ function SchoolpageView() {
                 </div>
               </Link>
             </Box>
-
-            {/*ACADEMICS*/}
-            <Box className="middle-container academics">
+{/*ACADEMICS*/}
+{/*Academic Opportunities*/}
+            <Box id="aca-opportunities" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Academic Opportunities</h2>
               <List>
@@ -426,8 +451,8 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
-
-            <Box className="middle-container academics">
+{/*AP Courses*/}
+            <Box id="aca-apCourses" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Advanced Placement (AP) Courses</h2>
               <List>
@@ -448,8 +473,8 @@ function SchoolpageView() {
                 </Box>
               )}
             </Box>
-
-            <Box className="middle-container academics">
+{/*Language Courses*/}
+            <Box id="aca-languages" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Language Courses</h2>
               <Grid container spacing={2}>
@@ -465,8 +490,8 @@ function SchoolpageView() {
                 ))}
               </Grid>
             </Box>
-
-            <Box className="middle-container academics">
+{/*Programs Offered*/}
+            <Box id="aca-programs" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Programs/Concentrations Offered</h2>
               <List>
@@ -542,6 +567,8 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
+
+            
           </Box>
         </Grid>
 
