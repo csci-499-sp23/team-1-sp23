@@ -304,7 +304,19 @@ function SchoolpageView() {
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
+            <List>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleOpportunitiesClick}>
+                data 1
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleAPCoursesClick}>
+                data 2
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleLanguageClick}>
+                data 3
+              </ListItemButton>
+            </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
+
             <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
           </Box>
         </Grid>
