@@ -5,7 +5,7 @@
 .home-banner {
   background-image: url("./assets/highschool.png");
   background-repeat: no-repeat;
-  background-size: cover; 
+  background-size: cover;
   background-position: 50% 75%;
   height: 100%;
   display: flex;
@@ -18,16 +18,15 @@
 }
 
 .school-banner {
-  background-image: url("./assets/register-banner.jpg")
+  background-image: url("./assets/register-banner.jpg");
 }
 
 .alt-school-banner {
-  background-image: url("./assets/highschool.png")
+  background-image: url("./assets/highschool.png");
 }
 
-
 .left-container {
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   height: 100vh;
   width: 2in;
   bottom: 0;
@@ -35,14 +34,13 @@
   padding: 1em;
   padding-top: 1.5em;
   border-radius: 15px;
-  color: rgb(80, 80, 80); 
+  color: rgb(80, 80, 80);
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
   font-family: "Open Sans", sans-serif;
   display: block;
   flex-direction: column;
   margin-left: 1in;
   margin-top: 2rem;
-
 }
 
 .left-container h6 {
@@ -54,28 +52,28 @@
   padding-bottom: 4px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 4px;
-  color:rgb(80, 80, 80);
+  color: rgb(80, 80, 80);
 }
-  
-  .left-container .Mui-selected {
+
+.left-container .Mui-selected {
   background-color: #e0f2f1 !important;
-  }
-  
-  .left-container .Mui-selected:hover {
+}
+
+.left-container .Mui-selected:hover {
   background-color: #0f9ec6 !important;
-  }
-    
-  .left-container .MuiListItemButton-root:hover {
-    background-color: #ffffff;
-    color: rgb(22, 161, 221);
-  } 
+}
+
+.left-container .MuiListItemButton-root:hover {
+  background-color: #ffffff;
+  color: rgb(22, 161, 221);
+}
 
 .middle-containers-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
 }
 
 .middle-container {
@@ -113,7 +111,7 @@
   }
 }
 
-@media (max-width: 1260px) { 
+@media (max-width: 1260px) {
   .left-container {
     margin-left: 0.2in;
     transition: all 0.5s ease;
@@ -143,7 +141,6 @@
 
 @media (max-width: 900px) {
   .schoolpage-header {
-    
     font-size: 200%;
     transition: all 0.3s ease;
   }
@@ -156,8 +153,7 @@
   }
 }
 
-
-@media (max-width: 900px) { 
+@media (max-width: 900px) {
   .left-container {
     display: none;
   }
@@ -173,7 +169,7 @@
 
 .school-profile {
   color: black;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding-left: 25px;
   padding-right: 25px;
   border-bottom: 10px solid #ccc;
@@ -189,13 +185,13 @@
   font-size: 18px;
   margin-top: 10px;
   margin-bottom: 0.1px;
-  font-weight: 500; 
+  font-weight: 500;
   text-transform: uppercase;
 }
 
 .school-profile h4 {
   font-size: 15px;
-  margin: 0px; 
+  margin: 0px;
 }
 
 .school-profile p {
@@ -215,7 +211,7 @@
 
 .academics {
   color: black;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   padding-left: 25px;
   padding-right: 25px;
   border-bottom: 10px solid #ccc;
@@ -231,13 +227,13 @@
   font-size: 18px;
   margin-top: 10px;
   margin-bottom: 0.1px;
-  font-weight: 500; 
+  font-weight: 500;
   text-transform: uppercase;
 }
 
 .academics h4 {
   font-size: 15px;
-  margin: 0px; 
+  margin: 0px;
 }
 
 .academics p {
@@ -248,14 +244,14 @@
   text-align: justify;
 }
 
-.academic-list-items{
+.academic-list-items {
   padding: 8px;
   background-color: #f0f0f0;
   border-radius: 8px;
   margin-bottom: 16px;
 }
 
-.academic-list-items-text{
+.academic-list-items-text {
   font-size: 1.2rem;
   font-weight: bold;
   color: #333;
