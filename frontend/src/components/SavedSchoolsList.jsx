@@ -81,10 +81,6 @@ const SavedSchoolsList = (props) => {
                         saved_schools: removedSchool
                     })
                 }
-                onSnapshot((docRef), doc => {
-                    const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-                    console.log(source, " data: ", doc.data());
-                })
             }
             else {
                 console.log("error");

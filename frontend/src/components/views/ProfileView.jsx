@@ -9,12 +9,15 @@ import {
   Grid
 } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, doc, getDoc, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, updateDoc, FieldValue, deleteDoc } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../../config/firebase";
 import Avatar from "@mui/material/Avatar";
 
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from '@mui/icons-material/Delete';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+
 
 import EditModal from '../EditModal'
 
@@ -36,7 +39,7 @@ export default function ProfileView() {
 
         const docRef = doc(db, "users", uid);
 
-        getDoc(docRef).then((docSnap) => {
+        onSnapshot(docRef, (docSnap) => {
           if (docSnap.exists()) {
             setUsername(docSnap.data().username.split("@").at(0));
             setRole(docSnap.data().role);
@@ -58,14 +61,195 @@ export default function ProfileView() {
       console.log("signed out");
     });
   };
-  
+
+  const deleteReview = async (schoolName) => {
+    try {
+      if (auth.currentUser) {
+        const uid = auth.currentUser.uid;
+        const docRef = doc(db, 'users', uid);
+        const snapSchool = doc(db, "school", schoolName, "reviews", uid);
+
+        const querySnapshot = await getDoc(docRef);
+        const schoolDoc = await getDoc(snapSchool);
+
+        console.log(schoolDoc.data())
+
+        if (querySnapshot.exists() && schoolDoc.exists()) {
+          console.log(schoolDoc.data())
+          const reviews = querySnapshot.data().reviews;
+          const removedReview = reviews.filter(
+            review => review.school !== schoolName
+          )
+          deleteDoc(snapSchool)
+          updateDoc(docRef, {
+            reviews: removedReview
+          })
+          
+        }
+      }
+      else {
+        console.log("error");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  const removeSavedSchool = async (name) => {
+    try {
+      if (auth.currentUser) {
+        const uid = auth.currentUser.uid;
+        const docRef = doc(db, 'users', uid);
+
+        const querySnapshot = await getDoc(docRef);
+
+        if (querySnapshot.exists()) {
+          const savedSchools = querySnapshot.data().saved_schools;
+          const removedSchool = savedSchools.filter(
+            school => school !== name
+          )
+          return updateDoc(docRef, {
+            saved_schools: removedSchool
+          })
+        }
+      }
+      else {
+        console.log("error");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  const goToSchoolOnMap = () => {
+
+  }
+
+  const ReviewCard = ({
+    content,
+    school,
+    stars,
+    datePosted,
+  }) => {
+    const [open, setOpen] = React.useState(false)
+    return (
+      <>
+        <Box sx={{ my: 5 }}>
+          <Paper sx={{ borderRadius: "0.5rem", width: "40dvw" }} elevation={5}>
+            <Box
+              sx={{
+                background: `no-repeat center`,
+                backgroundSize: "cover",
+                height: "9rem",
+                borderRadius: "0.5rem 0.5rem 0 0",
+              }}
+              className={"alt-school-banner"}
+            />
+            <Box sx={{ display: "flex", flexDirection: "column", p: 1 }}>
+              <Box sx={{ mx: 1, }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    }}
+                    textOverflow="ellipsis"
+                  >
+                    {school}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "grey",
+                      fontSize: "1.25rem",
+                    }}
+                  >
+                    {datePosted}
+                  </Typography>
+                </Box>
+                <Rating value={stars} readOnly />
+              </Box>
+              <Typography sx={{ m: 1 }}>{content}</Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "row", p: 1 }}>
+              <IconButton sx={{ borderRadius: 0 }} onClick={() => setOpen(true)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton sx={{ borderRadius: 0 }} onClick={() => deleteReview(school)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          </Paper>
+        </Box> 
+        {open && (<EditModal
+          user={username}
+          name={school}
+          role={role}
+          date={datePosted}
+          onClose={() => setOpen(false)}
+          rating={stars}
+          currentReview={content}
+          uid={auth.currentUser.uid}
+        />)}
+      </>
+    );
+  };
+
+  const SavedSchool = ({ schoolName }) => {
+    return (
+      <Box sx={{ my: 5, borderRadius: "1rem" }}>
+        <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              sx={{
+                alignSelf: "center",
+                ml: { xs: 2 },
+                fontSize: { xs: "1.25rem", md: "1.75rem" },
+              }}
+              textOverflow="ellipsis"
+            >
+              {schoolName}
+            </Typography>
+            <Box
+              sx={{
+                height: "auto",
+                width: { xs: "8rem", md: "12rem" },
+              }}
+            >
+              <img
+                src="https://i.insider.com/5cb4fb6faefeef24780d8ac5?width=600&format=jpeg&auto=webp"
+                alt="school"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  display: "block",
+                  borderTopRightRadius: "0.5rem",
+                  borderBottomRightRadius: "0.5rem",
+                }}
+              />
+            </Box>
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "row", p: 1 }}>
+            <IconButton sx={{ borderRadius: 0 }}>
+              <LocationOnIcon />
+            </IconButton>
+            <IconButton sx={{ borderRadius: 0 }} onClick={() => removeSavedSchool(schoolName)}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Paper>
+      </Box>
+    );
+  };
+
   return (
     <>
     <Navbar loggedIn={loggedIn} handleLogout={handleLogout}/>
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: colors.white,
+          backgroundColor: colors.darkBlue,
         }}
       >
         <Box sx={{ p: { xs: 1, md: 5 } }}>
@@ -117,7 +301,7 @@ export default function ProfileView() {
                   ) : (
                     reviews.map((data) => (
                       <Grid item xs={6}>
-                        <ReviewCard {...data} key={data.school} open={open} />
+                        <ReviewCard {...data} key={data.school} />
                       </Grid>
                     ))
                   )}
@@ -142,101 +326,6 @@ export default function ProfileView() {
   );
 }
 
-const ReviewCard = ({
-  content,
-  school,
-  stars,
-  datePosted,
-  role,
-  verified,
-  user,
-}) => {
-  return (
-    <>
-      <Box sx={{ my: 5 }}>
-        <Paper sx={{ borderRadius: "0.5rem", width: "40dvw" }} elevation={5}>
-          <Box
-            sx={{
-              background: `no-repeat center`,
-              backgroundSize: "cover",
-              height: "9rem",
-              borderRadius: "0.5rem 0.5rem 0 0",
-            }}
-            className={"alt-school-banner"}
-          />
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ mx: 1 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "1.25rem", md: "1.5rem" },
-                  }}
-                >
-                  {school}
-                </Typography>
-                <Typography
-                  sx={{
-                    color: "grey",
-                    fontSize: "1.25rem",
-                  }}
-                >
-                  {datePosted}
-                </Typography>
-              </Box>
-              <Rating value={stars} readOnly />
-            </Box>
-            <Typography sx={{ m: 1 }}>{content}</Typography>
-          </Box>
-          <IconButton sx={{ width: "100%", borderRadius: 0 }} onClick={() => setOpen(true)}>
-            <EditIcon />
-          </IconButton>
-        </Paper>
-      </Box>
-      {/* {open && (<EditModal user={school} name={school} role={role}/>)} */}
-      
-    </>
-  );
-};
-
-const SavedSchool = ({ schoolName }) => {
-  return (
-    <Box sx={{ my: 5, borderRadius: "1rem" }}>
-      <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography
-            sx={{
-              alignSelf: "center",
-              ml: { xs: 2 },
-              fontSize: { xs: "1.25rem", md: "1.75rem" },
-            }}
-          >
-            {schoolName}
-          </Typography>
-          <Box
-            sx={{
-              height: "auto",
-              width: { xs: "8rem", md: "12rem" },
-            }}
-          >
-            <img
-              src="https://i.insider.com/5cb4fb6faefeef24780d8ac5?width=600&format=jpeg&auto=webp"
-              alt="school"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                display: "block",
-                borderTopRightRadius: "0.5rem",
-                borderBottomRightRadius: "0.5rem",
-              }}
-            />
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
-  );
-};
-
 const TabPanel = ({ value, index, children }) => {
   return value === index && children;
 };
@@ -244,4 +333,5 @@ const TabPanel = ({ value, index, children }) => {
 const colors = {
   white: "#f8fafc",
   black: "#0f172a",
+  darkBlue: "#F8F9FA",
 };

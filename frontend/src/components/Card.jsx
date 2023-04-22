@@ -130,8 +130,6 @@ class InfoCard extends Component {
   };
 
   getReviews = () => {
-
-
     console.log("getting reviews");
     const schoolRef = collection(
       db,
