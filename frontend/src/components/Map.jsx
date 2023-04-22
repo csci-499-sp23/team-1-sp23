@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { GoogleMap } from "@react-google-maps/api";
-import { MarkerF } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, StreetViewPanorama  } from "@react-google-maps/api";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -13,7 +12,8 @@ import InputBase from "@mui/material/InputBase";
 import Link from "@mui/material/Link";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { mK } from "../config/environment";
 import { auth } from "../config/firebase";
 import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
@@ -66,6 +66,8 @@ class Map extends Component {
       },
       zoom: 11,
       saveList: false,
+      navbar: true,
+      visible: false
     };
     this.goToNearbySchool = this.goToNearbySchool.bind(this);
   }
@@ -93,7 +95,6 @@ class Map extends Component {
   handleFilter(borough) {
     const boroughsCopy = ["Q", "M", "X", "K", "R"];
     let activeFilters = [...this.state.activeFilters];
-
     if (activeFilters.includes(borough)) {
       if (borough === activeFilters[0] && activeFilters.length !== 5) {
         activeFilters = boroughsCopy;
@@ -101,15 +102,15 @@ class Map extends Component {
         activeFilters = activeFilters.filter((filter) => filter == borough);
       }
     } else {
-      activeFilters.pop();
       activeFilters.push(borough);
     }
     this.setState({ activeFilters, selectedBorough: borough });
   }
 
-  openDrawer = (bool) => {
+  navbarVisibility = (bool) => {
+    console.log("entered street view", bool)
     this.setState({
-      drawer: bool,
+      navbar: bool,
     });
   };
 
@@ -156,6 +157,12 @@ class Map extends Component {
       });
     }
   };
+
+  setVisible = (bool) => {
+    this.setState({
+      visible: bool
+    })
+  }
 
   render() {
     const { schools, activeFilters } = this.state;
@@ -226,9 +233,19 @@ class Map extends Component {
               opened={this.state.directionsRenderer}
               {...this.state.dirOpts}
             />
-            {/* Child components, such as markers, info windows, etc. */}
+            {/* Child components, such as markers, info windows, etc. this.navbarVisibility(false, null)*/}
+            <StreetViewPanorama
+              onVisibleChanged={() => {
+                this.showCard(false, null)
+                this.navbarVisibility(false, null)
+                this.setVisible(true, null)
+                console.log("visibility changed")
+              }}
+              onCloseclick={(e) => {console.log(e)}}
+            />
             <Box sx={{ flexGrow: 1 }}>
-              <AppBar position="static">
+              
+              {this.state.navbar && <AppBar position="static">
                 <Toolbar sx={{ zIndex: `100` }} disableGutters>
                   <Stack
                     direction={{ xs: "column", sm: "column", md: "row" }}
@@ -354,7 +371,8 @@ class Map extends Component {
                     </Box>
                   </Stack>
                 </Toolbar>
-              </AppBar>
+              </AppBar>}
+              
             </Box>
             {schoolsFiltered.map((school, key) => {
               return (

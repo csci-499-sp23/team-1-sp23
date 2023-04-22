@@ -26,8 +26,8 @@
 }
 
 .left-container {
-  background-color: #fafafa;
-  height: 100vh;
+  background-color: #FAFAFA;
+  height: auto;
   width: 2in;
   bottom: 0;
   overflow: auto;
@@ -41,6 +41,14 @@
   flex-direction: column;
   margin-left: 1in;
   margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.fixed-left-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
 }
 
 .left-container h6 {
@@ -93,7 +101,14 @@
 
 .schoolpage-header {
   font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  margin-left: 1in;
+  font-size: 45px;
+  color: white;
 }
+
+
 
 @media (max-width: 1260px) {
   .schoolpage-header {
@@ -270,4 +285,33 @@
 .program-list-item .MuiListItemText-secondary {
   margin-left: 25px;
   margin-right: 25px;
+}
+
+
+.contact-info-button {
+  text-decoration: none;
+  font-size: inherit; 
+  color: inherit;
+  text-transform: none;
+  font-family: inherit;
+}
+
+.contact-info-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+.address-button {
+  text-decoration: none;
+  font-size: inherit; 
+  color: inherit;
+  text-transform: none;
+  font-family: inherit;
+}
+
+.address-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: transparent;
 }

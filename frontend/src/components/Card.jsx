@@ -43,6 +43,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { Link } from "react-router-dom";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -106,6 +107,8 @@ class InfoCard extends Component {
       scrollLeft: false,
       currentScrollPos: 0,
       setscrolEnd: false,
+      savedSchools: [],
+      removedOpen: false,
     };
 
     this.autocomplete = null;
@@ -127,28 +130,31 @@ class InfoCard extends Component {
     this.reviewsAvg(stars);
   };
 
-  getReviews = async () => {
+  getReviews = () => {
+    console.log("getting reviews");
     const schoolRef = collection(
       db,
       `school/${this.props.school.school_name}/reviews`
     );
-    const querySnapshot = await getDocs(schoolRef);
-    this.setState({
-      currSchool: this.props.school.school_name,
-      destination: this.props.school.school_name,
-    });
-    const toAdd = [];
-    const stars = [];
-    querySnapshot.forEach((doc) => {
-      if (doc.exists()) {
-        toAdd.push(doc.data());
-        stars.push(doc.data().stars);
-      } else {
-        console.log("No reviews yet");
-        return null;
-      }
-    });
-    this.setReviewData(toAdd, stars);
+
+    onSnapshot(schoolRef, (docSnap) => {
+      this.setState({
+        currSchool: this.props.school.school_name,
+        destination: this.props.school.school_name,
+      });
+      const toAdd = [];
+      const stars = [];
+      docSnap.forEach((doc) => {
+        if (doc.exists()) {
+          toAdd.push(doc.data());
+          stars.push(doc.data().stars);
+        } else {
+          console.log("No reviews yet");
+          return null;
+        }
+      });
+      this.setReviewData(toAdd, stars);
+    })
   };
 
   getNearbySchools = async () => {
@@ -171,6 +177,12 @@ class InfoCard extends Component {
       );
   };
 
+  setSavedSchools = (data) => {
+    this.setState({
+      savedSchools: data
+    })
+  }
+
   componentDidMount() {
     this.getReviews();
     this.getNearbySchools();
@@ -178,24 +190,24 @@ class InfoCard extends Component {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", auth.currentUser.uid);
-        getDoc(docRef).then((docSnap) => {
+        onSnapshot(docRef, (docSnap) => {
           if (docSnap.exists()) {
-            this.setUsername(docSnap.data().username);
-            this.setRole(docSnap.data().role);
-            this.setUid(auth.currentUser.uid);
-
-            if (
-              user.emailVerified &&
-              this.badVerificationMethod(docSnap.data().username, "highschool")
-            ) {
-              this.setVerified(true);
+              this.setUsername(docSnap.data().username);
+              this.setRole(docSnap.data().role);
+              this.setUid(auth.currentUser.uid);
+              this.setSavedSchools(docSnap.data().saved_schools);
+              if (
+                user.emailVerified &&
+                this.badVerificationMethod(docSnap.data().username, "highschool")
+              ) {
+                this.setVerified(true);
+              } else {
+                this.setVerified(false);
+              }
             } else {
-              this.setVerified(false);
+              console.log("document does not exist");
             }
-          } else {
-            console.log("document does not exist");
-          }
-        });
+        })
       }
     });
   }
@@ -266,6 +278,12 @@ class InfoCard extends Component {
     });
   };
 
+  handleBookmarkRemoveOpen = () => {
+    this.setState({
+      removedOpen: true
+    })
+  }
+
   handleSnackbarClose = (e, reason) => {
     if (reason === "clickaway") {
       return;
@@ -275,16 +293,29 @@ class InfoCard extends Component {
       snackbarSuccessOpen: false,
       directionError: false,
       compareInfo: false,
+      removedOpen: false
     });
   };
 
   handleSave = () => {
     if (auth.currentUser != null || undefined) {
-      const docRef = doc(db, "users", auth.currentUser.uid);
-      this.handleSnackbarSuccessOpen();
-      return updateDoc(docRef, {
-        saved_schools: arrayUnion(this.props.school.school_name),
-      });
+      if(!this.state.savedSchools.includes(this.props.school.school_name)) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        this.handleSnackbarSuccessOpen();
+        return updateDoc(docRef, {
+          saved_schools: arrayUnion(this.props.school.school_name),
+        });
+      }
+      else {
+        const docRef = doc(db, 'users', auth.currentUser.uid)
+        const removedSchool = this.state.savedSchools.filter(
+          school => school !== this.props.school.school_name
+        )
+        this.handleBookmarkRemoveOpen()
+        return updateDoc(docRef, {
+          saved_schools: removedSchool
+        })
+      }
     } else {
       console.log("you are not logged in!");
       this.handleSnackbarOpen();
@@ -490,7 +521,7 @@ class InfoCard extends Component {
                   >
                     <Tooltip title="Bookmark">
                       <IconButton size="large" onClick={this.handleSave}>
-                        <BookmarkBorderIcon />
+                        {this.state.savedSchools.includes(this.props.school.school_name) ? <BookmarkIcon sx={{color: "#2196f3"}}/> : <BookmarkBorderIcon />}
                       </IconButton>
                     </Tooltip>
 
@@ -1555,6 +1586,16 @@ class InfoCard extends Component {
           </Alert>
         </Snackbar>
 
+        <Snackbar
+          open={this.state.removedOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="error">
+            Removed Bookmark
+          </Alert>
+        </Snackbar>
+
         {this.props.opened && (
           <Card
             sx={{
@@ -1701,6 +1742,24 @@ class InfoCard extends Component {
                     >
                       {this.props.time}
                     </Typography>
+                  </Typography>
+                  <Typography variant="body1" sx={{ mt: 2 }}>
+                    Transit Information
+                    <Typography
+                      variant="h6"
+                      component="span"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      Subway: <Typography>{this.props.school.subway}</Typography>
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      component="span"
+                      sx={{ display: "block", mt: 1 }}
+                    >
+                      Subway: <Typography>{this.props.school.bus}</Typography>
+                    </Typography>
+                    
                   </Typography>
                 </Box>
               </Box>
