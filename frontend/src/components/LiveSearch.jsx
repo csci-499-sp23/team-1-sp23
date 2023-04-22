@@ -5,7 +5,6 @@ import { Autocomplete } from "@mui/material/";
 import { Box } from "@mui/system";
 import SchoolsData from "../schoolData";
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 
 function LiveSearch() {
@@ -17,7 +16,6 @@ function LiveSearch() {
     setSelectedSchool(value);
     navigate(`/school/${value.school_name}`, {state: {school: value} });
   }
-
   return (
     <Stack
       sx={{
@@ -55,11 +53,6 @@ function LiveSearch() {
         )}
         onChange={handleSchoolSelection}
       />
-      {selectedSchool && (
-        <Link to={{ pathname: `/school/${selectedSchool.school_name}`, state:{school: selectedSchool} }}>
-          Go to School page
-        </Link>
-      )}
     </Stack>
   );
 }
