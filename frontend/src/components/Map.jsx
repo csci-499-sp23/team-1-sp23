@@ -82,7 +82,6 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.navHook.state)
     if (this.props.location.state) {
       const { longitude, latitude, school } = this.props.location.state;
       this.goToNearbySchool(longitude, latitude, school);
