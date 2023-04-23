@@ -5,16 +5,26 @@
 ::-webkit-scrollbar {
     width: 5px;
 }
+
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #555;
     height: 50px;
 }
+
 ::-webkit-scrollbar-track:horizontal {
     background: transparent;
 }
+
 ::-webkit-scrollbar-thumb:horizontal {
     background: transparent;
-  }
+}
+
+@media screen and (max-width: 480px) {
+    ::-webkit-scrollbar {
+        width: 0;
+    }
+}

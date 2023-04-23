@@ -86,10 +86,19 @@ class Map extends Component {
   }
 
   showCard = (bool, obj) => {
-    this.setState({
-      card: bool,
-      school: obj,
-    });
+    if (this.state.saveList === true) {
+      this.setState({
+        saveList: false,
+        card: bool,
+        school: obj,
+      });
+    }
+    else {
+      this.setState({
+        card: bool,
+        school: obj,
+      });
+    }
   };
 
   handleFilter(borough) {
@@ -176,7 +185,7 @@ class Map extends Component {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: {xs: "column-reverse", md:"row"},
             backgroundColor: "#2b2d42",
             color: "white",
             height: "100%",
@@ -185,13 +194,15 @@ class Map extends Component {
           <Stack
             sx={{
               m: 1,
+              flexDirection: {xs: "row", md:"column"},
+              justifyContent: {xs: "space-evenly", md: "start"}
             }}
           >
-            <IconButton sx={{ color: "white" }}>
-              <Link href="/" sx={{ color: "white" }}>
+            <Link href="/" sx={{ color: "white" }}>
+              <IconButton sx={{ color: "white" }}>
                 <HomeIcon />
-              </Link>
-            </IconButton>
+              </IconButton>
+            </Link>
             <IconButton sx={{ color: "white" }}>
               <MapIcon />
             </IconButton>
@@ -234,6 +245,7 @@ class Map extends Component {
               {...this.state.dirOpts}
             />
             {/* Child components, such as markers, info windows, etc. this.navbarVisibility(false, null)*/}
+
             <StreetViewPanorama
               onVisibleChanged={() => {
                 this.showCard(false, null)
@@ -241,12 +253,15 @@ class Map extends Component {
                 this.setVisible(true, null)
                 console.log("visibility changed")
               }}
-              onCloseclick={(e) => {console.log(e)}}
+              onPovChanged={() => {
+                console.log("changed ")
+              }}
+              onCloseclick={(e) => {console.log("closed Street view")}}
             />
-            <Box sx={{ flexGrow: 1 }}>
-              
+
+            <Box sx={{ flexGrow: 1 }}>  
               {this.state.navbar && <AppBar position="static">
-                <Toolbar sx={{ zIndex: `100` }} disableGutters>
+                <Toolbar sx={{ zIndex: {xs: 1, md: 999} }} disableGutters>
                   <Stack
                     direction={{ xs: "column", sm: "column", md: "row" }}
                     spacing={{ xs: 2, sm: 2, md: 4 }}
@@ -285,8 +300,9 @@ class Map extends Component {
                         />
                       )}
                       sx={{
-                        ml: 2,
-                        width: 500,
+                        ml: {xs: 0, sm: 2, md: 2},
+                        m: {xs: 2},
+                        width: {xs: "93%", md: 550},
                         backgroundColor: "transparent",
                       }}
                       renderInput={(params) => {
@@ -317,10 +333,7 @@ class Map extends Component {
                         position: {
                           md: "relative",
                         },
-                        display: {
-                          xs: "flex",
-                          md: "flex",
-                        },
+                        display:"flex",
                         justifyContent: {
                           xs: "space-evenly",
                           md: "flex-start",
@@ -336,7 +349,12 @@ class Map extends Component {
                       <Stack
                         direction="row"
                         spacing={2}
-                        sx={{ overflow: "auto", p: "10px" }}
+                        sx={{ overflow: "auto",
+                        ml: {
+                          xs: 2,
+                          md: 2,
+                        },
+                      }}
                       >
                         {boroughs.map((borough) => (
                           <Button
@@ -353,7 +371,10 @@ class Map extends Component {
                                 : "gray",
                               fontWeight: 500,
                               fontSize: 14,
-                              padding: "2px 14px 2px 14px",
+                              padding: {
+                                xs: "2px 3rem 2px 3rem",
+                                md: "2px 14px 2px 14px"
+                              },
                               cursor: "pointer",
                               whiteSpace: "nowrap",
                               borderRadius: 5,
@@ -405,6 +426,7 @@ class Map extends Component {
                 opened={this.state.directionsRenderer}
                 {...this.state.dirOpts}
                 goToSchool={this.goToNearbySchool}
+                mobileClose={this.showCard}
               />
             )}
             {this.state.saveList && (
