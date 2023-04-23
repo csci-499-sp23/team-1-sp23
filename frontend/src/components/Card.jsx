@@ -24,6 +24,7 @@ import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -44,6 +45,8 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { Link } from "react-router-dom";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ArticleIcon from '@mui/icons-material/Article';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -53,10 +56,8 @@ import { Autocomplete } from "@react-google-maps/api";
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
-  getDoc,
   doc,
   collection,
-  getDocs,
   updateDoc,
   arrayUnion,
   onSnapshot,
@@ -109,6 +110,7 @@ class InfoCard extends Component {
       setscrolEnd: false,
       savedSchools: [],
       removedOpen: false,
+      scrollIntoView: false,
     };
 
     this.autocomplete = null;
@@ -439,6 +441,19 @@ class InfoCard extends Component {
     this.scrollToTop.current.scrollIntoView({ behavior: "auto" });
   };
 
+  scrollListener = () => {
+    if(this.elem.getBoundingClientRect().bottom < 0) {
+      this.setState({
+        scrollIntoView: true
+      })
+    }
+    else {
+      this.setState({
+        scrollIntoView: false
+      })
+    }
+  }
+
   render() {
     return (
       <>
@@ -446,36 +461,72 @@ class InfoCard extends Component {
           sx={{
             maxWidth: { xs: "100vw", sm: 400, md: 400 },
             maxHeight: "100%",
-            zIndex: 1,
+            zIndex: 100,
             position: "absolute",
             top: 0,
             left: 0,
             height: "100%",
             overflowY: "auto",
           }}
+          onScroll={this.scrollListener}
         >
           <CardMedia
             sx={{ height: 190 }}
             image="./src/assets/highschool.png"
             title="school"
             ref={this.scrollToTop}
-          />
+          >
+            <IconButton size="large" sx={{color: "white"}} onClick={() => this.props.mobileClose(false, null)}>
+              <ExpandMoreIcon sx={{fontSize: "2.1rem"}}/>
+            </IconButton>
+          </CardMedia>
+          
+          {this.state.scrollIntoView && (
+            <Paper elevation={5} sx={{
+              display: {
+                xs: "flex",
+                sm: "flex",
+                md: "none"
+              },
+              position: "sticky",
+              top: 0,
+              zIndex: 999,
+              p: 2,
+              backgroundColor: "white",
+            }}>
+              <IconButton size="large" sx={{position: "absolute", bottom: "50%", transform: "translate(0%, 50%)"}} onClick={() => this.props.mobileClose(false, null)}>
+                <ExpandMoreIcon />
+              </IconButton>
+              <Box sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                width: "100%",
+                justifyContent: "center"
+              }}>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontWeight: 500, textAlign: "center", maxWidth: "75%" }}
+                  noWrap
+                  textOverflow="ellipsis"
+                >
+                  {this.props.school.school_name}
+                </Typography>
+              </Box>
+            </Paper>
+          )}
+      
           <CardContent>
-            <Link
-              to={`/school/${this.props.school.school_name}`}
-              state={{ school: this.props.school }}
-              style={{ textDecoration: "none" }}
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              sx={{ fontWeight: 500 }}
             >
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="div"
-                sx={{ fontWeight: 500, color: "#1877d2" }}
-              >
-                {this.props.school.school_name}
-              </Typography>
-            </Link>
-            <Typography gutterBottom variant="body2" component="div">
+              {this.props.school.school_name}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="div" ref={elem => {this.elem = elem}}>
               {`${this.props.school.neighborhood}, ${this.props.school.borough
                 .toLowerCase()
                 .split(" ")
@@ -545,6 +596,19 @@ class InfoCard extends Component {
                         <BarChartIcon />
                       </IconButton>
                     </Tooltip>
+
+                    <Tooltip title="School Page">
+                      <Link
+                        to={`/school/${this.props.school.school_name}`}
+                        state={{ school: this.props.school }}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <IconButton size="large">
+                          <ArticleIcon />
+                        </IconButton>
+                      </Link>
+                    </Tooltip>
+                    
                   </Box>
                   <Divider
                     sx={{
@@ -592,6 +656,8 @@ class InfoCard extends Component {
                     <Typography
                       variant="caption"
                       sx={{ display: "flex", alignItems: "center" }}
+                      noWrap
+                      textOverflow="ellipsis"
                     >
                       {this.props.school.school_accessibility ==
                       "Fully Accessible" ? (
@@ -608,9 +674,11 @@ class InfoCard extends Component {
                       mb: 2,
                     }}
                   />
-                  <Typography variant="body2" color="text.secondary">
-                    {this.props.school.overview_paragraph}
-                  </Typography>
+                  <Box sx={{width: "100%"}}>
+                    <Typography variant="body2" color="text.secondary">
+                      {this.props.school.overview_paragraph}
+                    </Typography>
+                  </Box>
 
                   <Divider
                     sx={{
