@@ -134,14 +134,6 @@ class Edit extends Component {
         else {
           console.log("error")
         }
-
-
-        // await updateDoc(doc(db, "users", this.props.uid), {
-        //   reviews: arrayUnion({
-        //     ...base,
-        //     school: this.props.name,
-        //   }),
-        // });
         this.handleSnackbarSuccessOpen();
       } 
       else {
@@ -157,7 +149,7 @@ class Edit extends Component {
         <Box
           sx={{
             zIndex: 1000,
-            position: "absolute",
+            position: "fixed",
             left: "50%",
             top: "50%",
             transform: "translate(-50%, -50%)",
