@@ -27,6 +27,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import CloseIcon from '@mui/icons-material/Close';
 
+import { useNavigate } from 'react-router-dom';
+
 import EditModal from "./EditModal";
 
 const SavedSchoolsList = (props) => {
@@ -35,6 +37,8 @@ const SavedSchoolsList = (props) => {
     const [role, setRole] = React.useState("");
     const [savedSchools, setSavedSchools] = React.useState([]);
     const [reviews, setReviews] = React.useState([]);
+    const [open, setOpen] = React.useState(false)
+    const navigate = useNavigate();
 
     const handleTabChange = (e, newValue) => {
         setselectedTab(newValue);
@@ -44,25 +48,46 @@ const SavedSchoolsList = (props) => {
         return value === index && children;
     };
 
-    const removeReview = () => {
-        try {
-
-        }
-        catch (error) {
-
-        }
-    }
-
-    const editReview = () => {
-
-    }
-
     const goToSchoolOnMap = async(school) => {
         const location = await fetch(`https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${school}`)
         const data = await location.json();
+        navigate(`${school}`)
         props.goToSchool(Number(data[0].longitude), Number(data[0].latitude), data[0])
         props.onClose()
     }
+
+    const deleteReview = async (school) => {
+        try {
+          if (auth.currentUser) {
+            const uid = auth.currentUser.uid;
+            const docRef = doc(db, 'users', uid);
+            const snapSchool = doc(db, "school", school, "reviews", uid);
+    
+            const querySnapshot = await getDoc(docRef);
+            const schoolDoc = await getDoc(snapSchool);
+    
+            console.log(schoolDoc.data())
+    
+            if (querySnapshot.exists() && schoolDoc.exists()) {
+              const reviews = querySnapshot.data().reviews;
+              const removedReview = reviews.filter(
+                review => review.school !== school
+              )
+              deleteDoc(snapSchool)
+              updateDoc(docRef, {
+                reviews: removedReview
+              })
+              
+            }
+          }
+          else {
+            console.log("error");
+          }
+        }
+        catch (error) {
+          console.log(error);
+        }
+      }
 
     const removeSavedSchool = async (name) => {
         try {
@@ -91,6 +116,49 @@ const SavedSchoolsList = (props) => {
         }
     }
 
+    const MyReviews = ({
+        content,
+        school,
+        stars,
+        datePosted, }) => {
+        return (
+            <>  <Card sx={{ display: "flex", m: 2, p: 2 }}>
+                <Box sx={{ width: 300 }}>
+                    <CardContent sx={{ flex: '1 0 auto' }}>
+                        <Typography variant="body2" sx={{ textOverflow: 'ellipsis', overflow: "hidden" }}>{school}</Typography>
+
+                        <Typography variant="body1" sx={{ textOverflow: 'ellipsis', overflow: "hidden" }}>{content}</Typography>
+                    </CardContent>
+                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <Box sx={{ width: "100%" }}>
+                            <Typography variant='subtitle2'>{datePosted}</Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", flexDirection: "row" }}>
+                            <IconButton size="small" onClick={() => setOpen(true)}>
+                                <ModeEditIcon fontSize='inherit' />
+                            </IconButton>
+                            <IconButton size="small" onClick={() => deleteReview(school)}>
+                                <DeleteIcon fontSize='inherit' />
+                            </IconButton>
+                        </Box>
+                    </Box>
+                </Box>
+            </Card>
+            {open && <EditModal
+                user={username}
+                name={school}
+                role={role}
+                date={datePosted}
+                onClose={() => setOpen(false)}
+                rating={stars}
+                currentReview={content}
+                uid={auth.currentUser.uid}
+            />}
+            </>
+
+        )
+    }
+
     React.useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -116,111 +184,90 @@ const SavedSchoolsList = (props) => {
 
     return (
         <>
-        <Card
-            sx={{
-                maxWidth: { xs: "100vw", sm: 400, md: 400 },
-                maxHeight: "100%",
-                zIndex: 99999,
-                position: "absolute",
-                top: 0,
-                left: 0,
-                height: "100%",
-                overflowY: "auto",
-            }}
-        >
-            <CardContent>
-                <Box sx={{
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    flexDirection: "row", 
-                    alignItems: "center"
-                }}>
-                    <Typography variant='h6'>Saved</Typography>
-                    <IconButton onClick={props.onClose}>
-                        <CloseIcon />
-                    </IconButton>
-                </Box>
+            <Card
+                sx={{
+                    maxWidth: { xs: "100vw", sm: 400, md: 400 },
+                    maxHeight: "100%",
+                    zIndex: 99999,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    height: "100%",
+                    overflowY: "auto",
+                }}
+            >
+                <CardContent>
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: "row",
+                        alignItems: "center"
+                    }}>
+                        <Typography variant='h6'>Saved</Typography>
+                        <IconButton onClick={props.onClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
 
-                <Divider 
-                    sx={{
-                        mt: 2,
-                        mb: 1,
-                    }}
-                />
+                    <Divider
+                        sx={{
+                            mt: 2,
+                            mb: 1,
+                        }}
+                    />
 
-                <Tabs
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant="fullWidth"
-                    aria-label="full width tabs"
-                    value={selectedTab}
-                    onChange={handleTabChange}
-                >
-                    <Tab label="Saved Schools" value="1"/>
-                    <Tab label="My Reviews" value="2"/>
-                </Tabs>
+                    <Tabs
+                        indicatorColor="primary"
+                        textColor="primary"
+                        variant="fullWidth"
+                        aria-label="full width tabs"
+                        value={selectedTab}
+                        onChange={handleTabChange}
+                    >
+                        <Tab label="Saved Schools" value="1" />
+                        <Tab label="My Reviews" value="2" />
+                    </Tabs>
 
-                <TabPanel value={selectedTab} index="1">
-                    {savedSchools.length === 0 ? (
-                        <Typography sx={{ color: "#222222" }}>
-                            You do not have any saved schools.
-                        </Typography>
-                    ) : (
-                        savedSchools.map((name, i) => (
-                            <Card key={i} sx={{ display: "flex", m: 2, p: 2, whiteSpace: 'nowrap', }}>
-                                <Box sx={{width: 300}}>
-                                    <CardContent>
-                                        <Typography variant="body2" sx={{textOverflow: 'ellipsis', overflow: "hidden"}}>{name}</Typography>
-                                    </CardContent>
-                                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                        <IconButton size="small" onClick={() => goToSchoolOnMap(name)}>
-                                            <LocationOnIcon fontSize="inherit" />
-                                        </IconButton>
-                                        <IconButton size="small" onClick={() => removeSavedSchool(name)}>
-                                            <DeleteIcon fontSize="14px"/>
-                                        </IconButton>
-                                    </Box>
-                                </Box>
-                            </Card>
-                        ))
-                    )}
-                </TabPanel>
-
-                <TabPanel value={selectedTab} index="2">
-                    {reviews.length === 0 ? (
-                        <Typography sx={{ color: "#222222" }}>
-                            You do not have any reviews.
-                        </Typography>
-                    ) : (
-                        reviews.map((data) => (
-                            <Card key={data.school} sx={{ display: "flex", m: 2, p: 2 }}>
-                                <Box sx={{width: 300}}>
-                                    <CardContent sx={{flex: '1 0 auto'}}>
-                                        <Typography variant="body2" sx={{ textOverflow: 'ellipsis', overflow: "hidden" }}>{data.school}</Typography>
-                                        
-                                        <Typography variant="body1" sx={{textOverflow: 'ellipsis', overflow: "hidden"}}>{data.content}</Typography>  
-                                    </CardContent>
-                                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
-                                        <Box sx={{width: "100%"}}>
-                                            <Typography variant='subtitle2'>{data.datePosted}</Typography>
-                                        </Box>
-                                        <Box sx={{display: "flex", flexDirection: "row"}}>
-                                            <IconButton size="small" onClick={() => editReview}>
-                                                <ModeEditIcon fontSize='inherit' />
+                    <TabPanel value={selectedTab} index="1">
+                        {savedSchools.length === 0 ? (
+                            <Typography sx={{ color: "#222222" }}>
+                                You do not have any saved schools.
+                            </Typography>
+                        ) : (
+                            savedSchools.map((name, i) => (
+                                <Card key={i} sx={{ display: "flex", m: 2, p: 2, whiteSpace: 'nowrap', }}>
+                                    <Box sx={{ width: 300 }}>
+                                        <CardContent>
+                                            <Typography variant="body2" sx={{ textOverflow: 'ellipsis', overflow: "hidden" }}>{name}</Typography>
+                                        </CardContent>
+                                        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                                            <IconButton size="small" onClick={() => goToSchoolOnMap(name)}>
+                                                <LocationOnIcon fontSize="inherit" />
                                             </IconButton>
-                                            <IconButton size="small"  onClick={() => removeReview}>
-                                                <DeleteIcon fontSize='inherit' />
+                                            <IconButton size="small" onClick={() => removeSavedSchool(name)}>
+                                                <DeleteIcon fontSize="14px" />
                                             </IconButton>
                                         </Box>
                                     </Box>
-                                </Box>
-                            </Card>
-                        ))
-                    )}
-                </TabPanel>
-            </CardContent>
-        </Card>
-        {/* <EditModal user={username} name={school} role={role}/> */}
+                                </Card>
+                            ))
+
+                        )}
+                    </TabPanel>
+
+                    <TabPanel value={selectedTab} index="2">
+                        {reviews.length === 0 ? (
+                            <Typography sx={{ color: "#222222" }}>
+                                You do not have any reviews.
+                            </Typography>
+                        ) : (
+                                reviews.map((data) => (
+                                    <MyReviews {...data} key={data.school}/>
+                                ))
+                        )}
+                    </TabPanel>
+                </CardContent>
+            </Card>
         </>
   )
 }

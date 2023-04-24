@@ -11,6 +11,8 @@ import {
   ListItemButton,
   Typography,
   ListItemIcon,
+  IconButton,
+  Tooltip
 } from "@mui/material";
 import {
   LocationOn,
@@ -21,6 +23,20 @@ import {
   Language,
   School,
 } from "@mui/icons-material";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+
+import { auth, db } from "../../config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+    getDoc,
+    doc,
+    updateDoc,
+    onSnapshot,
+    deleteDoc,
+    arrayUnion
+  } from "firebase/firestore";
+
 import NavBar from "./NavBar";
 import Iframe from "react-iframe";
 import { MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
@@ -41,6 +57,37 @@ function SchoolpageView() {
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
+
+  const [username, setUsername] = React.useState("");
+  const [role, setRole] = React.useState("");
+  const [savedSchools, setSavedSchools] = React.useState([]);
+  const [reviews, setReviews] = React.useState([]);
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = auth.currentUser.uid;
+        user ? setLoggedIn(true) : setLoggedIn(false);
+        const docRef = doc(db, "users", uid);
+
+        onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+            setUsername(docSnap.data().username.split("@").at(0));
+            setRole(docSnap.data().role);
+            setSavedSchools(docSnap.data().saved_schools);
+            setReviews(docSnap.data().reviews);
+          } else {
+            console.log("document does not exist");
+          }
+        })
+
+      } else {
+        console.log("not logged in");
+      }
+    });
+  }, []);
 
   const urlFix = (schoolUrl) => {
     let fixedUrl = schoolUrl
@@ -191,6 +238,35 @@ function SchoolpageView() {
     programs.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleSave = () => {
+    if (auth.currentUser != null || undefined) {
+      if(!savedSchools.includes(school.school_name)) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        return updateDoc(docRef, {
+          saved_schools: arrayUnion(school.school_name),
+        });
+      }
+      else {
+        const docRef = doc(db, 'users', auth.currentUser.uid)
+        const removedSchool = savedSchools.filter(
+          remove => remove !== school.school_name
+        )
+        return updateDoc(docRef, {
+          saved_schools: removedSchool
+        })
+      }
+    } else {
+      console.log("you are not logged in!");
+    }
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    signOut(auth).then(() => {
+      console.log("signed out");
+    });
+  };
+
   window.addEventListener('scroll', function () {
     const headerHeight = document.getElementById('header-container').offsetHeight;
     const subheaderHeight = document.getElementById('subheader-container').offsetHeight;
@@ -206,7 +282,7 @@ function SchoolpageView() {
 
   return (
     <>
-      <NavBar />
+      <NavBar loggedIn={loggedIn} handleLogout={handleLogout}/>
       <Grid container>
         <Grid item xs={12} sm={12} md={12} id="header-container">
 {/*MAIN HEADER*/}
@@ -240,6 +316,7 @@ function SchoolpageView() {
                   sx={{
                     marginLeft: -1,
                     verticalAlign: 'middle',
+                    fontFamily: 'Arial',
                     marginRight: 1,
                     fontSize: 30,
                     color: 'common.white',
@@ -256,7 +333,7 @@ function SchoolpageView() {
                     verticalAlign: 'middle',
                     marginLeft: '1em',
                     fontFamily: 'Arial',
-                    fontSize: 39,
+                    fontSize: 30,
                     color: 'common.white',
                   }}
                 >
@@ -336,9 +413,6 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleProgramsClick}>
                 Programs Offered
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>AP Courses</ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>Language Courses</ListItemButton>
-              <ListItemButton sx={{ pl: 0 }}>Programs Offered</ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
             <List>
@@ -473,7 +547,7 @@ function SchoolpageView() {
                 )}
               </List>
               <Link
-                to="/map"
+                to={`/map/${school.school_name}`}
                 state={{ latitude, longitude, school }}
                 style={{ color: "#16A1DD" }}
               >
@@ -490,8 +564,8 @@ function SchoolpageView() {
                 />
               </div>
             </Box>
-{/*ACADEMICS*/}
-{/*Academic Opportunities*/}
+  {/*ACADEMICS*/}
+  {/*Academic Opportunities*/}
             <Box id="aca-opportunities" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Academic Opportunities</h2>
@@ -687,10 +761,23 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
-
-
           </Box>
         </Grid>
+        <Tooltip title="Save School">
+          <IconButton sx={{ 
+            position: "fixed", 
+            bottom: 0, 
+            right: 0, 
+            backgroundColor: "#f1f1f1", 
+            borderRadius: "50%", 
+            m: 5,
+            p: 1.3, 
+            "&:hover": { backgroundColor: "white" },
+          }} 
+          onClick={() => handleSave()}>
+            {savedSchools.includes(school.school_name) ? <BookmarkIcon sx={{color: "#2196f3", fontSize: "2.3rem"}}/> : <BookmarkBorderIcon sx={{fontSize: "2.3rem"}}/>}
+          </IconButton>
+        </Tooltip>
       </Grid>
     </>
   );
