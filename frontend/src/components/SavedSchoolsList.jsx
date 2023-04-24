@@ -27,6 +27,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import CloseIcon from '@mui/icons-material/Close';
 
+import { useNavigate } from 'react-router-dom';
+
 import EditModal from "./EditModal";
 
 const SavedSchoolsList = (props) => {
@@ -36,6 +38,7 @@ const SavedSchoolsList = (props) => {
     const [savedSchools, setSavedSchools] = React.useState([]);
     const [reviews, setReviews] = React.useState([]);
     const [open, setOpen] = React.useState(false)
+    const navigate = useNavigate();
 
     const handleTabChange = (e, newValue) => {
         setselectedTab(newValue);
@@ -48,6 +51,7 @@ const SavedSchoolsList = (props) => {
     const goToSchoolOnMap = async(school) => {
         const location = await fetch(`https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${school}`)
         const data = await location.json();
+        navigate(`${school}`)
         props.goToSchool(Number(data[0].longitude), Number(data[0].latitude), data[0])
         props.onClose()
     }

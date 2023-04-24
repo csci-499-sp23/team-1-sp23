@@ -547,7 +547,7 @@ function SchoolpageView() {
                 )}
               </List>
               <Link
-                to="/map"
+                to={`/map/${school.school_name}`}
                 state={{ latitude, longitude, school }}
                 style={{ color: "#16A1DD" }}
               >
