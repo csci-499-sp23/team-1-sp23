@@ -13,6 +13,7 @@ import Link from "@mui/material/Link";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import { mK } from "../config/environment";
 import { auth } from "../config/firebase";
 import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
@@ -101,8 +102,7 @@ class Map extends Component {
         card: bool,
         school: obj,
       });
-    }
-    else {
+    } else {
       this.setState({
         card: bool,
         school: obj,
@@ -206,7 +206,7 @@ class Map extends Component {
         <Box
           sx={{
             display: "flex",
-            flexDirection: {xs: "column-reverse", md:"row"},
+            flexDirection: { xs: "column-reverse", md: "row" },
             backgroundColor: "#2b2d42",
             color: "white",
             height: "100%",
@@ -215,8 +215,8 @@ class Map extends Component {
           <Stack
             sx={{
               m: 1,
-              flexDirection: {xs: "row", md:"column"},
-              justifyContent: {xs: "space-evenly", md: "start"}
+              flexDirection: { xs: "row", md: "column" },
+              justifyContent: { xs: "space-evenly", md: "start" },
             }}
           >
             <Link href="/" sx={{ color: "white" }}>
@@ -244,7 +244,7 @@ class Map extends Component {
             onClick={() => {
               this.showCard(false, null);
               this.handleDirectionsPanel(false);
-              this.props.navHook("/map")
+              this.props.navHook("/map");
             }}
             onZoomChanged={() => {
               if (this.map && !this.state.directionsRenderer) {
@@ -275,149 +275,59 @@ class Map extends Component {
                 this.setVisible(true, null);
                 console.log("visibility changed");
               }}
-              onCloseclick={(e) => {
-                console.log(e);
-              }}
               onPovChanged={() => {
-                console.log("changed ")
+                console.log("changed ");
               }}
-              onCloseclick={(e) => {console.log("closed Street view")}}
+              onCloseclick={(e) => {
+                console.log("closed Street view");
+              }}
             />
 
-            <Box sx={{ flexGrow: 1 }}>  
-              {this.state.navbar && <AppBar position="static">
-                <Toolbar sx={{ zIndex: {xs: 1, md: 999} }} disableGutters>
-                  <Stack
-                    direction={{ xs: "column", sm: "column", md: "row" }}
-                    spacing={{ xs: 2, sm: 2, md: 4 }}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: {
-                        xs: "flex-start",
-                        md: "center",
-                      },
-                      maxWidth: "100%",
-                    }}
-                  >
-                    <MAutocomplete
-                      options={this.state.schools}
-                      getOptionLabel={(option) => option.school_name}
-                      noOptionsText="School not found"
-                      blurOnSelect
-                      onChange={(e, school) => {
-                        this.goToNearbySchool(
-                          Number(school.longitude),
-                          Number(school.latitude),
-                          school
-                        );
-                      }}
-                      PaperComponent={(props) => (
-                        <Paper
-                          {...props}
-                          sx={{
-                            borderRadius: 0,
-                            borderBottomLeftRadius: 15,
-                            borderBottomRightRadius: 15,
-                            boxShadow: "0 0.25rem 0.25rem gray",
-                            mt: "-0.6rem",
-                          }}
-                        />
-                      )}
+            <Box sx={{ flexGrow: 1 }}>
+              {this.state.navbar && (
+                <AppBar position="static">
+                  <Toolbar sx={{ zIndex: { xs: 1, md: 999 } }} disableGutters>
+                    <Stack
+                      direction={{ xs: "column", sm: "column", md: "row" }}
+                      spacing={{ xs: 2, sm: 2, md: 4 }}
                       sx={{
-                        ml: {xs: 0, sm: 2, md: 2},
-                        m: {xs: 2},
-                        width: {xs: "93%", md: 570},
-                        backgroundColor: "transparent",
-                      }}
-                      renderInput={(params) => {
-                        return (
-                          <Paper
-                            ref={params.InputProps.ref}
-                            sx={{
-                              p: "0.5rem",
-                              display: "flex",
-                              borderRadius: 3,
-                            }}
-                            elevation={3}
-                          >
-                            <SearchIcon
-                              sx={{ color: "#1877d2", alignSelf: "center" }}
-                            />
-                            <InputBase
-                              inputProps={{ ...params.inputProps }}
-                              placeholder="Search for a school"
-                              sx={{ width: "100%", ml: "0.25rem" }}
-                            />
-                          </Paper>
-                        );
-                      }}
-                    />
-                    <Box
-                      sx={{
-                        position: {
-                          md: "relative",
-                        },
-                        display:"flex",
-                        justifyContent: {
-                          xs: "space-evenly",
-                          md: "flex-start",
-                        },
-                        width: "100%",
-                        ml: {
-                          xs: 0,
-                          md: 2,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: {
+                          xs: "flex-start",
+                          md: "center",
                         },
                         maxWidth: "100%",
                       }}
                     >
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        sx={{ overflow: "auto",
-                        ml: {
-                          xs: 2,
-                          md: 2,
-                        },
-                      }}
-                      >
-                        {boroughs.map((borough) => (
-                       
-                          <Button
-                            key={borough}
-                            variant="contained"
-                            onClick={() => {
-                              this.handleFilter(borough)
-                              // this.props.navHook(`/filter/${borough}`)
-                            }}
+                      <MAutocomplete
+                        options={this.state.schools}
+                        getOptionLabel={(option) => option.school_name}
+                        noOptionsText="School not found"
+                        blurOnSelect
+                        onChange={(e, school) => {
+                          this.goToNearbySchool(
+                            Number(school.longitude),
+                            Number(school.latitude),
+                            school
+                          );
+                        }}
+                        PaperComponent={(props) => (
+                          <Paper
+                            {...props}
                             sx={{
-                              backgroundColor:
-                                this.state.activeFilters.includes(borough)
-                                  ? "white"
-                                  : "#ffffff",
-                              color: this.state.activeFilters.includes(borough)
-                                ? "#256fd4"
-                                : "gray",
-                              fontWeight: 500,
-                              fontSize: 14,
-                              padding: {
-                                xs: "2px 3rem 2px 3rem",
-                                md: "2px 14px 2px 14px"
-                              },
-                              cursor: "pointer",
-                              whiteSpace: "nowrap",
-                              borderRadius: 5,
-                              "&:hover": {
-                                backgroundColor: "#efefef",
-                                color: "#256fd4",
-                              },
-                              textTransform: "none",
+                              borderRadius: 0,
+                              borderBottomLeftRadius: 15,
+                              borderBottomRightRadius: 15,
+                              boxShadow: "0 0.25rem 0.25rem gray",
+                              mt: "-0.6rem",
                             }}
                           />
                         )}
                         sx={{
-                          ml: 2,
-                          width: 500,
+                          ml: { xs: 0, sm: 2, md: 2 },
+                          m: { xs: 2 },
+                          width: { xs: "93%", md: 570 },
                           backgroundColor: "transparent",
                         }}
                         renderInput={(params) => {
@@ -448,10 +358,7 @@ class Map extends Component {
                           position: {
                             md: "relative",
                           },
-                          display: {
-                            xs: "flex",
-                            md: "flex",
-                          },
+                          display: "flex",
                           justifyContent: {
                             xs: "space-evenly",
                             md: "flex-start",
@@ -467,13 +374,22 @@ class Map extends Component {
                         <Stack
                           direction="row"
                           spacing={2}
-                          sx={{ overflow: "auto", p: "10px" }}
+                          sx={{
+                            overflow: "auto",
+                            ml: {
+                              xs: 2,
+                              md: 2,
+                            },
+                          }}
                         >
                           {boroughs.map((borough) => (
                             <Button
                               key={borough}
                               variant="contained"
-                              onClick={() => this.handleFilter(borough)}
+                              onClick={() => {
+                                this.handleFilter(borough);
+                                // this.props.navHook(`/filter/${borough}`)
+                              }}
                               sx={{
                                 backgroundColor:
                                   this.state.activeFilters.includes(borough)
@@ -486,7 +402,10 @@ class Map extends Component {
                                   : "gray",
                                 fontWeight: 500,
                                 fontSize: 14,
-                                padding: "2px 14px 2px 14px",
+                                padding: {
+                                  xs: "2px 3rem 2px 3rem",
+                                  md: "2px 14px 2px 14px",
+                                },
                                 cursor: "pointer",
                                 whiteSpace: "nowrap",
                                 borderRadius: 5,
@@ -517,6 +436,13 @@ class Map extends Component {
                   }}
                   onClick={() => {
                     this.startDirections(school);
+                    this.props.navHook(`${school.school_name}`, {
+                      state: {
+                        school: school,
+                        latitude: Number(school.latitude),
+                        longitude: Number(school.longitude),
+                      },
+                    });
                   }}
                 />
               );
