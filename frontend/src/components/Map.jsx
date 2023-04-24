@@ -23,6 +23,15 @@ import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
 
+// function handleNavigation(Map) {
+
+//   return props => <Map navHook={useNavigate()}/>
+//   console.log("navigating...")
+//   const navigate = useNavigate();
+//   navigate(`/place/${school}`);
+//   "Q", "M", "X", "K", "R"
+// }
+
 const containerStyle = {
   width: "100%",
   height: "100%",
@@ -223,6 +232,7 @@ class Map extends Component {
             onClick={() => {
               this.showCard(false, null);
               this.handleDirectionsPanel(false);
+              this.props.navHook("/map")
             }}
             onZoomChanged={() => {
               if (this.map && !this.state.directionsRenderer) {
@@ -302,7 +312,7 @@ class Map extends Component {
                       sx={{
                         ml: {xs: 0, sm: 2, md: 2},
                         m: {xs: 2},
-                        width: {xs: "93%", md: 550},
+                        width: {xs: "93%", md: 570},
                         backgroundColor: "transparent",
                       }}
                       renderInput={(params) => {
@@ -357,10 +367,14 @@ class Map extends Component {
                       }}
                       >
                         {boroughs.map((borough) => (
+                       
                           <Button
                             key={borough}
                             variant="contained"
-                            onClick={() => this.handleFilter(borough)}
+                            onClick={() => {
+                              this.handleFilter(borough)
+                              // this.props.navHook(`/filter/${borough}`)
+                            }}
                             sx={{
                               backgroundColor:
                                 this.state.activeFilters.includes(borough)
@@ -413,6 +427,12 @@ class Map extends Component {
                     });
                     this.handleDirections("dist", "");
                     this.handleDirections("time", "");
+                    this.props.navHook(`${school.school_name}`, 
+                    {state: {
+                      school: school, 
+                      latitude: Number(school.latitude), 
+                      longitude: Number(school.longitude)
+                    }})
                   }}
                 />
               );
