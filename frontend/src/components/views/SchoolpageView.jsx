@@ -53,7 +53,6 @@ import { GoComment } from 'react-icons/go/index.js';
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
-  console.log(school);
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
@@ -63,8 +62,24 @@ function SchoolpageView() {
   const [savedSchools, setSavedSchools] = React.useState([]);
   const [reviews, setReviews] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
+  
+  const [testScores, setTestScores] = React.useState([]);
 
-
+  React.useEffect(() => {
+    const schoolName = school?.school_name;
+    if (schoolName) {
+      const url = `https://data.cityofnewyork.us/resource/2h3w-9uj9.json?school_name=${schoolName}&year=2019`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setTestScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+  
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -238,6 +253,11 @@ function SchoolpageView() {
     programs.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleTestScoresClick = () => {
+    const programs = document.getElementById('aca-testscores');
+    programs.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleSave = () => {
     if (auth.currentUser != null || undefined) {
       if(!savedSchools.includes(school.school_name)) {
@@ -279,6 +299,67 @@ function SchoolpageView() {
     }
   });
   
+
+  const algebraRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Common Core Algebra" &&
+      
+      score.category === "English Proficient";
+  });
+  const algebraMeanScore = algebraRegentsScores[0]?.mean_score;
+ 
+  const algebra2RegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Common Core Algebra2" &&
+      score.category === "English Proficient";
+  });
+  const algebra2MeanScore = algebra2RegentsScores[0]?.mean_score;
+
+  const englishRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Common Core English" &&
+      score.category === "English Proficient";
+  });
+  const englishMeanScore = englishRegentsScores[0]?.mean_score;
+
+  const geometryRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Common Core Geometry" &&
+      score.category === "English Proficient";
+  });
+  const geometryMeanScore = geometryRegentsScores[0]?.mean_score;
+
+  const globalhistoryRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Global History and Geography" &&
+      score.category === "English Proficient";
+  });
+  const globalhistoryMeanScore = globalhistoryRegentsScores[0]?.mean_score;
+
+  const livingEnvironRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Living Environment" &&
+      score.category === "English Proficient";
+  });
+  const livingEnvironMeanScore = livingEnvironRegentsScores[0]?.mean_score;
+
+  const chemistryRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Physical Settings/Chemistry" &&
+      score.category === "English Proficient";
+  });
+  const chemistryMeanScore = chemistryRegentsScores[0]?.mean_score;
+
+  const earthScienceRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Physical Settings/Earth Science" &&
+      score.category === "English Proficient";
+  });
+  const earthScienceMeanScore = earthScienceRegentsScores[0]?.mean_score;
+
+  const physicsRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Physical Settings/Physics" &&
+      score.category === "English Proficient";
+  });
+  const physicsMeanScore = physicsRegentsScores[0]?.mean_score;
+
+  const USHistoryRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "U.S. History and Government" &&
+      score.category === "English Proficient";
+  });
+  const USHistoryMeanScore = USHistoryRegentsScores[0]?.mean_score;
 
   return (
     <>
@@ -412,6 +493,9 @@ function SchoolpageView() {
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }} onClick={handleProgramsClick}>
                 Programs Offered
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleTestScoresClick}>
+                Test Scores
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
@@ -761,6 +845,23 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
+{/*Test Scores*/}
+            <Box id="aca-testscores" className="middle-container academics">
+              <h3>Academics</h3>
+              <h2>Test Scores</h2>
+              <h4>Regents Exams</h4>
+              <p>Algebra I:  {algebraMeanScore}</p>
+              <p>Algebra II: {algebra2MeanScore} </p>
+              <p>English: {englishMeanScore} </p>
+              <p>Geometry: {geometryMeanScore} </p>
+              <p>Global History: {globalhistoryMeanScore} </p>
+              <p>U.S. History: {USHistoryMeanScore}</p>
+              <p>Living Environment:  {livingEnvironMeanScore}</p>
+              <p>Earth Science: {earthScienceMeanScore} </p>
+              <p>Chemistry: {chemistryMeanScore} </p>
+              <p>Physics: {physicsMeanScore} </p>
+            </Box>
+
           </Box>
         </Grid>
         <Tooltip title="Save School">
