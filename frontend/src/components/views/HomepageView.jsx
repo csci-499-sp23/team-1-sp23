@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -113,19 +113,17 @@ export default function HomepageView() {
                 }}
               >
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel htmlFor="dialog-native">Borough</InputLabel>
+                  <InputLabel id="borough-selector">Borough</InputLabel>
                   <Select
-                    native
                     value={borough}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Borough" id="dialog-native" />}
+                    labelId="borough-selector"
                   >
-                    <option aria-label="None" value="" />
-                    <option value={"Q"}>Queens</option>
-                    <option value={"K"}>Brooklyn</option>
-                    <option value={"X"}>Bronx</option>
-                    <option value={"M"}>Manhattan</option>
-                    <option value={"R"}>Staten Island</option>
+                    <MenuItem value={"Q"}>Queens</MenuItem>
+                    <MenuItem value={"K"}>Brooklyn</MenuItem>
+                    <MenuItem value={"X"}>Bronx</MenuItem>
+                    <MenuItem value={"M"}>Manhattan</MenuItem>
+                    <MenuItem value={"R"}>Staten Island</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
