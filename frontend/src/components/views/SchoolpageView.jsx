@@ -62,13 +62,13 @@ function SchoolpageView() {
   const [savedSchools, setSavedSchools] = React.useState([]);
   const [reviews, setReviews] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
-  
+
   const [testScores, setTestScores] = React.useState([]);
 
   React.useEffect(() => {
-    const schoolName = school?.school_name;
-    if (schoolName) {
-      const url = `https://data.cityofnewyork.us/resource/2h3w-9uj9.json?school_name=${schoolName}&year=2019`;
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/2h3w-9uj9.json?school_dbn=${schoolDbn}&year=2019`;
       fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -631,7 +631,7 @@ function SchoolpageView() {
                 )}
               </List>
               <Link
-                to={`/map/${school.school_name}`}
+                to={`/map/${encodeURIComponent(school.school_name)}`}
                 state={{ latitude, longitude, school }}
                 style={{ color: "#16A1DD" }}
               >
