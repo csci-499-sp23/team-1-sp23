@@ -10,6 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import LiveSearch from "../LiveSearch";
 import Link from "@mui/material/Link"
+import { useNavigate } from 'react-router-dom';
 import {
   FooterBox,
   Container,
@@ -27,6 +28,8 @@ import Navbar from "./NavBar";
 
 export default function HomepageView() {
   const Schools = SchoolsData();
+  const navigate = useNavigate();
+  
 
   const filteredArr = Schools.reduce((acc, current) => {
     const x = acc.find((item) => item.neighborhood === current.neighborhood);
@@ -48,8 +51,12 @@ export default function HomepageView() {
   }, []);
 
   const handleChange = (event) => {
-    setBorough(Number(event.target.value));
+    setBorough((event.target.value));
   };
+
+  const handleSearch = () => {
+    navigate(`./map/`, {state: {borough: borough} });
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -114,18 +121,18 @@ export default function HomepageView() {
                     input={<OutlinedInput label="Borough" id="dialog-native" />}
                   >
                     <option aria-label="None" value="" />
-                    <option value={10}>Queens</option>
-                    <option value={20}>Brooklyn</option>
-                    <option value={30}>Bronx</option>
-                    <option value={40}>Manhattan</option>
-                    <option value={50}>Staten Island</option>
+                    <option value={"Q"}>Queens</option>
+                    <option value={"K"}>Brooklyn</option>
+                    <option value={"X"}>Bronx</option>
+                    <option value={"M"}>Manhattan</option>
+                    <option value={"R"}>Staten Island</option>
                   </Select>
                 </FormControl>
               </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleClose} href="/map">Search</Button>
+              <Button onClick={handleSearch}>Search</Button>
             </DialogActions>
           </Dialog>
         </div>
