@@ -13,7 +13,6 @@ import Link from "@mui/material/Link";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { mK } from "../config/environment";
 import { auth } from "../config/firebase";
 import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
@@ -22,15 +21,6 @@ import SavedSchoolsList from "./SavedSchoolsList";
 import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
-
-// function handleNavigation(Map) {
-
-//   return props => <Map navHook={useNavigate()}/>
-//   console.log("navigating...")
-//   const navigate = useNavigate();
-//   navigate(`/place/${school}`);
-//   "Q", "M", "X", "K", "R"
-// }
 
 const containerStyle = {
   width: "100%",
@@ -286,7 +276,7 @@ class Map extends Component {
             <Box sx={{ flexGrow: 1 }}>
               {this.state.navbar && (
                 <AppBar position="static">
-                  <Toolbar sx={{ zIndex: { xs: 1, md: 999 } }} disableGutters>
+                  <Toolbar sx={{ zIndex: { xs: 1, md: 200 } }} disableGutters>
                     <Stack
                       direction={{ xs: "column", sm: "column", md: "row" }}
                       spacing={{ xs: 2, sm: 2, md: 4 }}
@@ -306,6 +296,13 @@ class Map extends Component {
                         noOptionsText="School not found"
                         blurOnSelect
                         onChange={(e, school) => {
+                          this.props.navHook(`${school.school_name}`, {
+                            state: {
+                              school: school,
+                              latitude: Number(school.latitude),
+                              longitude: Number(school.longitude),
+                            },
+                          });
                           this.goToNearbySchool(
                             Number(school.longitude),
                             Number(school.latitude),
@@ -380,6 +377,7 @@ class Map extends Component {
                               xs: 2,
                               md: 2,
                             },
+                            p: 1,
                           }}
                         >
                           {boroughs.map((borough) => (

@@ -146,7 +146,7 @@ class Stats extends Component {
         else {
             return (
                 <Box sx={{
-                    zIndex: 100,
+                    zIndex: 300,
                     position: "absolute",
                     left: "50%",
                     top: "50%",
