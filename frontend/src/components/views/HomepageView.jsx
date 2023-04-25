@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,6 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import LiveSearch from "../LiveSearch";
 import Link from "@mui/material/Link"
+import { useNavigate } from 'react-router-dom';
 import {
   FooterBox,
   Container,
@@ -27,6 +28,8 @@ import Navbar from "./NavBar";
 
 export default function HomepageView() {
   const Schools = SchoolsData();
+  const navigate = useNavigate();
+  
 
   const filteredArr = Schools.reduce((acc, current) => {
     const x = acc.find((item) => item.neighborhood === current.neighborhood);
@@ -48,8 +51,12 @@ export default function HomepageView() {
   }, []);
 
   const handleChange = (event) => {
-    setBorough(Number(event.target.value));
+    setBorough((event.target.value));
   };
+
+  const handleSearch = () => {
+    navigate(`./map/`, {state: {borough: borough} });
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -106,26 +113,24 @@ export default function HomepageView() {
                 }}
               >
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel htmlFor="dialog-native">Borough</InputLabel>
+                  <InputLabel id="borough-selector">Borough</InputLabel>
                   <Select
-                    native
                     value={borough}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Borough" id="dialog-native" />}
+                    labelId="borough-selector"
                   >
-                    <option aria-label="None" value="" />
-                    <option value={10}>Queens</option>
-                    <option value={20}>Brooklyn</option>
-                    <option value={30}>Bronx</option>
-                    <option value={40}>Manhattan</option>
-                    <option value={50}>Staten Island</option>
+                    <MenuItem value={"Q"}>Queens</MenuItem>
+                    <MenuItem value={"K"}>Brooklyn</MenuItem>
+                    <MenuItem value={"X"}>Bronx</MenuItem>
+                    <MenuItem value={"M"}>Manhattan</MenuItem>
+                    <MenuItem value={"R"}>Staten Island</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleClose} href="/map">Search</Button>
+              <Button onClick={handleSearch}>Search</Button>
             </DialogActions>
           </Dialog>
         </div>

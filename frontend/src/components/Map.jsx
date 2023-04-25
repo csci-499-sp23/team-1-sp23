@@ -83,6 +83,12 @@ class Map extends Component {
         this.setState({ schools: data });
       })
       .catch((error) => console.log(error));
+      
+    if(this.props.location.state && this.props.location.state.borough != undefined){
+      let activeFilters = [this.props.location.state.borough];
+      this.setState({ activeFilters, selectedBorough: this.props.location.state.borough });
+      window.history.replaceState({}, document.title);
+    }
   }
 
   showCard = (bool, obj) => {
