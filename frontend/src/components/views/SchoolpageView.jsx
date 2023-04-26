@@ -856,16 +856,36 @@ function SchoolpageView() {
               <Box sx={{ width: "100%" }}>
                 <Table>
                   <TableBody>
-                    <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} />
-                    <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} />
-                    <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} />
-                    <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} />
-                    <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} />
-                    <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} />
-                    <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} />
-                    <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} />
-                    <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} />
-                    <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} />
+                    {algebraMeanScore && algebraMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} />
+                    }
+                    {algebra2MeanScore && algebra2MeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} />
+                    }
+                    {geometryMeanScore && geometryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} />
+                    }
+                    {englishMeanScore && englishMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} />
+                    }
+                    {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} />
+                    }
+                    {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} />
+                    }
+                    {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} />
+                    }
+                    {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} />
+                    }
+                    {chemistryMeanScore && chemistryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} />
+                    }
+                    {physicsMeanScore && physicsMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} />
+                    }
                   </TableBody>
                 </Table>
               </Box>
