@@ -36,7 +36,7 @@ const HorizontalScoreBar = ({ examName, value }) => {
                         >
                             <XAxis type="number" domain={[0, 100]} hide />
                             <YAxis type="category" dataKey="examName" hide />
-                            <CartesianGrid stroke="#f5f5f5" fill="#f5f5f5" vertical={false} />
+                            <CartesianGrid stroke="#f0f0f0" fill="#f0f0f0" vertical={false} />
                             <Bar dataKey="value" fill="#8BC34A" />
                         </BarChart>
                     </ResponsiveContainer>

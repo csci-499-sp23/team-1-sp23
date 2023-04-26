@@ -305,7 +305,6 @@ function SchoolpageView() {
 
   const algebraRegentsScores = testScores.filter(score => {
     return score.regents_exam === "Common Core Algebra" &&
-      
       score.category === "English Proficient";
   });
   const algebraMeanScore = algebraRegentsScores[0]?.mean_score;
@@ -363,6 +362,32 @@ function SchoolpageView() {
       score.category === "English Proficient";
   });
   const USHistoryMeanScore = USHistoryRegentsScores[0]?.mean_score;
+
+  const spanishRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Spanish" &&
+      score.category === "English Proficient";
+  });
+  const spanishMeanScore = spanishRegentsScores[0]?.mean_score;
+
+  const frenchRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "French" &&
+      score.category === "English Proficient";
+  });
+  const frenchMeanScore = frenchRegentsScores[0]?.mean_score;
+
+  const chineseRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Chinese" &&
+      score.category === "English Proficient";
+  });
+  const chineseMeanScore = chineseRegentsScores[0]?.mean_score;
+
+  const italianRegentsScores = testScores.filter(score => {
+    return score.regents_exam === "Italian" &&
+      score.category === "English Proficient";
+  });
+  const italianMeanScore = italianRegentsScores[0]?.mean_score;
+
+
 
   return (
     <>
@@ -889,6 +914,26 @@ function SchoolpageView() {
                   </TableBody>
                 </Table>
               </Box>
+              <h4>Language (LOTE) Exams</h4>
+              <Box sx={{ width: "100%" }}>
+                <Table>
+                  <TableBody>
+                    {spanishMeanScore && spanishMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Spanish" value={Math.round(spanishMeanScore)} />
+                    }
+                    {frenchMeanScore && frenchMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="French" value={Math.round(frenchMeanScore)} />
+                    }
+                    {italianMeanScore && italianMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Italian" value={Math.round(italianMeanScore)} />
+                    }
+                    {chineseMeanScore && chineseMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Chinese" value={Math.round(chineseMeanScore)} />
+                    }
+                  </TableBody>
+                </Table>
+              </Box>
+
             </Box>
           </Box>
         </Grid>
