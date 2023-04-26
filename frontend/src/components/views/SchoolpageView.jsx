@@ -51,7 +51,7 @@ import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Table, TableBody} from '@mui/material';
 
 function SchoolpageView() {
   const location = useLocation();
@@ -848,7 +848,7 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
-{/*Test Scores*/}
+            {/*Test Scores*/}
             <Box id="aca-testscores" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Test Scores</h2>
@@ -856,125 +856,16 @@ function SchoolpageView() {
               <Box sx={{ width: "100%" }}>
                 <Table>
                   <TableBody>
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Algebra I</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(algebraMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(algebraMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Algebra II</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(algebra2MeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(algebra2MeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Geometry</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(geometryMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(geometryMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">English</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(englishMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(englishMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Global History</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(globalhistoryMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(globalhistoryMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">U.S. History</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(USHistoryMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(USHistoryMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Living Environment</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(livingEnvironMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(livingEnvironMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Earth Science</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(earthScienceMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(earthScienceMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Chemistry</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(chemistryMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(chemistryMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }} width="40%">
-                        <Typography variant="body1">Physics</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="body1" fontWeight="600">{Math.round(physicsMeanScore)}%</Typography>
-                          <HorizontalScoreBar value={Math.round(physicsMeanScore)} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
+                    <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} />
+                    <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} />
+                    <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} />
+                    <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} />
+                    <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} />
+                    <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} />
+                    <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} />
+                    <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} />
+                    <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} />
+                    <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} />
                   </TableBody>
                 </Table>
               </Box>
@@ -982,10 +873,10 @@ function SchoolpageView() {
           </Box>
         </Grid>
         <Tooltip title="Save School">
-          <IconButton sx={{ 
-            position: "fixed", 
-            bottom: 0, 
-            right: 0, 
+          <IconButton sx={{
+            position: "fixed",
+            bottom: 0,
+            right: 0,
             backgroundColor: "#f1f1f1", 
             borderRadius: "50%", 
             m: 5,
