@@ -12,8 +12,11 @@ import {
   Typography,
   ListItemIcon,
   IconButton,
-  Tooltip
+  Tooltip,
+  Table, 
+  TableBody
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
 import {
   LocationOn,
   Phone,
@@ -51,7 +54,7 @@ import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
-import { Table, TableBody} from '@mui/material';
+
 
 function SchoolpageView() {
   const location = useLocation();
@@ -301,93 +304,155 @@ function SchoolpageView() {
       document.querySelector('.left-container').classList.remove('fixed-left-container');
     }
   });
-  
+
+  const isInternational = school?.international === "1"; 
+  const isSpecialized = school?.specialized === "1"; 
+  const isTransfer = school?.transfer === "1";
+  const isPTech = school?.ptech === "1";
+  const isEarlyCollege = school?.earlycollege === "1";
 
   const algebraRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Common Core Algebra" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Common Core Algebra" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core Algebra" && score.category === "English Proficient";
+    }
   });
   const algebraMeanScore = algebraRegentsScores[0]?.mean_score;
  
   const algebra2RegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Common Core Algebra2" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Common Core Algebra2" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core Algebra2" && score.category === "English Proficient";
+    }
   });
   const algebra2MeanScore = algebra2RegentsScores[0]?.mean_score;
 
   const englishRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Common Core English" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Common Core English" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core English" && score.category === "English Proficient";
+    }
   });
   const englishMeanScore = englishRegentsScores[0]?.mean_score;
 
   const geometryRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Common Core Geometry" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Common Core Geometry" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core Geometry" && score.category === "English Proficient";
+    }
   });
   const geometryMeanScore = geometryRegentsScores[0]?.mean_score;
 
   const globalhistoryRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Global History and Geography" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Global History and Geography" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Global History and Geography" && score.category === "English Proficient";
+    }
   });
   const globalhistoryMeanScore = globalhistoryRegentsScores[0]?.mean_score;
 
   const livingEnvironRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Living Environment" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Living Environment" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Living Environment" && score.category === "English Proficient";
+    }
   });
   const livingEnvironMeanScore = livingEnvironRegentsScores[0]?.mean_score;
 
   const chemistryRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Physical Settings/Chemistry" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Physical Settings/Chemistry" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Physical Settings/Chemistry" && score.category === "English Proficient";
+    }
   });
   const chemistryMeanScore = chemistryRegentsScores[0]?.mean_score;
 
   const earthScienceRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Physical Settings/Earth Science" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Physical Settings/Earth Science" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Physical Settings/Earth Science" && score.category === "English Proficient";
+    }
   });
   const earthScienceMeanScore = earthScienceRegentsScores[0]?.mean_score;
 
   const physicsRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Physical Settings/Physics" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Physical Settings/Physics" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Physical Settings/Physics" && score.category === "English Proficient";
+    }
   });
   const physicsMeanScore = physicsRegentsScores[0]?.mean_score;
 
   const USHistoryRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "U.S. History and Government" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "U.S. History and Government" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "U.S. History and Government" && score.category === "English Proficient";
+    }
   });
   const USHistoryMeanScore = USHistoryRegentsScores[0]?.mean_score;
 
   const spanishRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Spanish" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Spanish" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Spanish" && score.category === "English Proficient";
+    }
   });
   const spanishMeanScore = spanishRegentsScores[0]?.mean_score;
 
   const frenchRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "French" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "French" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "French" && score.category === "English Proficient";
+    }
   });
   const frenchMeanScore = frenchRegentsScores[0]?.mean_score;
 
   const chineseRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Chinese" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Chinese" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Chinese" && score.category === "English Proficient";
+    }
   });
   const chineseMeanScore = chineseRegentsScores[0]?.mean_score;
 
   const italianRegentsScores = testScores.filter(score => {
-    return score.regents_exam === "Italian" &&
-      score.category === "English Proficient";
+    if (isInternational) {
+      return score.regents_exam === "Italian" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Italian" && score.category === "English Proficient";
+    }
   });
   const italianMeanScore = italianRegentsScores[0]?.mean_score;
 
-
+  const Label = ({ text, backcolor, color }) => {
+    return (
+      <Chip
+        label={text}
+        sx={{
+          backgroundColor: backcolor,
+          color: color,
+          fontWeight: "bold",
+          fontSize: "14px",
+          borderRadius: "15px",
+          border: `2.5px solid ${color}`,
+          marginLeft: "0.5em",
+        }}
+      />
+    );
+  };
 
   return (
     <>
@@ -485,6 +550,23 @@ function SchoolpageView() {
                   {school?.finalgrades.slice(0, 1)}-
                   {school?.finalgrades.slice(2 - 4)}
                 </strong>
+              </span>
+              <span style={{ marginLeft: "6em" }}>
+                {isSpecialized && (
+                  <Label text="Specialized" backcolor="#DAFBE2" color="#177F3C" />
+                )}
+                {isInternational && (
+                  <Label text="International" backcolor="#FBEFFE" color="#8655DC" />
+                )}
+                {isTransfer && (
+                  <Label text="Transfer" backcolor="#FFF8C7" color="#9A6711" />
+                )}
+                {isPTech && (
+                  <Label text="P-Tech" backcolor="#FFF1E5" color="#BD4C09" />
+                )}
+                {isEarlyCollege && (
+                  <Label text="Early College" backcolor="#FFEFF7" color="#C03987" />
+                )}
               </span>
             </Typography>
           </Box>
@@ -873,7 +955,7 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
-            {/*Test Scores*/}
+{/*Test Scores*/}
             <Box id="aca-testscores" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Test Scores</h2>
@@ -914,7 +996,12 @@ function SchoolpageView() {
                   </TableBody>
                 </Table>
               </Box>
-              <h4>Language (LOTE) Exams</h4>
+              {((spanishMeanScore && spanishMeanScore !== "s") ||
+                (frenchMeanScore && frenchMeanScore !== "s") ||
+                (italianMeanScore && italianMeanScore !== "s") ||
+                (chineseMeanScore && chineseMeanScore !== "s")) && (
+                  <h4>Language (LOTE) Exams</h4>
+                )}
               <Box sx={{ width: "100%" }}>
                 <Table>
                   <TableBody>
