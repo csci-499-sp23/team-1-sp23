@@ -14,7 +14,9 @@ import {
   IconButton,
   Tooltip,
   Table, 
-  TableBody
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import {
@@ -70,7 +72,7 @@ function SchoolpageView() {
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   const [testScores, setTestScores] = React.useState([]);
-
+  const [apScores, setAPScores] = React.useState([]);
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
@@ -79,6 +81,21 @@ function SchoolpageView() {
         .then(response => response.json())
         .then(data => {
           setTestScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/9ct9-prf9.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setAPScores(data);
         })
         .catch(error => {
           console.error(error);
@@ -436,6 +453,13 @@ function SchoolpageView() {
     }
   });
   const italianMeanScore = italianRegentsScores[0]?.mean_score;
+  
+  const apExamsPassed = apScores[0]?.num_of_ap_exams_passed;
+  const apTotalExams = apScores[0]?.num_of_ap_total_exams_taken;
+  const apTestTakers = apScores[0]?.num_of_ap_test_takers;
+
+  const apPassRate = Math.round((Number(apExamsPassed) / Number(apTotalExams)) * 100); 
+  const apEnrollment = Math.round((Number(apTestTakers) / Number(school?.total_students)) * 100);
 
   const Label = ({ text, backcolor, color }) => {
     return (
@@ -1020,7 +1044,25 @@ function SchoolpageView() {
                   </TableBody>
                 </Table>
               </Box>
-
+              {((apTestTakers && apTestTakers !== "s") ||
+                (apExamsPassed && apExamsPassed !== "s") ||
+                (apTotalExams && apTotalExams !== "s")) && (
+                  <h4>Advanced Placement Exams</h4>
+                )}
+              <Table>
+                {apExamsPassed !== "s" && apTotalExams !== "s" && (
+                  <TableCell sx={{ border: 'none' }}>
+                    <Typography variant="body1">AP Exam Pass Rate</Typography>
+                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>{apPassRate}%</Typography>
+                  </TableCell>
+                )}
+                {apTestTakers !== "s" && (
+                  <TableCell sx={{ border: 'none' }}>
+                    <Typography variant="body1">AP Exam Enrollment</Typography>
+                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>~{apEnrollment}%</Typography>
+                  </TableCell>
+                )}
+              </Table>
             </Box>
           </Box>
         </Grid>
