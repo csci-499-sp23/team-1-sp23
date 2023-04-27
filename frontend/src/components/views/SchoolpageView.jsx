@@ -30,6 +30,7 @@ import {
 } from "@mui/icons-material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -73,6 +74,9 @@ function SchoolpageView() {
 
   const [testScores, setTestScores] = React.useState([]);
   const [apScores, setAPScores] = React.useState([]);
+  const [satScores, setSatScores] = React.useState([]);
+
+  {/*Regent Exams Data*/}
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
@@ -88,6 +92,7 @@ function SchoolpageView() {
     };
   }, [school]);
 
+  {/*AP Exams Data*/}
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
@@ -102,7 +107,24 @@ function SchoolpageView() {
         });
     };
   }, [school]);
+
+  {/*SAT Data*/}
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/f9bf-2cp4.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setSatScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
   
+   {/*Login*/}
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -461,6 +483,19 @@ function SchoolpageView() {
   const apPassRate = Math.round((Number(apExamsPassed) / Number(apTotalExams)) * 100); 
   const apEnrollment = Math.round((Number(apTestTakers) / Number(school?.total_students)) * 100);
 
+  const satCriticalReading = satScores[0]?.sat_critical_reading_avg_score;
+  const satWriting = satScores[0]?.sat_writing_avg_score
+  const satMath = satScores[0]?.sat_math_avg_score;
+  
+  const satNewReading = Math.round((Number(satCriticalReading) + Number(satWriting)) / 2);
+  const satTotal = Math.round(satMath) + satNewReading;
+
+  const satScoresAvailable = !(
+    satCriticalReading === "s" &&
+    satWriting === "s" &&
+    satMath === "s"
+  );
+
   const Label = ({ text, backcolor, color }) => {
     return (
       <Chip
@@ -749,7 +784,14 @@ function SchoolpageView() {
             <Box id="navigation" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Navigation</h2>
-              <h4>Nearby Transportation</h4>
+              <Link
+                to={`/map/${encodeURIComponent(school.school_name)}`}
+                state={{ latitude, longitude, school }}
+                style={{color: "#16A1DD" }}
+              >
+                {school?.location.split("(")[0].trim()}
+              </Link>
+              <h4 style={{ paddingTop: "10px" }}>Nearby Transportation</h4>
               <List>
                 {school?.subway && school?.subway !== "N/A" && (
                   <ListItem>
@@ -764,13 +806,6 @@ function SchoolpageView() {
                   </ListItem>
                 )}
               </List>
-              <Link
-                to={`/map/${encodeURIComponent(school.school_name)}`}
-                state={{ latitude, longitude, school }}
-                style={{ color: "#16A1DD" }}
-              >
-                <h4>Click here for more map and direction information</h4>
-              </Link>
               <div className="map-wrapper">
                 <Iframe
                   url={url}
@@ -781,9 +816,17 @@ function SchoolpageView() {
                   scrolling="no"
                 />
               </div>
+              <Link
+                to={`/map/${encodeURIComponent(school.school_name)}`}   
+                state={{ latitude, longitude, school }}
+                style={{ marginTop: "20px", color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+              >
+                <h4 style={{ marginRight: "0.5rem" }}>More Map and Direction Information here</h4>
+                <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
+              </Link>
             </Box>
-  {/*ACADEMICS*/}
-  {/*Academic Opportunities*/}
+            {/*ACADEMICS*/}
+            { }
             <Box id="aca-opportunities" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Academic Opportunities</h2>
@@ -1053,16 +1096,46 @@ function SchoolpageView() {
                 {apExamsPassed !== "s" && apTotalExams !== "s" && (
                   <TableCell sx={{ border: 'none' }}>
                     <Typography variant="body1">AP Exam Pass Rate</Typography>
-                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>{apPassRate}%</Typography>
+                    <Typography variant="h2">{apPassRate}%</Typography>
                   </TableCell>
                 )}
                 {apTestTakers !== "s" && (
                   <TableCell sx={{ border: 'none' }}>
                     <Typography variant="body1">AP Exam Enrollment</Typography>
-                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>~{apEnrollment}%</Typography>
+                    <Typography variant="h2">~{apEnrollment}%</Typography>
                   </TableCell>
                 )}
               </Table>
+              {satScoresAvailable && (
+                <div>
+                  <h4>SAT Scores</h4>
+                  <Table>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">Average SAT</Typography>
+                        <Typography variant="h2">{satTotal}</Typography>
+                      </TableCell>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">Math</Typography>
+                        <Typography variant="h2">{satMath}</Typography>
+                      </TableCell>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">Verbal</Typography>
+                        <Typography variant="h2">{satNewReading}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </Table>
+                </div>
+              )}
+    {/*Will Route to Stats page*/}
+              <Link
+                to={`/map/${encodeURIComponent(school.school_name)}`}   
+                state={{ latitude, longitude, school }}
+                style={{ color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+              >
+                <h4 style={{ marginRight: "0.5rem" }}>More about {school?.school_name}'s Test Scores</h4>
+                <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
+              </Link>
             </Box>
           </Box>
         </Grid>
