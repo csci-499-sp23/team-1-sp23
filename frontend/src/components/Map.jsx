@@ -159,7 +159,7 @@ class Map extends Component {
         school: school,
         zoom: 17,
       });
-      this.startDirections(school);
+      // this.startDirections(school);
     } else {
       this.setState({
         center: {
