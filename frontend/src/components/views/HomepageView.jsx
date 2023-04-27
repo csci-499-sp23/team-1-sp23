@@ -102,9 +102,9 @@ export default function HomepageView() {
 
   filteredArr.forEach(school => {
     if (school.language_classes != undefined) {
-      const langauge = school.language_classes.trim().split(", ")
-      langauge.forEach(langauge => {
-        languageArr.push(langauge)
+      const language = school.language_classes.trim().split(", ")
+      language.forEach(language => {
+        languageArr.push(language)
       })
     }
     languageArr.sort()
@@ -113,20 +113,20 @@ export default function HomepageView() {
   Schools.forEach(school => {
     if (school.psal_sports_boys != undefined) {
       const sport = school.psal_sports_boys.trim().split(", ")
-      sport.forEach(langauge => {
-        boysSportArr.push(langauge)
+      sport.forEach(language => {
+        boysSportArr.push(language)
       })
     }
     if (school.psal_sports_girls != undefined) {
       const sport = school.psal_sports_girls.trim().split(", ")
-      sport.forEach(langauge => {
-        girlsSportArr.push(langauge)
+      sport.forEach(language => {
+        girlsSportArr.push(language)
       })
     }
     if (school.psal_sports_coed != undefined) {
       const sport = school.psal_sports_coed.trim().split(", ")
-      sport.forEach(langauge => {
-        coedSportArr.push(langauge)
+      sport.forEach(language => {
+        coedSportArr.push(language)
       })
     }
     boysSportArr.sort()
@@ -143,7 +143,7 @@ export default function HomepageView() {
   const [borough, setBorough] = React.useState([]);
   const [neighborhood, setNeighborhood] = React.useState([])
   const [apCourse, setAPcourse] = React.useState([])
-  const [langauge, setLanguage] = React.useState([]);
+  const [language, setLanguage] = React.useState([]);
   const [sports, setSports] = React.useState([])
   const [loggedIn, setLoggedIn] = React.useState(false);
 
@@ -193,19 +193,35 @@ export default function HomepageView() {
     )
   }
 
-
   const handleSearch = () => {
-    navigate(`./map/`, { state: { borough: borough } });
+    navigate(`./map/`, {
+      state: {
+        borough: borough,
+        neighborhood: neighborhood,
+        apCourse: apCourse,
+        language: language,
+        sports: sports,
+      }
+    });
   }
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = (event, reason) => {
     if (reason !== "backdropClick") {
       setOpen(false);
     }
   };
+
+  const clearFilters = () => {
+    setBorough([])
+    setAPcourse([])
+    setLanguage([])
+    setSports([])
+    setNeighborhood([])
+  }
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -333,15 +349,15 @@ export default function HomepageView() {
                     <FormGroup>
                       <Select
                         multiple
-                        value={langauge}
+                        value={language}
                         onChange={handleLanguageChange}
                       >
-                        {filteredLanguageArr.map((langauge) => (
+                        {filteredLanguageArr.map((language) => (
                           <MenuItem
-                            key={langauge}
-                            value={langauge}
+                            key={language}
+                            value={language}
                           >
-                            {langauge}
+                            {language}
                           </MenuItem>
                         ))}
                       </Select>
@@ -353,7 +369,6 @@ export default function HomepageView() {
                   display: "flex",
                   flexDirection: "column"
                 }}>
-
                   <FormControl sx={{ m: 1 }}>
                     <FormLabel component="legend">Sports</FormLabel>
                     <FormGroup>
@@ -367,9 +382,9 @@ export default function HomepageView() {
                           m: 2,
                           borderBottom: "1px solid #222222"
                         }}>Girls Sports</ListSubheader>
-                        {filteredGirlsSportsArr.map(sport =>
+                        {filteredGirlsSportsArr.map((sport, key) =>
                           <MenuItem
-                            key={sport}
+                            key={key}
                             value={sport}>
                             {sport}
                           </MenuItem>
@@ -380,9 +395,9 @@ export default function HomepageView() {
                           m: 2,
                           borderBottom: "1px solid #222222"
                         }}>Coed Sports</ListSubheader>
-                        {filtredCoedSportsArr.map(sport =>
+                        {filtredCoedSportsArr.map((sport, key) =>
                           <MenuItem
-                            key={sport}
+                            key={key}
                             value={sport}>
                             {sport}
                           </MenuItem>
@@ -392,9 +407,9 @@ export default function HomepageView() {
                           m: 2,
                           borderBottom: "1px solid #222222"
                         }}>Boys Sports</ListSubheader>
-                        {filteredSportsArr.map(sport =>
+                        {filteredSportsArr.map((sport, key) =>
                           <MenuItem
-                            key={sport}
+                            key={key}
                             value={sport}
                           >
                             {sport}
@@ -403,13 +418,12 @@ export default function HomepageView() {
                       </Select>
                     </FormGroup>
                   </FormControl>
-
                 </Box>
-
 
               </Box>
             </DialogContent>
             <DialogActions>
+              <Button onClick={clearFilters}>Clear Filters</Button>
               <Button onClick={handleClose}>Cancel</Button>
               <Button onClick={handleSearch}>Search</Button>
             </DialogActions>
