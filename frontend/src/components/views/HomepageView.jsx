@@ -111,8 +111,6 @@ export default function HomepageView() {
   const filteredLanguageArr = [...new Set(languageArr)]
   const filteredActivity = [...new Set(activityArr)]
 
-  console.log(filteredActivity)
-
   const [open, setOpen] = React.useState(false);
   const [borough, setBorough] = React.useState([]); 
   const [apCourse, setAPcourse] = React.useState([])
