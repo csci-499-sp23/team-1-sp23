@@ -4,16 +4,30 @@ import { TableCell, TableRow } from '@mui/material';
 import {
     Box,
     Typography,
-  } from "@mui/material";
+} from "@mui/material";
 
-const HorizontalScoreBar = ({ examName, value }) => {
+const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
 
-  const data = [
-    {
-      examName: examName,
-      value: value,
-    }
+    const data = [
+        {
+            examName: examName,
+            value: value,
+            stateAverage: stateAverage
+        }
     ];
+
+     const getBarColor = () => {
+        const difference = value - stateAverage;
+        if(difference <= -15){
+            return "#FF0000"; //red
+        } else if(difference < 0){
+            return "#FFC107"; //yellow
+        } else if(difference <= 15){
+            return "#8BC34A"; //light green
+        } else{
+            return "#388E3C"; //darker green
+        }
+     };
 
     return (
         <TableRow>
@@ -37,7 +51,7 @@ const HorizontalScoreBar = ({ examName, value }) => {
                             <XAxis type="number" domain={[0, 100]} hide />
                             <YAxis type="category" dataKey="examName" hide />
                             <CartesianGrid stroke="#f0f0f0" fill="#f0f0f0" vertical={false} />
-                            <Bar dataKey="value" fill="#8BC34A" />
+                            <Bar dataKey="value" fill={getBarColor(value, stateAverage)} />
                         </BarChart>
                     </ResponsiveContainer>
                 </Box>

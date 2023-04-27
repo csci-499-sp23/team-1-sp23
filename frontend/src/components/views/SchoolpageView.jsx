@@ -1031,34 +1031,34 @@ function SchoolpageView() {
                 <Table>
                   <TableBody>
                     {algebraMeanScore && algebraMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} />
+                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73}  />
                     }
                     {algebra2MeanScore && algebra2MeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} />
+                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76}  />
                     }
                     {geometryMeanScore && geometryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} />
+                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73}  />
                     }
                     {englishMeanScore && englishMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} />
+                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77}  />
                     }
                     {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} />
+                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73}  />
                     }
                     {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} />
+                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78}  />
                     }
                     {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} />
+                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75}  />
                     }
                     {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} />
+                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74}  />
                     }
                     {chemistryMeanScore && chemistryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} />
+                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73}  />
                     }
                     {physicsMeanScore && physicsMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} />
+                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78} />
                     }
                   </TableBody>
                 </Table>
@@ -1093,20 +1093,20 @@ function SchoolpageView() {
                   <h4>Advanced Placement Exams</h4>
                 )}
               <Table>
-                {apExamsPassed !== "s" && apTotalExams !== "s" && (
+                {apExamsPassed && apExamsPassed !== "s" && apTotalExams && apTotalExams !== "s" && (
                   <TableCell sx={{ border: 'none' }}>
                     <Typography variant="body1">AP Exam Pass Rate</Typography>
                     <Typography variant="h2">{apPassRate}%</Typography>
                   </TableCell>
                 )}
-                {apTestTakers !== "s" && (
+                {apTestTakers && apTestTakers !== "s" &&(
                   <TableCell sx={{ border: 'none' }}>
                     <Typography variant="body1">AP Exam Enrollment</Typography>
                     <Typography variant="h2">~{apEnrollment}%</Typography>
                   </TableCell>
                 )}
               </Table>
-              {satScoresAvailable && (
+              {satScoresAvailable && satCriticalReading != null && satWriting != null && satMath != null && (
                 <div>
                   <h4>SAT Scores</h4>
                   <Table>
@@ -1127,7 +1127,7 @@ function SchoolpageView() {
                   </Table>
                 </div>
               )}
-    {/*Will Route to Stats page*/}
+  {/*Will Route to Stats page*/}
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}   
                 state={{ latitude, longitude, school }}
