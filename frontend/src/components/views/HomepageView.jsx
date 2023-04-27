@@ -1,4 +1,4 @@
-import { Box, Typography, MenuItem } from "@mui/material";
+import { Box, Typography, MenuItem, Menu } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -12,10 +12,11 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Chip from '@mui/material/Chip';
-
 import Select from "@mui/material/Select";
 import LiveSearch from "../LiveSearch";
 import Link from "@mui/material/Link"
+import ListSubheader from "@mui/material/ListSubheader";
+
 import { useNavigate } from 'react-router-dom';
 import {
   FooterBox,
@@ -36,8 +37,10 @@ import { queryEqual } from "firebase/firestore";
 export default function HomepageView() {
   const Schools = SchoolsData();
   const navigate = useNavigate();
-  const languageArr = []
-  const activityArr = []
+  const languageArr = [];
+  const boysSportArr = [];
+  const girlsSportArr = [];
+  const coedSportArr = [];
 
   const apCourses = [
     "AP Art History",
@@ -88,35 +91,60 @@ export default function HomepageView() {
     }
   }, []);
 
+  const filteredNeighborhoodArr = Schools.reduce((acc, current) => {
+    const x = acc.find((item) => (item.neighborhood === current.neighborhood));
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, [])
+
   filteredArr.forEach(school => {
-    if(school.language_classes != undefined) {
+    if (school.language_classes != undefined) {
       const langauge = school.language_classes.trim().split(", ")
       langauge.forEach(langauge => {
         languageArr.push(langauge)
       })
-    }   
+    }
     languageArr.sort()
   })
 
   Schools.forEach(school => {
-    if(school.extracurricular_activities != undefined) {
-      const activity = school.extracurricular_activities.trim().split(", ")
-      activity.forEach(act => {
-        activityArr.push(act)
+    if (school.psal_sports_boys != undefined) {
+      const sport = school.psal_sports_boys.trim().split(", ")
+      sport.forEach(langauge => {
+        boysSportArr.push(langauge)
       })
     }
-    activityArr.sort()
+    if (school.psal_sports_girls != undefined) {
+      const sport = school.psal_sports_girls.trim().split(", ")
+      sport.forEach(langauge => {
+        girlsSportArr.push(langauge)
+      })
+    }
+    if (school.psal_sports_coed != undefined) {
+      const sport = school.psal_sports_coed.trim().split(", ")
+      sport.forEach(langauge => {
+        coedSportArr.push(langauge)
+      })
+    }
+    boysSportArr.sort()
+    girlsSportArr.sort()
+    coedSportArr.sort()
   })
 
   const filteredLanguageArr = [...new Set(languageArr)]
-  const filteredActivity = [...new Set(activityArr)]
+  const filteredSportsArr = [...new Set(boysSportArr)]
+  const filteredGirlsSportsArr = [...new Set(girlsSportArr)]
+  const filtredCoedSportsArr = [...new Set(coedSportArr)]
 
   const [open, setOpen] = React.useState(false);
-  const [borough, setBorough] = React.useState([]); 
+  const [borough, setBorough] = React.useState([]);
+  const [neighborhood, setNeighborhood] = React.useState([])
   const [apCourse, setAPcourse] = React.useState([])
   const [langauge, setLanguage] = React.useState([]);
   const [sports, setSports] = React.useState([])
-  const [clubs, setClubs] = React.useState([])
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
@@ -138,9 +166,18 @@ export default function HomepageView() {
     )
   }
 
+  const handleNeighborhoodChange = (e) => {
+    const {
+      target: { value },
+    } = e
+    setNeighborhood(
+      typeof value === "string" ? value.split(',') : value
+    )
+  }
+
   const handleLanguageChange = (e) => {
     const {
-      target: {value},
+      target: { value },
     } = e
     setLanguage(
       typeof value === "string" ? value.split(',') : value
@@ -149,24 +186,16 @@ export default function HomepageView() {
 
   const handleSportsChange = (e) => {
     const {
-      target: {value},
+      target: { value },
     } = e
     setSports(
       typeof value === "string" ? value.split(',') : value
     )
   }
 
-  const handleClubsChange = (e) => {
-    const {
-      target: {value},
-    } = e
-    setClubs(
-      typeof value === "string" ? value.split(',') : value
-    )
-  }
 
   const handleSearch = () => {
-    navigate(`./map/`, {state: {borough: borough} });
+    navigate(`./map/`, { state: { borough: borough } });
   }
 
   const handleClickOpen = () => {
@@ -189,7 +218,7 @@ export default function HomepageView() {
     <>
       <Navbar loggedIn={loggedIn} handleLogout={handleLogout} />
       <Box className="home-banner">
-        <Box sx={{ mt: {xs: "30%", sm:"15%"} }}>
+        <Box sx={{ mt: { xs: "30%", sm: "15%" } }}>
           <Typography
             variant="h1"
             component="h1"
@@ -221,15 +250,14 @@ export default function HomepageView() {
                 sx={{
                   display: "flex",
                   flexWrap: "wrap",
+                  flexDirection: "column"
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <FormControl sx={{ m: 1, minWidth: 130 }}>
+                <Box sx={{
+                  display: "flex",
+                  flexDirection: "row"
+                }}>
+                  <FormControl sx={{ m: 1, width: "100%" }}>
                     <FormLabel component="legend">Borough</FormLabel>
                     <Select
                       multiple
@@ -243,7 +271,7 @@ export default function HomepageView() {
                             <Chip key={value} label={value} />
                           ))}
                         </Box>
-                      )}            
+                      )}
                     >
                       <MenuItem value={"Q"}>Queens</MenuItem>
                       <MenuItem value={"K"}>Brooklyn</MenuItem>
@@ -252,36 +280,34 @@ export default function HomepageView() {
                       <MenuItem value={"R"}>Staten Island</MenuItem>
                     </Select>
                   </FormControl>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column"
-                  }}
-                >
-                  <FormControl sx={{ m: 1, minWidth: 220, width: 220 }}>
-                    <FormLabel component="legend">Language Classes</FormLabel>
-                    <FormGroup>
-                      <Select 
-                        multiple
-                        value={langauge}
-                        onChange={handleLanguageChange}
-                      >
-                        {filteredLanguageArr.map((langauge) => (
-                          <MenuItem
-                            key={langauge}
-                            value={langauge}
-                          >
-                            {langauge}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormGroup>
-                  </FormControl>
-                </Box>
-                <Box>
 
-                <FormControl sx={{ m: 1, minWidth: 320 }}>
+                  <FormControl sx={{ m: 1, width: "100%" }}>
+                    <FormLabel component="legend">Neighborhood</FormLabel>
+                    <Select
+                      multiple
+                      displayEmpty
+                      value={neighborhood}
+                      onChange={handleNeighborhoodChange}
+                      labelId="neighborhood-selector"
+                    >
+                      {filteredNeighborhoodArr.map(school =>
+                        <MenuItem
+                          key={school.neighborhood}
+                          value={school.neighborhood}
+                        >
+                          {school.neighborhood}
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+
+                </Box>
+                <Box sx={{
+                  display: "flex",
+                  flexDirection: "row"
+                }}>
+
+                  <FormControl sx={{ m: 1, width: "100%" }}>
                     <FormLabel component="legend">AP Courses</FormLabel>
                     <FormGroup>
                       <Select
@@ -298,13 +324,37 @@ export default function HomepageView() {
                           </MenuItem>
                         )}
                       </Select>
-                      
+
                     </FormGroup>
                   </FormControl>
 
+                  <FormControl sx={{ m: 1, width: "100%" }}>
+                    <FormLabel component="legend">Language Classes</FormLabel>
+                    <FormGroup>
+                      <Select
+                        multiple
+                        value={langauge}
+                        onChange={handleLanguageChange}
+                      >
+                        {filteredLanguageArr.map((langauge) => (
+                          <MenuItem
+                            key={langauge}
+                            value={langauge}
+                          >
+                            {langauge}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormGroup>
+                  </FormControl>
                 </Box>
-                <Box>
-                <FormControl sx={{ m: 1 }}>
+
+                <Box sx={{
+                  display: "flex",
+                  flexDirection: "column"
+                }}>
+
+                  <FormControl sx={{ m: 1 }}>
                     <FormLabel component="legend">Sports</FormLabel>
                     <FormGroup>
                       <Select
@@ -312,23 +362,48 @@ export default function HomepageView() {
                         value={sports}
                         onChange={handleSportsChange}
                       >
+                        <ListSubheader sx={{
+                          fontSize: "1rem",
+                          m: 2,
+                          borderBottom: "1px solid #222222"
+                        }}>Girls Sports</ListSubheader>
+                        {filteredGirlsSportsArr.map(sport =>
+                          <MenuItem
+                            key={sport}
+                            value={sport}>
+                            {sport}
+                          </MenuItem>
+                        )}
+
+                        <ListSubheader sx={{
+                          fontSize: "1rem",
+                          m: 2,
+                          borderBottom: "1px solid #222222"
+                        }}>Coed Sports</ListSubheader>
+                        {filtredCoedSportsArr.map(sport =>
+                          <MenuItem
+                            key={sport}
+                            value={sport}>
+                            {sport}
+                          </MenuItem>
+                        )}
+                        <ListSubheader sx={{
+                          fontSize: "1rem",
+                          m: 2,
+                          borderBottom: "1px solid #222222"
+                        }}>Boys Sports</ListSubheader>
+                        {filteredSportsArr.map(sport =>
+                          <MenuItem
+                            key={sport}
+                            value={sport}
+                          >
+                            {sport}
+                          </MenuItem>
+                        )}
                       </Select>
                     </FormGroup>
                   </FormControl>
 
-                </Box>
-                <Box>
-                  <FormControl sx={{ m: 1 }}>
-                    <FormLabel component="legend">Extracurricular Activities</FormLabel>
-                    <FormGroup>
-                      <Select
-                        multiple
-                        value={clubs}
-                        onChange={handleClubsChange}
-                      >
-                      </Select>
-                    </FormGroup>
-                  </FormControl>
                 </Box>
 
 
