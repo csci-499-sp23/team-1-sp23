@@ -1055,10 +1055,10 @@ function SchoolpageView() {
                       <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74}  />
                     }
                     {chemistryMeanScore && chemistryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73}  />
+                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73}/>
                     }
                     {physicsMeanScore && physicsMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78} />
+                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78}/> 
                     }
                   </TableBody>
                 </Table>
@@ -1127,7 +1127,7 @@ function SchoolpageView() {
                   </Table>
                 </div>
               )}
-  {/*Will Route to Stats page*/}
+  {/*Will Route to Stats page soon*/}
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}   
                 state={{ latitude, longitude, school }}

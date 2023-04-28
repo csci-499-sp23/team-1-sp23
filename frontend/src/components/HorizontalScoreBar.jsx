@@ -1,5 +1,5 @@
-import React from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import React, { useRef } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 import { TableCell, TableRow } from '@mui/material';
 import {
     Box,
@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 
 const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
-
     const data = [
         {
             examName: examName,
@@ -16,7 +15,8 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
         }
     ];
 
-     const getBarColor = () => {
+
+     const getBarColor = ( value, stateAverage) => {
         const difference = value - stateAverage;
         if(difference <= -15){
             return "#FF0000"; //red
@@ -24,10 +24,19 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
             return "#FFC107"; //yellow
         } else if(difference <= 15){
             return "#8BC34A"; //light green
-        } else{
+        } else {
             return "#388E3C"; //darker green
         }
-     };
+    };
+
+    const CustomTooltip = () => {
+        return (
+            <div className="custom-tooltip">
+                <p>{`State Average: ${stateAverage}%`}</p>
+                <div className="tooltip-pointer"></div>
+            </div>
+        );
+    };
 
     return (
         <TableRow>
@@ -37,7 +46,7 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
             <TableCell sx={{ border: 'none' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="body1" fontWeight="600">{Math.round(value)}%</Typography>
-                    <ResponsiveContainer width="90%" height={30}>
+                    <ResponsiveContainer width="90%" height={30} >
                         <BarChart
                             data={data}
                             margin={{
@@ -51,6 +60,13 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
                             <XAxis type="number" domain={[0, 100]} hide />
                             <YAxis type="category" dataKey="examName" hide />
                             <CartesianGrid stroke="#f0f0f0" fill="#f0f0f0" vertical={false} />
+                            {stateAverage && (
+                                <Tooltip
+                                    wrapperStyle={{ outline: "none" }}
+                                    content={<CustomTooltip />}
+                                    position={{ x: stateAverage * 3, y: -38 }}
+                                />
+                            )}
                             <Bar dataKey="value" fill={getBarColor(value, stateAverage)} />
                         </BarChart>
                     </ResponsiveContainer>
