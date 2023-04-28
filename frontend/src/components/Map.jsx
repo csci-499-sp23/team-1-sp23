@@ -74,7 +74,10 @@ class Map extends Component {
 
   componentDidMount() {
     if (this.props.location.state && this.props.location.state.longitude) {
-      const { longitude, latitude, school } = this.props.location.state;
+      const { longitude, latitude, school, card } = this.props.location.state;
+      this.setState({
+        card: card
+      })
       this.goToNearbySchool(longitude, latitude, school);
     }
     fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
@@ -85,7 +88,7 @@ class Map extends Component {
       .catch((error) => console.log(error));
       
     if(this.props.location.state && this.props.location.state.borough != undefined){
-      let activeFilters = [this.props.location.state.borough];
+      let activeFilters = this.props.location.state.borough;
       this.setState({ activeFilters, selectedBorough: this.props.location.state.borough });
       window.history.replaceState({}, document.title);
     }
@@ -159,7 +162,7 @@ class Map extends Component {
         school: school,
         zoom: 17,
       });
-      this.startDirections(school);
+      // this.startDirections(school);
     } else {
       this.setState({
         center: {
@@ -461,6 +464,7 @@ class Map extends Component {
                 {...this.state.dirOpts}
                 goToSchool={this.goToNearbySchool}
                 mobileClose={this.showCard}
+                openStats={this.props.location.state.card}
               />
             )}
             {this.state.saveList && (
