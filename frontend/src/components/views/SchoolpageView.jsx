@@ -12,8 +12,13 @@ import {
   Typography,
   ListItemIcon,
   IconButton,
-  Tooltip
+  Tooltip,
+  Table, 
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
 import {
   LocationOn,
   Phone,
@@ -25,6 +30,7 @@ import {
 } from "@mui/icons-material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -50,10 +56,12 @@ import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
 import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
 
+import HorizontalScoreBar from "../HorizontalScoreBar";
+
+
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
-  console.log(school);
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
@@ -64,7 +72,59 @@ function SchoolpageView() {
   const [reviews, setReviews] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
 
+  const [testScores, setTestScores] = React.useState([]);
+  const [apScores, setAPScores] = React.useState([]);
+  const [satScores, setSatScores] = React.useState([]);
 
+  {/*Regent Exams Data*/}
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/2h3w-9uj9.json?school_dbn=${schoolDbn}&year=2019`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setTestScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+  {/*AP Exams Data*/}
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/9ct9-prf9.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setAPScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+  {/*SAT Data*/}
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/f9bf-2cp4.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setSatScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+  
+   {/*Login*/}
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -238,6 +298,11 @@ function SchoolpageView() {
     programs.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleTestScoresClick = () => {
+    const programs = document.getElementById('aca-testscores');
+    programs.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleSave = () => {
     if (auth.currentUser != null || undefined) {
       if(!savedSchools.includes(school.school_name)) {
@@ -278,7 +343,175 @@ function SchoolpageView() {
       document.querySelector('.left-container').classList.remove('fixed-left-container');
     }
   });
+
+  const isInternational = school?.international === "1"; 
+  const isSpecialized = school?.specialized === "1"; 
+  const isTransfer = school?.transfer === "1";
+  const isPTech = school?.ptech === "1";
+  const isEarlyCollege = school?.earlycollege === "1";
+
+  const algebraRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Common Core Algebra" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core Algebra" && score.category === "English Proficient";
+    }
+  });
+  const algebraMeanScore = algebraRegentsScores[0]?.mean_score;
+ 
+  const algebra2RegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Common Core Algebra2" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core Algebra2" && score.category === "English Proficient";
+    }
+  });
+  const algebra2MeanScore = algebra2RegentsScores[0]?.mean_score;
+
+  const englishRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Common Core English" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core English" && score.category === "English Proficient";
+    }
+  });
+  const englishMeanScore = englishRegentsScores[0]?.mean_score;
+
+  const geometryRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Common Core Geometry" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Common Core Geometry" && score.category === "English Proficient";
+    }
+  });
+  const geometryMeanScore = geometryRegentsScores[0]?.mean_score;
+
+  const globalhistoryRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Global History and Geography" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Global History and Geography" && score.category === "English Proficient";
+    }
+  });
+  const globalhistoryMeanScore = globalhistoryRegentsScores[0]?.mean_score;
+
+  const livingEnvironRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Living Environment" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Living Environment" && score.category === "English Proficient";
+    }
+  });
+  const livingEnvironMeanScore = livingEnvironRegentsScores[0]?.mean_score;
+
+  const chemistryRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Physical Settings/Chemistry" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Physical Settings/Chemistry" && score.category === "English Proficient";
+    }
+  });
+  const chemistryMeanScore = chemistryRegentsScores[0]?.mean_score;
+
+  const earthScienceRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Physical Settings/Earth Science" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Physical Settings/Earth Science" && score.category === "English Proficient";
+    }
+  });
+  const earthScienceMeanScore = earthScienceRegentsScores[0]?.mean_score;
+
+  const physicsRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Physical Settings/Physics" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Physical Settings/Physics" && score.category === "English Proficient";
+    }
+  });
+  const physicsMeanScore = physicsRegentsScores[0]?.mean_score;
+
+  const USHistoryRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "U.S. History and Government" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "U.S. History and Government" && score.category === "English Proficient";
+    }
+  });
+  const USHistoryMeanScore = USHistoryRegentsScores[0]?.mean_score;
+
+  const spanishRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Spanish" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Spanish" && score.category === "English Proficient";
+    }
+  });
+  const spanishMeanScore = spanishRegentsScores[0]?.mean_score;
+
+  const frenchRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "French" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "French" && score.category === "English Proficient";
+    }
+  });
+  const frenchMeanScore = frenchRegentsScores[0]?.mean_score;
+
+  const chineseRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Chinese" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Chinese" && score.category === "English Proficient";
+    }
+  });
+  const chineseMeanScore = chineseRegentsScores[0]?.mean_score;
+
+  const italianRegentsScores = testScores.filter(score => {
+    if (isInternational) {
+      return score.regents_exam === "Italian" && score.category === "ELL";
+    } else {
+      return score.regents_exam === "Italian" && score.category === "English Proficient";
+    }
+  });
+  const italianMeanScore = italianRegentsScores[0]?.mean_score;
   
+  const apExamsPassed = apScores[0]?.num_of_ap_exams_passed;
+  const apTotalExams = apScores[0]?.num_of_ap_total_exams_taken;
+  const apTestTakers = apScores[0]?.num_of_ap_test_takers;
+
+  const apPassRate = Math.round((Number(apExamsPassed) / Number(apTotalExams)) * 100); 
+  const apEnrollment = Math.round((Number(apTestTakers) / Number(school?.total_students)) * 100);
+
+  const satCriticalReading = satScores[0]?.sat_critical_reading_avg_score;
+  const satWriting = satScores[0]?.sat_writing_avg_score
+  const satMath = satScores[0]?.sat_math_avg_score;
+  
+  const satNewReading = Math.round((Number(satCriticalReading) + Number(satWriting)) / 2);
+  const satTotal = Math.round(satMath) + satNewReading;
+
+  const satScoresAvailable = !(
+    satCriticalReading === "s" &&
+    satWriting === "s" &&
+    satMath === "s"
+  );
+
+  const Label = ({ text, backcolor, color }) => {
+    return (
+      <Chip
+        label={text}
+        sx={{
+          backgroundColor: backcolor,
+          color: color,
+          fontWeight: "bold",
+          fontSize: "14px",
+          borderRadius: "15px",
+          border: `2.5px solid ${color}`,
+          marginLeft: "0.5em",
+        }}
+      />
+    );
+  };
 
   return (
     <>
@@ -377,6 +610,23 @@ function SchoolpageView() {
                   {school?.finalgrades.slice(2 - 4)}
                 </strong>
               </span>
+              <span style={{ marginLeft: "6em" }}>
+                {isSpecialized && (
+                  <Label text="Specialized" backcolor="#DAFBE2" color="#177F3C" />
+                )}
+                {isInternational && (
+                  <Label text="International" backcolor="#FBEFFE" color="#8655DC" />
+                )}
+                {isTransfer && (
+                  <Label text="Transfer" backcolor="#FFF8C7" color="#9A6711" />
+                )}
+                {isPTech && (
+                  <Label text="P-Tech" backcolor="#FFF1E5" color="#BD4C09" />
+                )}
+                {isEarlyCollege && (
+                  <Label text="Early College" backcolor="#FFEFF7" color="#C03987" />
+                )}
+              </span>
             </Typography>
           </Box>
         </Grid>
@@ -412,6 +662,9 @@ function SchoolpageView() {
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }} onClick={handleProgramsClick}>
                 Programs Offered
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleTestScoresClick}>
+                Test Scores
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
@@ -531,7 +784,14 @@ function SchoolpageView() {
             <Box id="navigation" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Navigation</h2>
-              <h4>Nearby Transportation</h4>
+              <Link
+                to={`/map/${encodeURIComponent(school.school_name)}`}
+                state={{ latitude, longitude, school }}
+                style={{color: "#16A1DD" }}
+              >
+                {school?.location.split("(")[0].trim()}
+              </Link>
+              <h4 style={{ paddingTop: "10px" }}>Nearby Transportation</h4>
               <List>
                 {school?.subway && school?.subway !== "N/A" && (
                   <ListItem>
@@ -546,13 +806,6 @@ function SchoolpageView() {
                   </ListItem>
                 )}
               </List>
-              <Link
-                to={`/map/${school.school_name}`}
-                state={{ latitude, longitude, school }}
-                style={{ color: "#16A1DD" }}
-              >
-                <h4>Click here for more map and direction information</h4>
-              </Link>
               <div className="map-wrapper">
                 <Iframe
                   url={url}
@@ -563,9 +816,17 @@ function SchoolpageView() {
                   scrolling="no"
                 />
               </div>
+              <Link
+                to={`/map/${encodeURIComponent(school.school_name)}`}   
+                state={{ latitude, longitude, school }}
+                style={{ marginTop: "20px", color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+              >
+                <h4 style={{ marginRight: "0.5rem" }}>More Map and Direction Information here</h4>
+                <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
+              </Link>
             </Box>
-  {/*ACADEMICS*/}
-  {/*Academic Opportunities*/}
+            {/*ACADEMICS*/}
+            { }
             <Box id="aca-opportunities" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Academic Opportunities</h2>
@@ -761,13 +1022,128 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
+{/*Test Scores*/}
+            <Box id="aca-testscores" className="middle-container academics">
+              <h3>Academics</h3>
+              <h2>Test Scores</h2>
+              <h4>Regents Exams</h4>
+              <Box sx={{ width: "100%" }}>
+                <Table>
+                  <TableBody>
+                    {algebraMeanScore && algebraMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73}  />
+                    }
+                    {algebra2MeanScore && algebra2MeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76}  />
+                    }
+                    {geometryMeanScore && geometryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73}  />
+                    }
+                    {englishMeanScore && englishMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77}  />
+                    }
+                    {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73}  />
+                    }
+                    {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78}  />
+                    }
+                    {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75}  />
+                    }
+                    {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74}  />
+                    }
+                    {chemistryMeanScore && chemistryMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73}/>
+                    }
+                    {physicsMeanScore && physicsMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78}/> 
+                    }
+                  </TableBody>
+                </Table>
+              </Box>
+              {((spanishMeanScore && spanishMeanScore !== "s") ||
+                (frenchMeanScore && frenchMeanScore !== "s") ||
+                (italianMeanScore && italianMeanScore !== "s") ||
+                (chineseMeanScore && chineseMeanScore !== "s")) && (
+                  <h4>Language (LOTE) Exams</h4>
+                )}
+              <Box sx={{ width: "100%" }}>
+                <Table>
+                  <TableBody>
+                    {spanishMeanScore && spanishMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Spanish" value={Math.round(spanishMeanScore)} />
+                    }
+                    {frenchMeanScore && frenchMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="French" value={Math.round(frenchMeanScore)} />
+                    }
+                    {italianMeanScore && italianMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Italian" value={Math.round(italianMeanScore)} />
+                    }
+                    {chineseMeanScore && chineseMeanScore !== "s" &&
+                      <HorizontalScoreBar examName="Chinese" value={Math.round(chineseMeanScore)} />
+                    }
+                  </TableBody>
+                </Table>
+              </Box>
+              {((apTestTakers && apTestTakers !== "s") ||
+                (apExamsPassed && apExamsPassed !== "s") ||
+                (apTotalExams && apTotalExams !== "s")) && (
+                  <h4>Advanced Placement Exams</h4>
+                )}
+              <Table>
+                {apExamsPassed && apExamsPassed !== "s" && apTotalExams && apTotalExams !== "s" && (
+                  <TableCell sx={{ border: 'none' }}>
+                    <Typography variant="body1">AP Exam Pass Rate</Typography>
+                    <Typography variant="h2">{apPassRate}%</Typography>
+                  </TableCell>
+                )}
+                {apTestTakers && apTestTakers !== "s" &&(
+                  <TableCell sx={{ border: 'none' }}>
+                    <Typography variant="body1">AP Exam Enrollment</Typography>
+                    <Typography variant="h2">~{apEnrollment}%</Typography>
+                  </TableCell>
+                )}
+              </Table>
+              {satScoresAvailable && satCriticalReading != null && satWriting != null && satMath != null && (
+                <div>
+                  <h4>SAT Scores</h4>
+                  <Table>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">Average SAT</Typography>
+                        <Typography variant="h2">{satTotal}</Typography>
+                      </TableCell>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">Math</Typography>
+                        <Typography variant="h2">{satMath}</Typography>
+                      </TableCell>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">Verbal</Typography>
+                        <Typography variant="h2">{satNewReading}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </Table>
+                </div>
+              )}
+  {/*Will Route to Stats page soon*/}
+              <Link
+                to={`/map/${encodeURIComponent(school.school_name)}`}   
+                state={{ latitude, longitude, school }}
+                style={{ color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+              >
+                <h4 style={{ marginRight: "0.5rem" }}>More about {school?.school_name}'s Test Scores</h4>
+                <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
+              </Link>
+            </Box>
           </Box>
         </Grid>
         <Tooltip title="Save School">
-          <IconButton sx={{ 
-            position: "fixed", 
-            bottom: 0, 
-            right: 0, 
+          <IconButton sx={{
+            position: "fixed",
+            bottom: 0,
+            right: 0,
             backgroundColor: "#f1f1f1", 
             borderRadius: "50%", 
             m: 5,

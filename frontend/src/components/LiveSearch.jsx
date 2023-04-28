@@ -14,7 +14,8 @@ function LiveSearch() {
   
   const handleSchoolSelection = (event, value) => {
     setSelectedSchool(value);
-    navigate(`/school/${value.school_name}`, {state: {school: value} });
+    const encodedSchoolName = encodeURIComponent(value.school_name);
+    navigate(`/school/${encodedSchoolName}`, { state: { school: value } });
   }
   return (
     <Stack
