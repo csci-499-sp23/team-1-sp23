@@ -85,7 +85,7 @@ class Map extends Component {
       .catch((error) => console.log(error));
       
     if(this.props.location.state && this.props.location.state.borough != undefined){
-      let activeFilters = [this.props.location.state.borough];
+      let activeFilters = this.props.location.state.borough;
       this.setState({ activeFilters, selectedBorough: this.props.location.state.borough });
       window.history.replaceState({}, document.title);
     }
@@ -159,7 +159,7 @@ class Map extends Component {
         school: school,
         zoom: 17,
       });
-      this.startDirections(school);
+      // this.startDirections(school);
     } else {
       this.setState({
         center: {

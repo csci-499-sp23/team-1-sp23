@@ -187,6 +187,7 @@ const SavedSchoolsList = (props) => {
             <Card
                 sx={{
                     maxWidth: { xs: "100vw", sm: 400, md: 400 },
+                    width: {xs: "100%"},
                     maxHeight: "100%",
                     zIndex: 99999,
                     position: "absolute",
