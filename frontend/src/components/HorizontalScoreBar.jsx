@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 import { TableCell, TableRow } from '@mui/material';
 import {
@@ -15,8 +15,46 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
         }
     ];
 
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    
 
-     const getBarColor = ( value, stateAverage) => {
+    useEffect(() => {
+        const handleResize = () => setScreenWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const tooltipScalingFactor = useMemo(() => {
+        if (screenWidth >= 1170) {
+            return 3.1;
+        } else if (screenWidth >= 1124) {
+            return 3;
+        } else if (screenWidth >= 1040) {
+            return 2.5;
+        } else if (screenWidth >= 1000) {
+            return 2.3;
+        } else if (screenWidth >= 900) {
+            return 2;
+        } else if (screenWidth >= 850) {
+            return 3.5;
+        } else if (screenWidth >= 800) {
+            return 3;
+        } else if (screenWidth >= 750) {
+            return 2.8;
+        } else if (screenWidth >= 700) {
+            return 2.5;
+        } else if (screenWidth >= 650) {
+            return 2.3;
+        } else if (screenWidth >= 600) {
+            return 2.2;
+        } else if (screenWidth >= 500) {
+            return 2.2;
+        } else {
+            return 2;
+        }
+    }, [screenWidth]);
+
+    const getBarColor = (value, stateAverage) => {
         const difference = value - stateAverage;
         if(difference <= -15){
             return "#FF0000"; //red
@@ -64,7 +102,7 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
                                 <Tooltip
                                     wrapperStyle={{ outline: "none" }}
                                     content={<CustomTooltip />}
-                                    position={{ x: stateAverage * 3, y: -38 }}
+                                    position={{ x: stateAverage * tooltipScalingFactor, y: -38 }}
                                 />
                             )}
                             <Bar dataKey="value" fill={getBarColor(value, stateAverage)} />
