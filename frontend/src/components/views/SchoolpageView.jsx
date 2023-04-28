@@ -17,6 +17,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Tab,
+  Tabs
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import {
@@ -45,16 +47,19 @@ import {
 
 import NavBar from "./NavBar";
 import Iframe from "react-iframe";
-import { MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
-import { GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
+import { MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
+import { GiHighPunch, GiFencer, GiTennisRacket, GiCricketBat, GiSprint, GiMeshBall, GiRunningShoe, GiBaseballBat, GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
 import { SlGraduation, SlCalculator } from 'react-icons/sl/index.js';
-import { BiDna, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
-import { TbMathFunction, TbMap2 } from 'react-icons/tb/index.js';
+import { BiDna, BiSwim, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
+import { TbMathFunction, TbMap2, TbBallVolleyball } from 'react-icons/tb/index.js';
 import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi2/index.js';
 import { RiGovernmentLine } from 'react-icons/ri/index.js';
 import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
 import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
+import { IoAmericanFootball, IoTennisballOutline, IoBaseballOutline, IoAmericanFootballOutline, IoFootballOutline,IoGolfOutline, IoBasketballOutline, IoBowlingBallOutline} from 'react-icons/io5/index.js'
+import { FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
+
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
 
@@ -64,6 +69,7 @@ function SchoolpageView() {
   const school = location.state.school;
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
+  const card = true;
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
 
   const [username, setUsername] = React.useState("");
@@ -75,6 +81,7 @@ function SchoolpageView() {
   const [testScores, setTestScores] = React.useState([]);
   const [apScores, setAPScores] = React.useState([]);
   const [satScores, setSatScores] = React.useState([]);
+  const [tab, setTab] = React.useState(0)
 
   {/*Regent Exams Data*/}
   React.useEffect(() => {
@@ -168,6 +175,12 @@ function SchoolpageView() {
 
   const apClasses = splittingByComma(school?.advancedplacement_courses);
   const langClasses = splittingByComma(school?.language_classes);
+  const extracurricularClubs = splittingByComma(school.extracurricular_activities)
+  const boysSports = splittingByComma(school.psal_sports_boys)
+  const girlsSports = splittingByComma(school.psal_sports_girls)
+  const coedSports = splittingByComma(school.psal_sports_coed)
+
+  console.log(school)
 
   const iconsForAP = {
     "AP Art History": GiPaintBrush,
@@ -232,6 +245,36 @@ function SchoolpageView() {
     'Urdu': 'UR'
   };
 
+  const iconsForSports = {
+    'Badminton': GiTennisRacket,
+    'Baseball': IoBaseballOutline,
+    'Basketball' : IoBasketballOutline,
+    'Bowling' : IoBowlingBallOutline,
+    'Cross Country': FaRunning, 
+    'Cricket': GiCricketBat,
+    'Fencing': GiFencer,
+    'Flag Football': IoAmericanFootballOutline,
+    'Football': IoAmericanFootball,
+    'Golf': IoGolfOutline,
+    'Gymnastics': MdSportsGymnastics,
+    'Handball': MdOutlineSportsHandball,
+    'Indoor Track': GiSprint,
+    'Lacrosse': GiMeshBall,
+    'Outdoor Track': GiRunningShoe,
+    'Soccer': IoFootballOutline,
+    'Softball': GiBaseballBat,
+    'Stunt': MdCelebration,
+    'Swimming': BiSwim,
+    'Table Tennis': FaTableTennis,
+    'Tennis': IoTennisballOutline,
+    'Volleyball': TbBallVolleyball,
+    'Wrestling': GiHighPunch, 
+
+  }
+  const getSportIcon = (sport) => {
+    return iconsForSports[sport.trim()];
+  };
+
   const getAPclassesIcon = (course) => {
     const Icon = iconsForAP[course.trim()] || School;
     return Icon;
@@ -243,6 +286,11 @@ function SchoolpageView() {
 
   const [showAllAPs, setShowAllAps] = useState(false);
   const visibleAPs = showAllAPs ? apClasses : apClasses.slice(0, 5);
+
+  
+  const [showAllClubs, setShowClubs] = useState(false);
+  const visibleClubs = showAllClubs ? extracurricularClubs : extracurricularClubs.slice(0, 8);
+
 
   const CommentIcon = ({ languageAbbreviation }) => (
     <div style={{ position: "relative", top: "7px" }}>
@@ -302,6 +350,24 @@ function SchoolpageView() {
     const programs = document.getElementById('aca-testscores');
     programs.scrollIntoView({ behavior: 'smooth' });
   }
+
+  const handleClubsClick = () => {
+    const clubs = document.getElementById('clubs');
+    clubs.scrollIntoView({ behavior: 'smooth' });
+  }
+  const handleSportsClick = () => {
+    const sports = document.getElementById('sports')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleTabChange = (e, value) => { 
+    setTab(value)
+  }
+
+  const TabPanel = ({ children, value, index }) => {
+    return value === index && children;
+  };
+  
 
   const handleSave = () => {
     if (auth.currentUser != null || undefined) {
@@ -680,8 +746,18 @@ function SchoolpageView() {
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
-
+            <List>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleClubsClick}>
+                Clubs
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleSportsClick}>
+                Sports
+              </ListItemButton>
+            </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
+
+            <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
+
           </Box>
         </Grid>
 {/*MIDDLE CONTAINER*/}
@@ -931,7 +1007,7 @@ function SchoolpageView() {
               <h3>Academics</h3>
               <h2>Language Courses</h2>
               <Grid container spacing={2}>
-                {langClasses.map((course) => (
+                {langClasses.length !== 0 || undefined ? langClasses.map((course) => (
                   <Grid key={course} item xs={6} sm={3}>
                     <Box display="flex" alignItems="center">
                       <ListItemIcon>
@@ -942,7 +1018,9 @@ function SchoolpageView() {
                       <ListItemText primary={course.trim()} />
                     </Box>
                   </Grid>
-                ))}
+                )) : <Grid item xs={6} sm={12}>
+                  <Typography >No langauge classes available</Typography>
+                </Grid>}
               </Grid>
             </Box>
 {/*Programs Offered*/}
@@ -1130,12 +1208,103 @@ function SchoolpageView() {
   {/*Will Route to Stats page soon*/}
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}   
-                state={{ latitude, longitude, school }}
+                state={{ latitude, longitude, school, card }}
                 style={{ color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
               >
                 <h4 style={{ marginRight: "0.5rem" }}>More about {school?.school_name}'s Test Scores</h4>
                 <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
+            </Box>
+            <Box id="clubs" className="middle-container academics">
+              <h3>Extracurricular Activities</h3>
+              <h2>Clubs</h2>
+              <Grid container spacing={2}>
+                {visibleClubs.length !== 0 ? visibleClubs.map((club) => (<Grid key={club} item xs={6} sm={3}>
+                  <Box display="flex" alignItems="center">
+                    <ListItemText primary={club.trim()} />
+                  </Box>
+                </Grid>)) :
+                  <Grid item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      <ListItemText primary="No clubs available" />
+                    </Box></Grid>}
+              </Grid>
+              {(!showAllClubs && extracurricularClubs.length > 8) && (
+                <Box display="flex" justifyContent="center" sx={{m: 3}}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setShowClubs(true)}
+                    color="primary"
+                    style={{ color: "#16A1DD", borderColor: "#16A1DD", margin: 1 }}
+                  >
+                    Show all {extracurricularClubs.length} Clubs
+                  </Button>
+                </Box>
+              )}
+            </Box>
+
+            <Box id="sports" className="middle-container academics">
+              <h3>Extracurricular Activities</h3>
+              <h2>Sports</h2>
+
+              <Tabs
+                sx={{ alignSelf: "center", mb: 2 }}
+                value={tab}
+                onChange={handleTabChange}
+              >
+                <Tab sx={{ fontWeight: "500", mr: 2 }} label="Girls" />
+                <Tab sx={{ fontWeight: "500", mx: 2 }} label="Coed" />
+                <Tab sx={{ fontWeight: "500", ml: 2 }} label="Boys" />
+              </Tabs>
+              <TabPanel
+                value={0}
+                index={tab}
+              >
+                <Grid container spacing={2}>
+                  {girlsSports.length !== 0 ? girlsSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      {React.createElement(getSportIcon(sport))}
+                      <ListItemText sx={{ml: 1}} primary={sport.trim()} />
+                    </Box>
+                  </Grid>)) :
+                    <Grid item xs={6} sm={3}>
+                      <Box display="flex" alignItems="center">
+                        <ListItemText primary="No girls sports available" />
+                      </Box>
+                    </Grid>}
+                </Grid>
+              </TabPanel>
+              <TabPanel
+                value={1}
+                index={tab}
+              >
+                <Grid container spacing={2}>
+                  {coedSports.length !== 0 ? coedSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      {React.createElement(getSportIcon(sport))}
+                      <ListItemText sx={{ml: 1}} primary={sport.trim()} />
+                    </Box>
+                  </Grid>)) :
+                    <Grid item xs={6} sm={3}>
+                      <Box display="flex" alignItems="center">
+                        <ListItemText primary="No coed sports available" />
+                      </Box>
+                    </Grid>}
+                </Grid>
+              </TabPanel>
+              <TabPanel
+                value={2}
+                index={tab}
+              >
+                <Grid container spacing={2}>
+                  {boysSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      {React.createElement(getSportIcon(sport))}
+                      <ListItemText sx={{ml: 1}} primary={sport.trim()} />
+                    </Box>
+                  </Grid>))}
+                </Grid>
+              </TabPanel>
             </Box>
           </Box>
         </Grid>

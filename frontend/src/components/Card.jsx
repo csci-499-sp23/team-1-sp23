@@ -95,7 +95,7 @@ class InfoCard extends Component {
       snackbarOpen: false,
       snackbarSuccessOpen: false,
       directionError: false,
-      profile: false,
+      profile: this.props.openStats ? this.props.openStats : false,
       compareInfo: false,
       currentSchoolRatingAvg: [],
       origin: "",

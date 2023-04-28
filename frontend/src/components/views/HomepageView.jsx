@@ -423,8 +423,8 @@ export default function HomepageView() {
               </Box>
             </DialogContent>
             <DialogActions>
-              <Button onClick={clearFilters}>Clear Filters</Button>
               <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={clearFilters}>Clear Filters</Button>
               <Button onClick={handleSearch}>Search</Button>
             </DialogActions>
           </Dialog>
