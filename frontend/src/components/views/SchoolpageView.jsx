@@ -81,6 +81,7 @@ function SchoolpageView() {
   const [testScores, setTestScores] = React.useState([]);
   const [apScores, setAPScores] = React.useState([]);
   const [satScores, setSatScores] = React.useState([]);
+  const [demographicInfo, setDemographInfo] = React.useState([]);
   const [tab, setTab] = React.useState(0)
 
   {/*Regent Exams Data*/}
@@ -124,6 +125,22 @@ function SchoolpageView() {
         .then(response => response.json())
         .then(data => {
           setSatScores(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+  {/*Demographic Snapshot 2020-2021*/}
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/vmmu-wj3w.json?dbn=${schoolDbn}&year=2020-21`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setDemographInfo(data);
         })
         .catch(error => {
           console.error(error);
@@ -360,6 +377,11 @@ function SchoolpageView() {
     sports.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleDemographicsClick = () => {
+    const sports = document.getElementById('demographics')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleTabChange = (e, value) => { 
     setTab(value)
   }
@@ -562,6 +584,16 @@ function SchoolpageView() {
     satMath === "s"
   );
 
+  const femalePercentage = demographicInfo[0]?.female_1;
+  const malePercentage = demographicInfo[0]?.male_1;
+  const asianPercentage = demographicInfo[0]?.asian_1;
+  const blackPercentage = demographicInfo[0]?.black_1;
+  const hispanicPercentage = demographicInfo[0]?.hispanic_1;
+  const whitePercentage = demographicInfo[0]?.white_1;
+  const nativeAmericanPercentage = demographicInfo[0]?.native_american_1;
+  const missingRacePercentage = demographicInfo[0]?.missing_race_ethnicity_data_1;
+  const multiRacePercentage = demographicInfo[0]?.multi_racial_1;
+
   const Label = ({ text, backcolor, color }) => {
     return (
       <Chip
@@ -709,7 +741,7 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleContactInfoClick}>
                 Schedule and Contact
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleAddressClick}>
+              <ListItemButton sx={{ pl: 0, marginBottom: "-20px" }} onClick={handleAddressClick}>
                 Navigation
               </ListItemButton>
             </List>
@@ -733,18 +765,6 @@ function SchoolpageView() {
                 Test Scores
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Student Support</Typography>
-            <List>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleOpportunitiesClick}>
-                data 1
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleAPCoursesClick}>
-                data 2
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleLanguageClick}>
-                data 3
-              </ListItemButton>
-            </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
             <List>
               <ListItemButton sx={{ pl: 0 }} onClick={handleClubsClick}>
@@ -754,8 +774,19 @@ function SchoolpageView() {
                 Sports
               </ListItemButton>
             </List>
+            <Typography variant="h6" sx={{ mb: 2 }}>Student Environment</Typography>
+            <List>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
+                Student Demographics
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleAPCoursesClick}>
+                Accessibility
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleLanguageClick}>
+                data 3
+              </ListItemButton>
+            </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
-
             <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
 
           </Box>
@@ -901,8 +932,8 @@ function SchoolpageView() {
                 <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
             </Box>
-            {/*ACADEMICS*/}
-            { }
+{/*ACADEMICS*/}
+{/*Academic Opportunities*/ }
             <Box id="aca-opportunities" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Academic Opportunities</h2>
@@ -1205,7 +1236,6 @@ function SchoolpageView() {
                   </Table>
                 </div>
               )}
-  {/*Will Route to Stats page soon*/}
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}   
                 state={{ latitude, longitude, school, card }}
@@ -1215,6 +1245,8 @@ function SchoolpageView() {
                 <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
             </Box>
+{/*EXTRACURRICULAR ACTIVITIES*/}
+{/*Clubs*/ }
             <Box id="clubs" className="middle-container academics">
               <h3>Extracurricular Activities</h3>
               <h2>Clubs</h2>
@@ -1242,7 +1274,7 @@ function SchoolpageView() {
                 </Box>
               )}
             </Box>
-
+{/*Sports*/ }
             <Box id="sports" className="middle-container academics">
               <h3>Extracurricular Activities</h3>
               <h2>Sports</h2>
@@ -1300,12 +1332,21 @@ function SchoolpageView() {
                   {boysSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
                     <Box display="flex" alignItems="center">
                       {React.createElement(getSportIcon(sport))}
-                      <ListItemText sx={{ml: 1}} primary={sport.trim()} />
+                      <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
                     </Box>
                   </Grid>))}
                 </Grid>
               </TabPanel>
             </Box>
+{/*STUDENT ENVIRONMENT*/}
+{/*Student Demographics*/}
+            <Box id="demographics" className="middle-container academics">
+              <h3>Student Environment</h3>
+              <h2>Student Demographics</h2>
+              <h4>Student Diversity</h4>
+            
+            </Box>
+
           </Box>
         </Grid>
         <Tooltip title="Save School">

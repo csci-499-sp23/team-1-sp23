@@ -41,7 +41,7 @@
   flex-direction: column;
   margin-left: 1in;
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0rem;
 }
 
 .fixed-left-container {
@@ -56,10 +56,8 @@
   font-size: 12px;
   font-weight: bold;
   margin-bottom: 0px;
-  border-bottom: px solid #ccc;
-  padding-bottom: 4px;
   border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   color: rgb(80, 80, 80);
 }
 
