@@ -1,7 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 
-const colors = ['#33D391', '#00844E', '#014025', '#B1DDFA', '#338CE4', '#0D63D0', '#00206A'];
+const colors = ['#ffc658', '#33D391', '#00844E', '#014025', '#B1DDFA', '#338CE4', '#0D63D0', '#00206A'];
 
 
 const DemographicsChart = ({ demographics }) => {
@@ -16,6 +16,7 @@ const DemographicsChart = ({ demographics }) => {
     const minoritieTotal = asianPercentage + blackPercentage + hispanicPercentage + nativeAmericanPercentage + multiRacePercentage + missingRacePercentage;
 
     const data = [
+        { name: 'Minority Enrollment', value: 0},
         { name: 'White', value: whitePercentage },
         { name: 'Hispanic', value: hispanicPercentage },
         { name: 'Asian', value: asianPercentage },
@@ -25,7 +26,7 @@ const DemographicsChart = ({ demographics }) => {
         { name: 'Missing Information', value: missingRacePercentage },
     ];
     return (
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative' }} onClick={(e) => e.preventDefault()}>
             <PieChart width={600} height={400} margin={{ left: -10 }} style={{ top: '0px', left: '-1.2px' }}>
                 <Pie
                     data={data}
@@ -37,9 +38,11 @@ const DemographicsChart = ({ demographics }) => {
                     innerRadius={135}
                     fill="#8884d8"
                     isAnimationActive={false}
+                    activeShape={null}
                 >
                     {data.map((entry, index) => (
                         <Cell
+                            style={{outline: 'none'}}
                             key={`cell-${index}`}
                             fill={colors[index % colors.length]}
                         />
@@ -53,7 +56,12 @@ const DemographicsChart = ({ demographics }) => {
                     iconType="circle"
                     iconSize={12}
                     formatter={(value, entry) => {
-                        const percentage = `${entry.payload.value.toFixed(1)}%`;
+                        let percentage;
+                        if (entry.payload.name === "Minority Enrollment") {
+                            percentage = `${minoritieTotal.toFixed(1)}%`;
+                          } else {
+                            percentage = `${entry.payload.value.toFixed(1)}%`;
+                          }
                         const formattedPercentage = percentage.length == 4 ? `  ${percentage}` : percentage;
                         return (
                             <span style={{ color: 'black', marginLeft: '15px' }}>
@@ -87,7 +95,7 @@ const DemographicsChart = ({ demographics }) => {
                     Minority Enrollment
                 </text>
             </PieChart>
-            <PieChart width={600} height={400} margin={{ left: -10  }} style={{ position: 'absolute', top: '0px', left: '-120px' }}>
+            <PieChart onClick={() => {}} width={600} height={400} margin={{ left: -10  }} style={{ position: 'absolute', top: '0px', left: '-120px' }}>
                 <Pie
                     data={data}
                     dataKey="value"
@@ -96,14 +104,11 @@ const DemographicsChart = ({ demographics }) => {
                     outerRadius={180}
                     innerRadius={170}
                     stroke="none"
-                    
-                    isAnimationActive={false}
-
                 >
                     {data.map((entry, index) => (
                         entry.name === 'White' ?
-                            <Cell key={`cell-${index}`} fill="none" /> :
-                            <Cell key={`cell-${index}`} fill="#ffc658" />
+                            <Cell style={{outline: 'none'}} key={`cell-${index}`} fill="none" /> :
+                            <Cell style={{outline: 'none'}} key={`cell-${index}`} fill="#ffc658" />
                     ))}
                 </Pie>
             </PieChart>
