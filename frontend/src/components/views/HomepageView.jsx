@@ -4,35 +4,22 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import FormControl from "@mui/material/FormControl";
-import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Chip from '@mui/material/Chip';
 import Select from "@mui/material/Select";
 import LiveSearch from "../LiveSearch";
-import Link from "@mui/material/Link"
 import ListSubheader from "@mui/material/ListSubheader";
 
 import { useNavigate } from 'react-router-dom';
-import {
-  FooterBox,
-  Container,
-  Row,
-  Column,
-  FooterLink,
-  Heading,
-} from "../FooterStyling";
+
 import React from "react";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import SchoolsData from "../../schoolData";
 
 import Navbar from "./NavBar";
-import { queryEqual } from "firebase/firestore";
 
 export default function HomepageView() {
   const Schools = SchoolsData();
@@ -273,7 +260,7 @@ export default function HomepageView() {
                   display: "flex",
                   flexDirection: "row"
                 }}>
-                  <FormControl sx={{ m: 1, width: "100%" }}>
+                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "100%" }}>
                     <FormLabel component="legend">Borough</FormLabel>
                     <Select
                       multiple
@@ -297,7 +284,7 @@ export default function HomepageView() {
                     </Select>
                   </FormControl>
 
-                  <FormControl sx={{ m: 1, width: "100%" }}>
+                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "100%" }}>
                     <FormLabel component="legend">Neighborhood</FormLabel>
                     <Select
                       multiple
@@ -409,7 +396,7 @@ export default function HomepageView() {
                         }}>Boys Sports</ListSubheader>
                         {filteredSportsArr.map((sport, key) =>
                           <MenuItem
-                            key={key}
+                            key={"boy"+key}
                             value={sport}
                           >
                             {sport}

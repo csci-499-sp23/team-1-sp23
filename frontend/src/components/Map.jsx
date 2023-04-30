@@ -18,6 +18,15 @@ import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
 import Directions from "./Directions";
 import SavedSchoolsList from "./SavedSchoolsList";
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import FormLabel from '@mui/material/FormLabel';
+
 import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
@@ -42,10 +51,12 @@ class Map extends Component {
     super(props);
     this.state = {
       schools: [],
+      advanceFilteredSchools: [],
       card: false,
       school: null,
       drawer: false,
       savedSchools: false,
+      advanceFilters: false,
       dirOpts: {
         origin: "",
         destination: "",
@@ -67,6 +78,10 @@ class Map extends Component {
       saveList: false,
       navbar: true,
       visible: false,
+      neighborhood: [],
+      apCourses: [],
+      languageCourse: [],
+      sports: [],
     };
     this.goToNearbySchool = this.goToNearbySchool.bind(this);
     this.startDirections = this.startDirections.bind(this);
@@ -83,17 +98,28 @@ class Map extends Component {
     fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ schools: data });
+        this.setState({ 
+          schools: data 
+        });
       })
       .catch((error) => console.log(error));
+    if (this.props.location.state && this.props.location.state.borough != undefined && 
+      (this.props.location.state.borough.length != 0 ||
+        this.props.location.state.neighborhood.length != 0 ||
+        this.props.location.state.apCourse.length != 0||
+        this.props.location.state.language.length != 0 ||
+        this.props.location.state.sports.length != 0)) {
+      const { borough, neighborhood, apCourse, language, sport } = this.props.location.state;
+      this.setState({
+        activeFilters: borough.length !== 0 || null || undefined ? [...borough] : [...boroughs],
+        neighborhood: [...neighborhood],
+        apCourses: [...apCourse],
+        languageCourse: [...language],
+        sports: sport,
+      })
       
-    if(this.props.location.state && this.props.location.state.borough != undefined){
-      let activeFilters = this.props.location.state.borough;
-      this.setState({ activeFilters, selectedBorough: this.props.location.state.borough });
-      window.history.replaceState({}, document.title);
     }
   }
-
   showCard = (bool, obj) => {
     if (this.state.saveList === true) {
       this.setState({
@@ -108,6 +134,33 @@ class Map extends Component {
       });
     }
   };
+
+  handleAdvanceFiltering = () => {
+    const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
+
+    const splittingByComma = (str) => {
+      return( str ? str.split(",") : []);
+    };
+    //Location and neighborhood take precedence over AP and language courses and sports
+    const schoolsFiltered = schools.filter((school) => activeFilters.includes(school.borocode));
+    
+    const neighborhoodFiltered = neighborhood.length != 0 || null ? schoolsFiltered.filter((school) =>
+      neighborhood.includes(school.neighborhood)
+    ) : schoolsFiltered;
+
+    //Filters for AP and language courses after it gets schools in those locations
+
+    console.log(neighborhoodFiltered.map(school => splittingByComma(school.advancedplacement_courses).map(
+      course => apCourses.includes(course)
+    )))
+
+    // const languageFiltered = neighborhoodFiltered.map(
+    //   school => splittingByComma(school.language_courses)
+    //   .map(course => languageCourse.includes(course)
+    //   )
+    // )
+  
+  }
 
   handleFilter(borough) {
     const boroughsCopy = ["Q", "M", "X", "K", "R"];
@@ -193,11 +246,35 @@ class Map extends Component {
     this.handleDirections("time", "");
   };
 
+  handleAdvanceFilterOpen = (bool) => {
+    this.setState({
+      advanceFilters: bool,
+    })
+  }
+
   render() {
-    const { schools, activeFilters } = this.state;
+    this.handleAdvanceFiltering()
+    const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
+
+    const splittingByComma = (str) => {
+      return( str ? str.split(",") : []);
+    };
+
     const schoolsFiltered = schools.filter((school) =>
       activeFilters.includes(school.borocode)
     );
+    const neighborhoodFiltered = neighborhood.length != 0 || null ? schoolsFiltered.filter((school) => 
+      neighborhood.includes(school.neighborhood)
+    ) : schoolsFiltered;
+    
+    // const apFiltered = 
+    // apCourses.length != 0 ? 
+    neighborhoodFiltered.map(
+      school => splittingByComma(school.advancedplacement_courses)
+      .map(course => apCourses.includes(course)
+      )
+    )
+    // : neighborhoodFiltered;
 
     return (
       <MapLoader>
@@ -426,6 +503,30 @@ class Map extends Component {
                               {boroughNames[borough]}
                             </Button>
                           ))}
+                          <Button
+                            variant="contained"
+                            onClick={() => {this.handleAdvanceFilterOpen();}}
+                            sx={{
+                              backgroundColor: "#ffffff",
+                              color:"#256fd4",
+                              fontWeight: 500,
+                              fontSize: 14,
+                              padding: {
+                                xs: "2px 3rem 2px 3rem",
+                                md: "2px 14px 2px 14px",
+                              },
+                              cursor: "pointer",
+                              whiteSpace: "nowrap",
+                              borderRadius: 5,
+                              "&:hover": {
+                                backgroundColor: "#efefef",
+                                color: "#256fd4",
+                              },
+                              textTransform: "none",
+                            }}
+                          >
+                            More options
+                          </Button>
                         </Stack>
                       </Box>
                     </Stack>
@@ -433,7 +534,7 @@ class Map extends Component {
                 </AppBar>
               )}
             </Box>
-            {schoolsFiltered.map((school, key) => {
+            {neighborhoodFiltered.map((school, key) => {
               return (
                 <MarkerF
                   key={key}
@@ -473,6 +574,7 @@ class Map extends Component {
                 onClose={() => this.setState({ saveList: false })}
               />
             )}
+            
           </GoogleMap>
         </Box>
       </MapLoader>

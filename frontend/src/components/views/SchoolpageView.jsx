@@ -180,8 +180,6 @@ function SchoolpageView() {
   const girlsSports = splittingByComma(school.psal_sports_girls)
   const coedSports = splittingByComma(school.psal_sports_coed)
 
-  console.log(school)
-
   const iconsForAP = {
     "AP Art History": GiPaintBrush,
     "AP Biology": BiDna,
