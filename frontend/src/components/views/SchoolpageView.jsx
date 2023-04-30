@@ -47,8 +47,8 @@ import {
 
 import NavBar from "./NavBar";
 import Iframe from "react-iframe";
-import { MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
-import { GiHighPunch, GiFencer, GiTennisRacket, GiCricketBat, GiSprint, GiMeshBall, GiRunningShoe, GiBaseballBat, GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
+import { MdSportsScore, MdSportsRugby, MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
+import { GiJumpingRope, GiHighPunch, GiFencer, GiTennisRacket, GiCricketBat, GiSprint, GiMeshBall, GiRunningShoe, GiBaseballBat, GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
 import { SlGraduation, SlCalculator } from 'react-icons/sl/index.js';
 import { BiDna, BiSwim, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
 import { TbMathFunction, TbMap2, TbBallVolleyball } from 'react-icons/tb/index.js';
@@ -62,7 +62,7 @@ import { FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
 
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
-
+import DemographicCharts from "../DemographicCharts";
 
 function SchoolpageView() {
   const location = useLocation();
@@ -192,12 +192,11 @@ function SchoolpageView() {
 
   const apClasses = splittingByComma(school?.advancedplacement_courses);
   const langClasses = splittingByComma(school?.language_classes);
-  const extracurricularClubs = splittingByComma(school.extracurricular_activities)
-  const boysSports = splittingByComma(school.psal_sports_boys)
-  const girlsSports = splittingByComma(school.psal_sports_girls)
-  const coedSports = splittingByComma(school.psal_sports_coed)
+  const extracurricularClubs = splittingByComma(school?.extracurricular_activities)
+  const boysSports = splittingByComma(school?.psal_sports_boys)
+  const girlsSports = splittingByComma(school?.psal_sports_girls)
+  const coedSports = splittingByComma(school?.psal_sports_coed)
 
-  console.log(school)
 
   const iconsForAP = {
     "AP Art History": GiPaintBrush,
@@ -286,10 +285,11 @@ function SchoolpageView() {
     'Tennis': IoTennisballOutline,
     'Volleyball': TbBallVolleyball,
     'Wrestling': GiHighPunch, 
-
+    'Rugby' : MdSportsRugby,
+    'Double Dutch' : GiJumpingRope,
   }
   const getSportIcon = (sport) => {
-    return iconsForSports[sport.trim()];
+    return iconsForSports[sport.trim()] || MdSportsScore;
   };
 
   const getAPclassesIcon = (course) => {
@@ -584,15 +584,19 @@ function SchoolpageView() {
     satMath === "s"
   );
 
-  const femalePercentage = demographicInfo[0]?.female_1;
-  const malePercentage = demographicInfo[0]?.male_1;
-  const asianPercentage = demographicInfo[0]?.asian_1;
-  const blackPercentage = demographicInfo[0]?.black_1;
-  const hispanicPercentage = demographicInfo[0]?.hispanic_1;
-  const whitePercentage = demographicInfo[0]?.white_1;
-  const nativeAmericanPercentage = demographicInfo[0]?.native_american_1;
-  const missingRacePercentage = demographicInfo[0]?.missing_race_ethnicity_data_1;
-  const multiRacePercentage = demographicInfo[0]?.multi_racial_1;
+  const demographics = [
+    {
+      femalePercentage: demographicInfo[0]?.female_1,
+      malePercentage: demographicInfo[0]?.male_1,
+      asianPercentage: demographicInfo[0]?.asian_1,
+      blackPercentage: demographicInfo[0]?.black_1,
+      hispanicPercentage: demographicInfo[0]?.hispanic_1,
+      whitePercentage: demographicInfo[0]?.white_1,
+      nativeAmericanPercentage: demographicInfo[0]?.native_american_1,
+      missingRacePercentage: demographicInfo[0]?.missing_race_ethnicity_data_1,
+      multiRacePercentage: demographicInfo[0]?.multi_racial_1,
+    }
+  ]
 
   const Label = ({ text, backcolor, color }) => {
     return (
@@ -1329,12 +1333,17 @@ function SchoolpageView() {
                 index={tab}
               >
                 <Grid container spacing={2}>
-                  {boysSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                  {boysSports.length !== 0 ? boysSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
                     <Box display="flex" alignItems="center">
                       {React.createElement(getSportIcon(sport))}
                       <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
                     </Box>
-                  </Grid>))}
+                  </Grid>)) :
+                    <Grid item xs={6} sm={3}>
+                      <Box display="flex" alignItems="center">
+                        <ListItemText primary="No boys sports available" />
+                      </Box>
+                    </Grid>}
                 </Grid>
               </TabPanel>
             </Box>
@@ -1344,7 +1353,7 @@ function SchoolpageView() {
               <h3>Student Environment</h3>
               <h2>Student Demographics</h2>
               <h4>Student Diversity</h4>
-            
+              <DemographicCharts demographics={demographics} />
             </Box>
 
           </Box>

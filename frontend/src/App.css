@@ -369,3 +369,14 @@
   font-size: 12px;
   color: white;
 }
+
+.recharts-legend-wrapper .recharts-legend-item {
+  margin-bottom: 20px;
+  position: relative;
+  left: 30px
+}
+
+
+.legend-text {
+  fill: black;
+}
