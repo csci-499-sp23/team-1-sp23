@@ -47,7 +47,7 @@ import {
 
 import NavBar from "./NavBar";
 import Iframe from "react-iframe";
-import { MdSportsScore, MdSportsRugby, MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
+import { MdOutlineCheckCircleOutline, MdOutlineAccessible, MdOutlineNotAccessible, MdSportsScore, MdSportsRugby, MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
 import { GiJumpingRope, GiHighPunch, GiFencer, GiTennisRacket, GiCricketBat, GiSprint, GiMeshBall, GiRunningShoe, GiBaseballBat, GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
 import { SlGraduation, SlCalculator } from 'react-icons/sl/index.js';
 import { BiDna, BiSwim, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
@@ -58,7 +58,7 @@ import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
 import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
 import { IoAmericanFootball, IoTennisballOutline, IoBaseballOutline, IoAmericanFootballOutline, IoFootballOutline,IoGolfOutline, IoBasketballOutline, IoBowlingBallOutline} from 'react-icons/io5/index.js'
-import { FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
+import { FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
 
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
@@ -190,6 +190,10 @@ function SchoolpageView() {
     return str ? str.split(",") : [];
   };
 
+  const splittingBySemiColon = (str) => {
+    return str ? str.split(";") : [];
+  };
+
   const apClasses = splittingByComma(school?.advancedplacement_courses);
   const langClasses = splittingByComma(school?.language_classes);
   const extracurricularClubs = splittingByComma(school?.extracurricular_activities)
@@ -308,8 +312,7 @@ function SchoolpageView() {
   const [showAllClubs, setShowClubs] = useState(false);
   const visibleClubs = showAllClubs ? extracurricularClubs : extracurricularClubs.slice(0, 8);
 
-
-  const CommentIcon = ({ languageAbbreviation }) => (
+  const CommentIcon =({ languageAbbreviation }) => (
     <div style={{ position: "relative", top: "7px" }}>
       <GoComment size={28} />
       <div
@@ -379,6 +382,11 @@ function SchoolpageView() {
 
   const handleDemographicsClick = () => {
     const sports = document.getElementById('demographics')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleSupportServicesClick = () => {
+    const sports = document.getElementById('supportservices')
     sports.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -598,6 +606,36 @@ function SchoolpageView() {
     }
   ]
 
+  const accessibilityStatus = school?.school_accessibility;
+  const ellPrograms = splittingBySemiColon(school?.ell_programs);
+  const disabilityPercentage = Math.round(demographicInfo[0]?.students_with_disabilities_1 * 100);
+  const ellPercentage = Math.round(demographicInfo[0]?.english_language_learners_1* 100);
+  const povertyPercentage = demographicInfo[0]?.poverty_1;
+  const economicNeedPercentage = demographicInfo[0]?.economic_need_index;
+
+  const iconsForAccessibility = {
+    'Fully Accessible': () => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <MdOutlineAccessible style={{ color: 'blue', fontSize: '50px', marginRight: '5px' }} />
+        <FaCheckCircle style={{ color: 'black', backgroundColor: '#00CC00', marginRight: '5px', padding: '5px', borderRadius: '50%' }} />
+      </div>
+    ),
+    'Partially Accessible': () => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <MdOutlineAccessible style={{ color: 'blue', fontSize: '50px', marginRight: '5px' }} />
+        <FaExclamationTriangle style={{ color: 'black', backgroundColor: 'yellow', padding: '5px', borderRadius: '50%' }} />
+      </div>
+    ),
+    'Not Accessible': () => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <MdOutlineAccessible style={{ color: 'blue', fontSize: '50px', marginRight: '5px' }} />
+        <FaMinusCircle style={{ color: 'black', backgroundColor: 'red', padding: '5px', borderRadius: '50%' }} />
+      </div>
+    ),
+  };
+
+  const IconAccessibility = iconsForAccessibility[accessibilityStatus];
+
   const Label = ({ text, backcolor, color }) => {
     return (
       <Chip
@@ -778,13 +816,13 @@ function SchoolpageView() {
                 Sports
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Student Environment</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Environment</Typography>
             <List>
               <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
                 Student Demographics
               </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleAPCoursesClick}>
-                Accessibility
+              <ListItemButton sx={{ pl: 0 }} onClick={handleSupportServicesClick}>
+                Support Services
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }} onClick={handleLanguageClick}>
                 data 3
@@ -1347,13 +1385,57 @@ function SchoolpageView() {
                 </Grid>
               </TabPanel>
             </Box>
-{/*STUDENT ENVIRONMENT*/}
+{/*ENVIRONMENT*/}
 {/*Student Demographics*/}
             <Box id="demographics" className="middle-container academics">
-              <h3>Student Environment</h3>
+              <h3>Environment</h3>
               <h2>Student Demographics</h2>
               <h4>Student Diversity</h4>
               <DemographicCharts demographics={demographics} />
+            </Box>
+{/*Support Services*/}
+            <Box id="supportservices" className="middle-container academics">
+              <h3>Environment</h3>
+              <h2>Support Services</h2>
+              <div>
+                <h4>English Language Learners</h4>
+                <Table>
+                  <TableCell sx={{ border: 'none', display: 'relative', alignItems: 'center' }}>
+                    <Typography variant="body1">ELL Programs</Typography>
+                    <ul style={{ listStyle: 'disc', paddingLeft: '1rem' }}>
+                      {ellPrograms.map((program) => (
+                        <li key={program}>{program}</li>
+                      ))}
+                    </ul>
+                  </TableCell>
+
+                  <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant="body1">ELL Students</Typography>
+                    <Typography variant="h2">{`${ellPercentage}%`}</Typography>
+                  </TableCell>
+                </Table>
+
+                <h4>Economic Indices</h4>
+                <Table>
+                <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant="body1">Eligible for Free/Reduced Lunch Program</Typography>
+                    <Typography variant="h2">{povertyPercentage}</Typography>
+                  </TableCell>
+
+                  <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant="body1">Economic Need Index</Typography>
+                    <Typography variant="h2">{economicNeedPercentage}</Typography>
+                  </TableCell>
+                </Table>
+
+                <h4>Accessibility</h4>
+                <TableCell sx={{ border: 'none', height: '100px', display: 'relative', alignItems: 'center' }}>
+                  <Typography variant="body1">{accessibilityStatus}</Typography>
+                  
+                    <IconAccessibility style={{ fontSize: '3rem' }} />
+                 
+                </TableCell>
+              </div>
             </Box>
 
           </Box>

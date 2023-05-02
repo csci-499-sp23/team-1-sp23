@@ -5,13 +5,13 @@ const colors = ['#ffc658', '#33D391', '#00844E', '#014025', '#B1DDFA', '#338CE4'
 
 
 const DemographicsChart = ({ demographics }) => {
-    const asianPercentage = demographics[0]?.asianPercentage * 100;
-    const blackPercentage = demographics[0]?.blackPercentage * 100;
-    const hispanicPercentage = demographics[0]?.hispanicPercentage * 100;
-    const whitePercentage = demographics[0]?.whitePercentage * 100;
-    const nativeAmericanPercentage = demographics[0]?.nativeAmericanPercentage * 100;
-    const missingRacePercentage = demographics[0]?.missingRacePercentage * 100;
-    const multiRacePercentage = demographics[0]?.multiRacePercentage * 100;
+    const asianPercentage = (demographics[0]?.asianPercentage ?? 0) * 100;
+    const blackPercentage = (demographics[0]?.blackPercentage ?? 0) * 100;
+    const hispanicPercentage = (demographics[0]?.hispanicPercentage ?? 0) * 100;
+    const whitePercentage = (demographics[0]?.whitePercentage ?? 0) * 100;
+    const nativeAmericanPercentage = (demographics[0]?.nativeAmericanPercentage ?? 0) * 100;
+    const missingRacePercentage = (demographics[0]?.missingRacePercentage ?? 0) * 100;
+    const multiRacePercentage = (demographics[0]?.multiRacePercentage ?? 0) * 100;
 
     const minoritieTotal = asianPercentage + blackPercentage + hispanicPercentage + nativeAmericanPercentage + multiRacePercentage + missingRacePercentage;
 
@@ -143,7 +143,7 @@ const DemographicsChart = ({ demographics }) => {
                                 return (
                                     <span style={{ color: '#555'}}>
                                         <span style={{ marginLeft: 6}} >{entry.dataKey}</span>
-                                        <span>{entry.dataKey === 'Female' ? ` ${femalePercentage.toFixed(1)}%` : ` ${malePercentage.toFixed(1)}%`}</span>
+                                        <span style={{ fontWeight: 'bold' }}>{entry.dataKey === 'Female' ? ` ${femalePercentage.toFixed(1)}%` : ` ${malePercentage.toFixed(1)}%`}</span>
                                     </span>
                                 );
                             }}
