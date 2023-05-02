@@ -258,9 +258,10 @@ export default function HomepageView() {
               >
                 <Box sx={{
                   display: "flex",
-                  flexDirection: "row"
+                  flexDirection: "row",
+                  maxWidth: "100%"
                 }}>
-                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "100%" }}>
+                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "50%" }}>
                     <FormLabel component="legend">Borough</FormLabel>
                     <Select
                       multiple
@@ -268,13 +269,6 @@ export default function HomepageView() {
                       value={borough}
                       onChange={handleChange}
                       labelId="borough-selector"
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
-                      )}
                     >
                       <MenuItem value={"Q"}>Queens</MenuItem>
                       <MenuItem value={"K"}>Brooklyn</MenuItem>
@@ -284,7 +278,7 @@ export default function HomepageView() {
                     </Select>
                   </FormControl>
 
-                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "100%" }}>
+                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "50%" }}>
                     <FormLabel component="legend">Neighborhood</FormLabel>
                     <Select
                       multiple
@@ -292,14 +286,82 @@ export default function HomepageView() {
                       value={neighborhood}
                       onChange={handleNeighborhoodChange}
                       labelId="neighborhood-selector"
+                      MenuProps={{sx: {maxHeight: 350}}}
                     >
-                      {filteredNeighborhoodArr.map(school =>
+                      <ListSubheader sx={{
+                          fontSize: "1rem",
+                          ml: 1,
+                          mr: 1,
+                          borderBottom: "1px solid #222222"
+                        }}>Queens</ListSubheader>
+                      {filteredNeighborhoodArr.map((school) =>
+                        school.borocode == "Q" ?
                         <MenuItem
                           key={school.neighborhood}
                           value={school.neighborhood}
                         >
                           {school.neighborhood}
-                        </MenuItem>
+                        </MenuItem> : null
+                      )}
+                      <ListSubheader sx={{
+                        fontSize: "1rem",
+                        ml: 1,
+                        mr: 1,
+                        borderBottom: "1px solid #222222"
+                      }}>Manhattan</ListSubheader>
+                      {filteredNeighborhoodArr.map((school) =>
+                        school.borocode == "M" ?
+                          <MenuItem
+                            key={school.neighborhood}
+                            value={school.neighborhood}
+                          >
+                            {school.neighborhood}
+                          </MenuItem> : null
+                      )}
+                      <ListSubheader sx={{
+                        fontSize: "1rem",
+                        ml: 1,
+                        mr: 1,
+                        borderBottom: "1px solid #222222"
+                      }}>Brooklyn</ListSubheader>
+                      {filteredNeighborhoodArr.map((school) =>
+                        school.borocode == "K" ?
+                          <MenuItem
+                            key={school.neighborhood}
+                            value={school.neighborhood}
+                          >
+                            {school.neighborhood}
+                          </MenuItem> : null
+                      )}
+                      <ListSubheader sx={{
+                        fontSize: "1rem",
+                        ml: 1,
+                        mr: 1,
+                        borderBottom: "1px solid #222222"
+                      }}>Bronx</ListSubheader>
+                      {filteredNeighborhoodArr.map((school) =>
+                        school.borocode == "X" ?
+                          <MenuItem
+                            key={school.neighborhood}
+                            value={school.neighborhood}
+                          >
+                            {school.neighborhood}
+                          </MenuItem> : null
+                      )}
+                      <ListSubheader sx={{
+                        fontSize: "1rem",
+                        ml: 1,
+                        mr: 1,
+                        borderBottom: "1px solid #222222"
+                      }}>Staten Island</ListSubheader>
+                      {filteredNeighborhoodArr.map((school) =>
+                        school.borocode == "R" ?
+                          <MenuItem
+                            key={school.neighborhood}
+                            value={school.neighborhood}
+                          >
+                            {school.neighborhood}
+                          </MenuItem> : null
                       )}
                     </Select>
                   </FormControl>
@@ -307,7 +369,8 @@ export default function HomepageView() {
                 </Box>
                 <Box sx={{
                   display: "flex",
-                  flexDirection: "row"
+                  flexDirection: "row",
+                  maxWidth: "100%"
                 }}>
 
                   <FormControl sx={{ m: 1, width: "100%" }}>
@@ -317,6 +380,7 @@ export default function HomepageView() {
                         multiple
                         value={apCourse}
                         onChange={handleAPChange}
+                        MenuProps={{sx: {maxHeight: 350}}}
                       >
                         {apCourses.map(course =>
                           <MenuItem
@@ -338,6 +402,7 @@ export default function HomepageView() {
                         multiple
                         value={language}
                         onChange={handleLanguageChange}
+                        MenuProps={{sx: {maxHeight: 350}}}
                       >
                         {filteredLanguageArr.map((language) => (
                           <MenuItem
@@ -363,10 +428,12 @@ export default function HomepageView() {
                         multiple
                         value={sports}
                         onChange={handleSportsChange}
+                        MenuProps={{sx: {maxHeight: 400}}}
                       >
                         <ListSubheader sx={{
                           fontSize: "1rem",
-                          m: 2,
+                          mr: 2,
+                          ml: 2,
                           borderBottom: "1px solid #222222"
                         }}>Girls Sports</ListSubheader>
                         {filteredGirlsSportsArr.map((sport, key) =>

@@ -109,7 +109,7 @@ class Map extends Component {
         this.props.location.state.apCourse.length != 0||
         this.props.location.state.language.length != 0 ||
         this.props.location.state.sports.length != 0)) {
-      const { borough, neighborhood, apCourse, language, sport } = this.props.location.state;
+      const { borough, neighborhood, apCourse, language, sport } = this.props.location.state;      
       this.setState({
         activeFilters: borough.length !== 0 || null || undefined ? [...borough] : [...boroughs],
         neighborhood: [...neighborhood],
@@ -117,9 +117,9 @@ class Map extends Component {
         languageCourse: [...language],
         sports: sport,
       })
-      
     }
   }
+
   showCard = (bool, obj) => {
     if (this.state.saveList === true) {
       this.setState({
@@ -134,33 +134,6 @@ class Map extends Component {
       });
     }
   };
-
-  handleAdvanceFiltering = () => {
-    const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
-
-    const splittingByComma = (str) => {
-      return( str ? str.split(",") : []);
-    };
-    //Location and neighborhood take precedence over AP and language courses and sports
-    const schoolsFiltered = schools.filter((school) => activeFilters.includes(school.borocode));
-    
-    const neighborhoodFiltered = neighborhood.length != 0 || null ? schoolsFiltered.filter((school) =>
-      neighborhood.includes(school.neighborhood)
-    ) : schoolsFiltered;
-
-    //Filters for AP and language courses after it gets schools in those locations
-
-    console.log(neighborhoodFiltered.map(school => splittingByComma(school.advancedplacement_courses).map(
-      course => apCourses.includes(course)
-    )))
-
-    // const languageFiltered = neighborhoodFiltered.map(
-    //   school => splittingByComma(school.language_courses)
-    //   .map(course => languageCourse.includes(course)
-    //   )
-    // )
-  
-  }
 
   handleFilter(borough) {
     const boroughsCopy = ["Q", "M", "X", "K", "R"];
@@ -253,28 +226,38 @@ class Map extends Component {
   }
 
   render() {
-    this.handleAdvanceFiltering()
     const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
-
-    const splittingByComma = (str) => {
-      return( str ? str.split(",") : []);
-    };
-
     const schoolsFiltered = schools.filter((school) =>
       activeFilters.includes(school.borocode)
     );
     const neighborhoodFiltered = neighborhood.length != 0 || null ? schoolsFiltered.filter((school) => 
       neighborhood.includes(school.neighborhood)
     ) : schoolsFiltered;
-    
-    // const apFiltered = 
-    // apCourses.length != 0 ? 
-    neighborhoodFiltered.map(
-      school => splittingByComma(school.advancedplacement_courses)
-      .map(course => apCourses.includes(course)
-      )
-    )
-    // : neighborhoodFiltered;
+
+    const searchObj = (searchParams, objectArr) => {
+      const searchInput = searchParams.map((param) => param.toLowerCase())
+      const results = [];
+  
+      objectArr.map((object) => {
+        for (const property in object) {
+          if (typeof object[property] === "string") {
+            object[property].split(',').forEach((string) => {
+              const trimmedSubstring = string.trim().toLowerCase()
+              searchInput.forEach((input) => {
+                if (trimmedSubstring.toLowerCase().includes(input)) {
+                  results.push(object)
+                }
+              })
+            })
+          }
+        }
+      })
+      console.log("we updating")
+      return results;
+    }
+  
+    const apFiltered = apCourses.length !== 0 ? searchObj(apCourses, neighborhoodFiltered) : neighborhoodFiltered;
+    const langaugeFiltered = languageCourse.length !== 0 ? searchObj(languageCourse, neighborhoodFiltered) : apFiltered;
 
     return (
       <MapLoader>
@@ -534,7 +517,7 @@ class Map extends Component {
                 </AppBar>
               )}
             </Box>
-            {neighborhoodFiltered.map((school, key) => {
+            {langaugeFiltered.map((school, key) => {
               return (
                 <MarkerF
                   key={key}
