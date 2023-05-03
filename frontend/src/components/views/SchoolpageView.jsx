@@ -18,7 +18,7 @@ import {
   TableRow,
   TableCell,
   Tab,
-  Tabs
+  Tabs,
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import {
@@ -47,7 +47,7 @@ import {
 
 import NavBar from "./NavBar";
 import Iframe from "react-iframe";
-import { MdOutlineCheckCircleOutline, MdOutlineAccessible, MdOutlineNotAccessible, MdSportsScore, MdSportsRugby, MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
+import { MdInfoOutline, MdOutlineAccessible, MdSportsScore, MdSportsRugby, MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
 import { GiJumpingRope, GiHighPunch, GiFencer, GiTennisRacket, GiCricketBat, GiSprint, GiMeshBall, GiRunningShoe, GiBaseballBat, GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
 import { SlGraduation, SlCalculator } from 'react-icons/sl/index.js';
 import { BiDna, BiSwim, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
@@ -63,6 +63,7 @@ import { FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTable
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
 import DemographicCharts from "../DemographicCharts";
+import hoverDescriptions  from "../hoverDescriptions";
 
 function SchoolpageView() {
   const location = useLocation();
@@ -608,7 +609,6 @@ function SchoolpageView() {
 
   const accessibilityStatus = school?.school_accessibility;
   const ellPrograms = splittingBySemiColon(school?.ell_programs);
-  const disabilityPercentage = Math.round(demographicInfo[0]?.students_with_disabilities_1 * 100);
   const ellPercentage = Math.round(demographicInfo[0]?.english_language_learners_1* 100);
   const povertyPercentage = demographicInfo[0]?.poverty_1;
   const economicNeedPercentage = demographicInfo[0]?.economic_need_index;
@@ -1177,39 +1177,46 @@ function SchoolpageView() {
             <Box id="aca-testscores" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Test Scores</h2>
-              <h4>Regents Exams</h4>
+              <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <h4>Regents Exams</h4>
+                <Tooltip title={hoverDescriptions['RegentsDescrip'].description} arrow placement="right">
+                  <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                    <MdInfoOutline />
+                  </IconButton>
+                </Tooltip>
+              </div>
               <Box sx={{ width: "100%" }}>
                 <Table>
                   <TableBody>
                     {algebraMeanScore && algebraMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73}  />
+                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73} />
                     }
                     {algebra2MeanScore && algebra2MeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76}  />
+                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76} />
                     }
                     {geometryMeanScore && geometryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73}  />
+                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73} />
                     }
                     {englishMeanScore && englishMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77}  />
+                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77} />
                     }
                     {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73}  />
+                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73} />
                     }
                     {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78}  />
+                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78} />
                     }
                     {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75}  />
+                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75} />
                     }
                     {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74}  />
+                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74} />
                     }
                     {chemistryMeanScore && chemistryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73}/>
+                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73} />
                     }
                     {physicsMeanScore && physicsMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78}/> 
+                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78} />
                     }
                   </TableBody>
                 </Table>
@@ -1218,7 +1225,14 @@ function SchoolpageView() {
                 (frenchMeanScore && frenchMeanScore !== "s") ||
                 (italianMeanScore && italianMeanScore !== "s") ||
                 (chineseMeanScore && chineseMeanScore !== "s")) && (
-                  <h4>Language (LOTE) Exams</h4>
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <h4>Language (LOTE) Exams</h4>
+                    <Tooltip title={hoverDescriptions['LOTEDescrip'].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
                 )}
               <Box sx={{ width: "100%" }}>
                 <Table>
@@ -1241,7 +1255,14 @@ function SchoolpageView() {
               {((apTestTakers && apTestTakers !== "s") ||
                 (apExamsPassed && apExamsPassed !== "s") ||
                 (apTotalExams && apTotalExams !== "s")) && (
-                  <h4>Advanced Placement Exams</h4>
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <h4>Advanced Placement Exams</h4>
+                    <Tooltip title={hoverDescriptions['APDescrip'].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
                 )}
               <Table>
                 {apExamsPassed && apExamsPassed !== "s" && apTotalExams && apTotalExams !== "s" && (
@@ -1250,7 +1271,7 @@ function SchoolpageView() {
                     <Typography variant="h2">{apPassRate}%</Typography>
                   </TableCell>
                 )}
-                {apTestTakers && apTestTakers !== "s" &&(
+                {apTestTakers && apTestTakers !== "s" && (
                   <TableCell sx={{ border: 'none' }}>
                     <Typography variant="body1">AP Exam Enrollment</Typography>
                     <Typography variant="h2">~{apEnrollment}%</Typography>
@@ -1259,7 +1280,14 @@ function SchoolpageView() {
               </Table>
               {satScoresAvailable && satCriticalReading != null && satWriting != null && satMath != null && (
                 <div>
-                  <h4>SAT Scores</h4>
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <h4>SAT Scores</h4>
+                    <Tooltip title={hoverDescriptions['SATDescrip'].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
                   <Table>
                     <TableRow>
                       <TableCell sx={{ border: 'none' }}>
@@ -1279,7 +1307,7 @@ function SchoolpageView() {
                 </div>
               )}
               <Link
-                to={`/map/${encodeURIComponent(school.school_name)}`}   
+                to={`/map/${encodeURIComponent(school.school_name)}`}
                 state={{ latitude, longitude, school, card }}
                 style={{ color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
               >
@@ -1288,7 +1316,7 @@ function SchoolpageView() {
               </Link>
             </Box>
 {/*EXTRACURRICULAR ACTIVITIES*/}
-{/*Clubs*/ }
+{/*Clubs*/}
             <Box id="clubs" className="middle-container academics">
               <h3>Extracurricular Activities</h3>
               <h2>Clubs</h2>
@@ -1304,7 +1332,7 @@ function SchoolpageView() {
                     </Box></Grid>}
               </Grid>
               {(!showAllClubs && extracurricularClubs.length > 8) && (
-                <Box display="flex" justifyContent="center" sx={{m: 3}}>
+                <Box display="flex" justifyContent="center" sx={{ m: 3 }}>
                   <Button
                     variant="outlined"
                     onClick={() => setShowClubs(true)}
@@ -1316,7 +1344,7 @@ function SchoolpageView() {
                 </Box>
               )}
             </Box>
-{/*Sports*/ }
+{/*Sports*/}
             <Box id="sports" className="middle-container academics">
               <h3>Extracurricular Activities</h3>
               <h2>Sports</h2>
@@ -1338,7 +1366,7 @@ function SchoolpageView() {
                   {girlsSports.length !== 0 ? girlsSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
                     <Box display="flex" alignItems="center">
                       {React.createElement(getSportIcon(sport))}
-                      <ListItemText sx={{ml: 1}} primary={sport.trim()} />
+                      <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
                     </Box>
                   </Grid>)) :
                     <Grid item xs={6} sm={3}>
@@ -1356,7 +1384,7 @@ function SchoolpageView() {
                   {coedSports.length !== 0 ? coedSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
                     <Box display="flex" alignItems="center">
                       {React.createElement(getSportIcon(sport))}
-                      <ListItemText sx={{ml: 1}} primary={sport.trim()} />
+                      <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
                     </Box>
                   </Grid>)) :
                     <Grid item xs={6} sm={3}>
@@ -1401,7 +1429,14 @@ function SchoolpageView() {
                 <h4>English Language Learners</h4>
                 <Table>
                   <TableCell sx={{ border: 'none', display: 'relative', alignItems: 'center' }}>
-                    <Typography variant="body1">ELL Programs</Typography>
+                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                      <Typography variant="body1">ELL Programs</Typography>
+                      <Tooltip title={hoverDescriptions['ELLPrograms'].description} arrow placement="right">
+                        <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                          <MdInfoOutline />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
                     <ul style={{ listStyle: 'disc', paddingLeft: '1rem' }}>
                       {ellPrograms.map((program) => (
                         <li key={program}>{program}</li>
@@ -1417,23 +1452,44 @@ function SchoolpageView() {
 
                 <h4>Economic Indices</h4>
                 <Table>
-                <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant="body1">Eligible for Free/Reduced Lunch Program</Typography>
+                  <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                      <Typography variant="body1">Eligible for Free/Reduced Lunch Program</Typography>
+                      <Tooltip title={hoverDescriptions['FreeReducedLunch'].description} arrow placement="top">
+                        <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                          <MdInfoOutline />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
                     <Typography variant="h2">{povertyPercentage}</Typography>
                   </TableCell>
 
                   <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant="body1">Economic Need Index</Typography>
+                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                      <Typography variant="body1">Economic Need Index</Typography>
+                      <Tooltip title={hoverDescriptions['economicIndex'].description} arrow placement="top">
+                        <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                          <MdInfoOutline />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
                     <Typography variant="h2">{economicNeedPercentage}</Typography>
                   </TableCell>
                 </Table>
 
                 <h4>Accessibility</h4>
                 <TableCell sx={{ border: 'none', height: '100px', display: 'relative', alignItems: 'center' }}>
-                  <Typography variant="body1">{accessibilityStatus}</Typography>
-                  
-                    <IconAccessibility style={{ fontSize: '3rem' }} />
-                 
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <Typography variant="body1" >
+                      {accessibilityStatus}
+                    </Typography>
+                    <Tooltip title={hoverDescriptions[accessibilityStatus].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <IconAccessibility style={{ fontSize: '3rem', position: 'absolute', bottom: 0 }} />
                 </TableCell>
               </div>
             </Box>
@@ -1445,14 +1501,14 @@ function SchoolpageView() {
             position: "fixed",
             bottom: 0,
             right: 0,
-            backgroundColor: "#f1f1f1", 
-            borderRadius: "50%", 
+            backgroundColor: "#f1f1f1",
+            borderRadius: "50%",
             m: 5,
-            p: 1.3, 
+            p: 1.3,
             "&:hover": { backgroundColor: "white" },
-          }} 
-          onClick={() => handleSave()}>
-            {savedSchools.includes(school.school_name) ? <BookmarkIcon sx={{color: "#2196f3", fontSize: "2.3rem"}}/> : <BookmarkBorderIcon sx={{fontSize: "2.3rem"}}/>}
+          }}
+            onClick={() => handleSave()}>
+            {savedSchools.includes(school.school_name) ? <BookmarkIcon sx={{ color: "#2196f3", fontSize: "2.3rem" }} /> : <BookmarkBorderIcon sx={{ fontSize: "2.3rem" }} />}
           </IconButton>
         </Tooltip>
       </Grid>
