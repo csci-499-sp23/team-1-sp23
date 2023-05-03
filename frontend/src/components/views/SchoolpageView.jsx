@@ -17,6 +17,9 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  TableContainer,
+  TableHead,
+  Paper,
   Tab,
   Tabs,
 } from "@mui/material";
@@ -83,6 +86,8 @@ function SchoolpageView() {
   const [apScores, setAPScores] = React.useState([]);
   const [satScores, setSatScores] = React.useState([]);
   const [demographicInfo, setDemographInfo] = React.useState([]);
+  const [qualityInfo, setQualityInfo] = React.useState([]);
+
   const [tab, setTab] = React.useState(0)
 
   {/*Regent Exams Data*/}
@@ -142,6 +147,22 @@ function SchoolpageView() {
         .then(response => response.json())
         .then(data => {
           setDemographInfo(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+   {/*2017-2018 School Quality Report - High School*/}
+   React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/7c8x-xds8.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setQualityInfo(data);
         })
         .catch(error => {
           console.error(error);
@@ -386,6 +407,11 @@ function SchoolpageView() {
     sports.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleQualityFeedbackClick = () => {
+    const sports = document.getElementById('qualityFeedback')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleSupportServicesClick = () => {
     const sports = document.getElementById('supportservices')
     sports.scrollIntoView({ behavior: 'smooth' });
@@ -609,9 +635,16 @@ function SchoolpageView() {
 
   const accessibilityStatus = school?.school_accessibility;
   const ellPrograms = splittingBySemiColon(school?.ell_programs);
-  const ellPercentage = Math.round(demographicInfo[0]?.english_language_learners_1* 100);
+  const ellPercentage = Math.round(demographicInfo[0]?.english_language_learners_1 * 100);
   const povertyPercentage = demographicInfo[0]?.poverty_1;
   const economicNeedPercentage = demographicInfo[0]?.economic_need_index;
+
+  const studentAttendance = (parseFloat(qualityInfo[0]?.student_attendance_rate) * 100).toFixed(1);
+  const chronicAbsence = (parseFloat(qualityInfo[0]?.percent_of_students) * 100).toFixed(1);
+  const teacherAttendance = (parseFloat(qualityInfo[0]?.teacher_attendance_rate) * 100).toFixed(1);
+
+  const teacherExperience = (parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1);
+  const principalExperience = Math.round(qualityInfo[0]?.years_of_principal_experience);
 
   const iconsForAccessibility = {
     'Fully Accessible': () => (
@@ -821,11 +854,11 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
                 Student Demographics
               </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleQualityFeedbackClick}>
+                Quality and Feedback
+              </ListItemButton>
               <ListItemButton sx={{ pl: 0 }} onClick={handleSupportServicesClick}>
                 Support Services
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleLanguageClick}>
-                data 3
               </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
@@ -1420,6 +1453,47 @@ function SchoolpageView() {
               <h2>Student Demographics</h2>
               <h4>Student Diversity</h4>
               <DemographicCharts demographics={demographics} />
+            </Box>
+{/*Quality and Feedback */}
+            <Box id="qualityFeedback" className="middle-container academics">
+              <h3>Environment</h3>
+              <h2>Quality and Feedback</h2>
+              <h4>Attendance</h4>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Student Attendance</TableCell>
+                      <TableCell align="right">{studentAttendance}%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Percentage of Students Chronically Absent</TableCell>
+                      <TableCell align="right">{chronicAbsence}%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Teacher Attendance</TableCell>
+                      <TableCell align="right">{teacherAttendance}%</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <h4 style={{marginTop: "10px"}}>Experience</h4>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Percent of Teachers with 3 or More Years of Experience</TableCell>
+                      <TableCell align="right">{teacherExperience}%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Principal's Years of Experience</TableCell>
+                      <TableCell align="right">~{principalExperience} years</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <h4 style={{marginTop: "10px"}}>School-wide survey of Teachers, Students, & Parents</h4>
+
             </Box>
 {/*Support Services*/}
             <Box id="supportservices" className="middle-container academics">
