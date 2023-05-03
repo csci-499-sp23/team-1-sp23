@@ -66,6 +66,7 @@ import { FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTable
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
 import DemographicCharts from "../DemographicCharts";
+import QualityCharts from "../QualityCharts"
 import hoverDescriptions  from "../hoverDescriptions";
 
 function SchoolpageView() {
@@ -645,6 +646,17 @@ function SchoolpageView() {
 
   const teacherExperience = (parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1);
   const principalExperience = Math.round(qualityInfo[0]?.years_of_principal_experience);
+
+  const quality = [
+    {
+      rigorousInstruction: (parseFloat(qualityInfo[0]?.rigorous_instruction_percent) * 100).toFixed(1),
+      collaborativeTeachers: (parseFloat(qualityInfo[0]?.collaborative_teachers_percent) * 100).toFixed(1),
+      supportiveEnvironment: (parseFloat(qualityInfo[0]?.supportive_environment_percent) * 100).toFixed(1),
+      effectiveLeadership: (parseFloat(qualityInfo[0]?.effective_school_leadership_1) * 100).toFixed(1),
+      strongFamilyTies: (parseFloat(qualityInfo[0]?.strong_family_community_ties_1) * 100).toFixed(1),
+      trustPercentage: (parseFloat(qualityInfo[0]?.trust_percent_positive) * 100).toFixed(1),
+    }
+  ]
 
   const iconsForAccessibility = {
     'Fully Accessible': () => (
@@ -1493,7 +1505,7 @@ function SchoolpageView() {
                 </Table>
               </TableContainer>
               <h4 style={{marginTop: "10px"}}>School-wide survey of Teachers, Students, & Parents</h4>
-
+              <QualityCharts quality={quality} />
             </Box>
 {/*Support Services*/}
             <Box id="supportservices" className="middle-container academics">
