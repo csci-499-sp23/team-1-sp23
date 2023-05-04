@@ -3,12 +3,12 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { Table, TableRow, TableCell } from '@mui/material';
 
 const QualityCharts = ({ quality }) => {
-    const rigorousInstruction = Math.round(quality[0]?.rigorousInstruction);
-    const collaborativeTeachers = Math.round(quality[0]?.collaborativeTeachers);
-    const supportiveEnvironment = Math.round(quality[0]?.supportiveEnvironment);
-    const effectiveLeadership = Math.round(quality[0]?.effectiveLeadership);
-    const strongFamilyTies = Math.round(quality[0]?.strongFamilyTies);
-    const trustPercentage = Math.round(quality[0]?.trustPercentage);
+    const rigorousInstruction = formatValue(Math.round(quality[0]?.rigorousInstruction));
+    const collaborativeTeachers = formatValue(Math.round(quality[0]?.collaborativeTeachers));
+    const supportiveEnvironment = formatValue(Math.round(quality[0]?.supportiveEnvironment));
+    const effectiveLeadership = formatValue(Math.round(quality[0]?.effectiveLeadership));
+    const strongFamilyTies = formatValue(Math.round(quality[0]?.strongFamilyTies));
+    const trustPercentage = formatValue(Math.round(quality[0]?.trustPercentage));
 
     const data = [
         { category: 'Rigorous Instruction', question: "Do teachers promote excellence and active participation in class?", percentage: rigorousInstruction },
@@ -86,6 +86,12 @@ const QualityCharts = ({ quality }) => {
     );
 };
 
-
+function formatValue(value) {
+    if (isNaN(value)) {
+      return "Data unavailable";
+    } else {
+      return value;
+    }
+  }
 
 export default QualityCharts;

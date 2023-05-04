@@ -36,6 +36,8 @@ import {
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -59,9 +61,9 @@ import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi
 import { RiGovernmentLine } from 'react-icons/ri/index.js';
 import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
 import { SiMoleculer } from 'react-icons/si/index.js';
-import { GoComment } from 'react-icons/go/index.js';
+import { GoArrowUp, GoComment } from 'react-icons/go/index.js';
 import { IoAmericanFootball, IoTennisballOutline, IoBaseballOutline, IoAmericanFootballOutline, IoFootballOutline,IoGolfOutline, IoBasketballOutline, IoBowlingBallOutline} from 'react-icons/io5/index.js'
-import { FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
+import { FaArrowUp, FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
 
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
@@ -463,10 +465,13 @@ function SchoolpageView() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     if (scrollTop > totalHeaderHeight + 10) {
       document.querySelector('.left-container').classList.add('fixed-left-container');
+      document.getElementById('scroll-to-top').classList.remove('hidden');
     } else {
       document.querySelector('.left-container').classList.remove('fixed-left-container');
+      document.getElementById('scroll-to-top').classList.add('hidden');
     }
   });
+
 
   const isInternational = school?.international === "1"; 
   const isSpecialized = school?.specialized === "1"; 
@@ -640,12 +645,12 @@ function SchoolpageView() {
   const povertyPercentage = demographicInfo[0]?.poverty_1;
   const economicNeedPercentage = demographicInfo[0]?.economic_need_index;
 
-  const studentAttendance = (parseFloat(qualityInfo[0]?.student_attendance_rate) * 100).toFixed(1);
-  const chronicAbsence = (parseFloat(qualityInfo[0]?.percent_of_students) * 100).toFixed(1);
-  const teacherAttendance = (parseFloat(qualityInfo[0]?.teacher_attendance_rate) * 100).toFixed(1);
+  const studentAttendance = formatValue((parseFloat(qualityInfo[0]?.student_attendance_rate) * 100).toFixed(1));
+  const chronicAbsence = formatValue((parseFloat(qualityInfo[0]?.percent_of_students) * 100).toFixed(1));
+  const teacherAttendance = formatValue((parseFloat(qualityInfo[0]?.teacher_attendance_rate) * 100).toFixed(1));
 
-  const teacherExperience = (parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1);
-  const principalExperience = Math.round(qualityInfo[0]?.years_of_principal_experience);
+  const teacherExperience = formatValue((parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1));
+  const principalExperience = formatValue(Math.round(qualityInfo[0]?.years_of_principal_experience));
 
   const quality = [
     {
@@ -1474,33 +1479,43 @@ function SchoolpageView() {
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>Student Attendance</TableCell>
-                      <TableCell align="right">{studentAttendance}%</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Percentage of Students Chronically Absent</TableCell>
-                      <TableCell align="right">{chronicAbsence}%</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Teacher Attendance</TableCell>
-                      <TableCell align="right">{teacherAttendance}%</TableCell>
-                    </TableRow>
+                    {studentAttendance && (
+                      <TableRow>
+                        <TableCell>Student Attendance</TableCell>
+                        <TableCell align="right">{studentAttendance}%</TableCell>
+                      </TableRow>
+                    )}
+                    {chronicAbsence && (
+                      <TableRow>
+                        <TableCell>Percentage of Students Chronically Absent</TableCell>
+                        <TableCell align="right">{chronicAbsence}%</TableCell>
+                      </TableRow>
+                    )}
+                    {teacherAttendance && (
+                      <TableRow>
+                        <TableCell>Teacher Attendance</TableCell>
+                        <TableCell align="right">{teacherAttendance}%</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <h4 style={{marginTop: "10px"}}>Experience</h4>
+              <h4 style={{ marginTop: "10px" }}>Experience</h4>
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>Percent of Teachers with 3 or More Years of Experience</TableCell>
-                      <TableCell align="right">{teacherExperience}%</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Principal's Years of Experience</TableCell>
-                      <TableCell align="right">~{principalExperience} years</TableCell>
-                    </TableRow>
+                    {teacherExperience && (
+                      <TableRow>
+                        <TableCell>Percent of Teachers with 3 or More Years of Experience</TableCell>
+                        <TableCell align="right">{teacherExperience}%</TableCell>
+                      </TableRow>
+                    )}
+                    {principalExperience && (
+                      <TableRow>
+                        <TableCell>Principal's Years of Experience</TableCell>
+                        <TableCell align="right">~{principalExperience} years</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -1582,11 +1597,33 @@ function SchoolpageView() {
 
           </Box>
         </Grid>
+{/*Scroll Up Button*/}
+        <IconButton
+          id="scroll-to-top"
+          className="hidden"
+          sx={{
+            position: "fixed",
+            right: "0%",
+            backgroundColor: "#f1f1f1",
+            m: 1,
+            p: 1,
+            "&:hover": { backgroundColor: "white" },
+          }}
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          <FaArrowUp size={28} style={{ marginLeft: '-1px' }} />
+          <Typography sx={{ display: "inline-block", ml: 1, fontSize: 16, marginLeft: '4px' }}>
+            Top
+          </Typography>
+        </IconButton>
+{/*Save School Button*/}
         <Tooltip title="Save School">
           <IconButton sx={{
             position: "fixed",
-            bottom: 0,
-            right: 0,
+            bottom: -25,
+            right: -25,
             backgroundColor: "#f1f1f1",
             borderRadius: "50%",
             m: 5,
@@ -1602,4 +1639,13 @@ function SchoolpageView() {
   );
 }
 
+function formatValue(value) {
+  if (isNaN(value)) {
+    return "Data not available";
+  } else {
+    return value;
+  }
+}
+
 export default SchoolpageView;
+
