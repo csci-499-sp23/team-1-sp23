@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import { GoogleMap, MarkerF, StreetViewPanorama } from "@react-google-maps/api";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia"
+import Grid from "@mui/material/Grid"
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -10,30 +15,34 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import Link from "@mui/material/Link";
-import HomeIcon from "@mui/icons-material/Home";
-import MapIcon from "@mui/icons-material/Map";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { auth } from "../config/firebase";
+
+import { auth, db } from "../config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc,collection, onSnapshot } from "firebase/firestore";
+
 import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
 import Directions from "./Directions";
 import SavedSchoolsList from "./SavedSchoolsList";
+import AdvanceFilters from "./AdvanceFilters";
+import MapCard from "./MapCard";
+import Pagination from "./Pagination";
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormLabel from '@mui/material/FormLabel';
+import {IoLocationOutline} from "react-icons/io5/index.js"
+import StarIcon from '@mui/icons-material/Star';
+import HomeIcon from "@mui/icons-material/Home";
+import MapIcon from "@mui/icons-material/Map";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
+import { Typography } from "@mui/material";
 
 const containerStyle = {
   width: "100%",
-  height: "100%",
+  margin: 22,
+  borderRadius: 8
 };
 
 const boroughs = ["Q", "M", "X", "K", "R"];
@@ -55,7 +64,7 @@ class Map extends Component {
       card: false,
       school: null,
       drawer: false,
-      savedSchools: false,
+      List: false,
       advanceFilters: false,
       dirOpts: {
         origin: "",
@@ -82,12 +91,71 @@ class Map extends Component {
       apCourses: [],
       languageCourse: [],
       sports: [],
+      savedSchoolsList: [],
+
+      currentPage: 1,
+      schoolsPerPage: 10,
+      loading: false,
+
     };
     this.goToNearbySchool = this.goToNearbySchool.bind(this);
     this.startDirections = this.startDirections.bind(this);
   }
 
+  handleSave = (name) => {
+    if (auth.currentUser != null || undefined) {
+      if(!this.state.List.includes(name)) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        return updateDoc(docRef, {
+          saved_schools: arrayUnion(name),
+        });
+      }
+      else {
+        const docRef = doc(db, 'users', auth.currentUser.uid)
+        const removedSchool = this.state.List.filter(
+          school => school !== name
+        )
+        return updateDoc(docRef, {
+          saved_schools: removedSchool
+        })
+      }
+    } else {
+      console.log("you are not logged in!");
+    }
+  };
+
+  getReviews = () => {
+    const schoolRef = collection(
+      db,
+      `school/`
+    );
+    onSnapshot(schoolRef, (docSnap) => {
+      docSnap.forEach((doc) => {
+        if(doc.exists()) {
+          console.log(doc.data())
+        }
+        
+      })
+    })
+  }
+
   componentDidMount() {
+    this.setState({
+      loading: true
+    })
+    this.getReviews();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+            this.setSavedSchools(docSnap.data().saved_schools);
+          } else {
+            console.log("document does not exist");
+          }
+        })
+      }
+    });
     if (this.props.location.state && this.props.location.state.longitude) {
       const { longitude, latitude, school, card } = this.props.location.state;
       this.setState({
@@ -99,7 +167,8 @@ class Map extends Component {
       .then((response) => response.json())
       .then((data) => {
         this.setState({ 
-          schools: data 
+          schools: data,
+          loading: false,
         });
       })
       .catch((error) => console.log(error));
@@ -118,6 +187,12 @@ class Map extends Component {
         sports: sport,
       })
     }
+  }
+
+  setSavedSchools = (data) => {
+    this.setState({
+      savedSchoolsList: data
+    })
   }
 
   showCard = (bool, obj) => {
@@ -149,13 +224,6 @@ class Map extends Component {
     }
     this.setState({ activeFilters, selectedBorough: borough });
   }
-
-  navbarVisibility = (bool) => {
-    console.log("entered street view", bool);
-    this.setState({
-      navbar: bool,
-    });
-  };
 
   handleListOpen = (bool) => {
     this.setState({
@@ -207,6 +275,12 @@ class Map extends Component {
     });
   };
 
+  handleAdvanceFilterOpen = (bool) => {
+    this.setState({
+      advanceFilters: bool,
+    })
+  }
+
   startDirections = (school) => {
     const coord = school.geocoded_column.coordinates;
     this.showCard(true, school);
@@ -219,13 +293,24 @@ class Map extends Component {
     this.handleDirections("time", "");
   };
 
-  handleAdvanceFilterOpen = (bool) => {
+  setCurrentPage = () => {
+
+  }
+
+  setSchoolsPerPage = () => {
+
+  }
+
+  paginate = (number) => {
     this.setState({
-      advanceFilters: bool,
+      currentPage: number
     })
   }
 
   render() {
+    const indexOfLastSchool = this.state.currentPage * this.state.schoolsPerPage
+    const indexOfFirstSchool = indexOfLastSchool - this.state.schoolsPerPage
+
     const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
     const schoolsFiltered = schools.filter((school) =>
       activeFilters.includes(school.borocode)
@@ -251,8 +336,8 @@ class Map extends Component {
             })
           }
         }
-      })
-      console.log("we updating")
+      }, [])
+      console.log("updating")
       return results;
     }
   
@@ -266,16 +351,19 @@ class Map extends Component {
           sx={{
             display: "flex",
             flexDirection: { xs: "column-reverse", md: "row" },
-            backgroundColor: "#2b2d42",
+            backgroundColor: "#ffffff",
             color: "white",
             height: "100%",
+            maxHeight: "100%",
+            overflow: "hidden"
           }}
         >
           <Stack
             sx={{
-              m: 1,
+              p: 1,
               flexDirection: { xs: "row", md: "column" },
               justifyContent: { xs: "space-evenly", md: "start" },
+              backgroundColor: "#2b2d42",
             }}
           >
             <Link href="/" sx={{ color: "white" }}>
@@ -295,67 +383,18 @@ class Map extends Component {
               </IconButton>
             ) : null}
           </Stack>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={this.state.center}
-            zoom={this.state.zoom}
-            clickableIcons={false}
-            onClick={() => {
-              this.showCard(false, null);
-              this.handleDirectionsPanel(false);
-              this.props.navHook("/map");
-            }}
-            onZoomChanged={() => {
-              if (this.map && !this.state.directionsRenderer) {
-                this.setState({
-                  zoom: this.map.getZoom(),
-                });
-              }
-            }}
-            onLoad={(map) => (this.map = map)}
-            options={{
-              zoomControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-            }}
-          >
-            <Directions
-              modify={this.handleDirections}
-              card={this.state.card}
-              opened={this.state.directionsRenderer}
-              {...this.state.dirOpts}
-            />
-            {/* Child components, such as markers, info windows, etc. this.navbarVisibility(false, null)*/}
 
-            <StreetViewPanorama
-              onVisibleChanged={() => {
-                this.showCard(false, null);
-                this.navbarVisibility(false, null);
-                this.setVisible(true, null);
-                console.log("visibility changed");
-              }}
-              onPovChanged={() => {
-                console.log("changed ");
-              }}
-              onCloseclick={(e) => {
-                console.log("closed Street view");
-              }}
-            />
-
-            <Box sx={{ flexGrow: 1 }}>
-              {this.state.navbar && (
-                <AppBar position="static">
-                  <Toolbar sx={{ zIndex: { xs: 1, md: 200 } }} disableGutters>
+          <Box sx={{ width: "100%", height: "100%"}}>
+            <Grid container sx={{display: "flex", flexDirection: "column"}}>
+              <Grid item sx={{ backgroundColor: "transparent" }}>
+                <AppBar elevation={0} position="static" sx={{ backgroundColor: "transparent" }}>
+                  <Toolbar sx={{ zIndex: { xs: 1, md: 100 } }} disableGutters>
                     <Stack
                       direction={{ xs: "column", sm: "column", md: "row" }}
-                      spacing={{ xs: 2, sm: 2, md: 4 }}
+                      spacing={{ xs: 2, sm: 2, md: 2 }}
                       sx={{
                         display: "flex",
                         justifyContent: "center",
-                        alignItems: {
-                          xs: "flex-start",
-                          md: "center",
-                        },
                         maxWidth: "100%",
                       }}
                     >
@@ -419,85 +458,43 @@ class Map extends Component {
                           );
                         }}
                       />
-                      <Box
+                      <Stack
+                        direction="row"
+                        spacing={2}
                         sx={{
-                          position: {
-                            md: "relative",
-                          },
-                          display: "flex",
-                          justifyContent: {
-                            xs: "space-evenly",
-                            md: "flex-start",
-                          },
-                          width: "100%",
+                          overflow: "auto",
                           ml: {
-                            xs: 0,
-                            md: 2,
+                            xs: 1,
+                            md: 1,
                           },
-                          maxWidth: "100%",
+                          p: 1,
                         }}
                       >
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          sx={{
-                            overflow: "auto",
-                            ml: {
-                              xs: 2,
-                              md: 2,
-                            },
-                            p: 1,
-                          }}
-                        >
-                          {boroughs.map((borough) => (
-                            <Button
-                              key={borough}
-                              variant="contained"
-                              onClick={() => {
-                                this.handleFilter(borough);
-                                // this.props.navHook(`/filter/${borough}`)
-                              }}
-                              sx={{
-                                backgroundColor:
-                                  this.state.activeFilters.includes(borough)
-                                    ? "white"
-                                    : "#ffffff",
-                                color: this.state.activeFilters.includes(
-                                  borough
-                                )
-                                  ? "#256fd4"
-                                  : "gray",
-                                fontWeight: 500,
-                                fontSize: 14,
-                                padding: {
-                                  xs: "2px 3rem 2px 3rem",
-                                  md: "2px 14px 2px 14px",
-                                },
-                                cursor: "pointer",
-                                whiteSpace: "nowrap",
-                                borderRadius: 5,
-                                "&:hover": {
-                                  backgroundColor: "#efefef",
-                                  color: "#256fd4",
-                                },
-                                textTransform: "none",
-                              }}
-                            >
-                              {boroughNames[borough]}
-                            </Button>
-                          ))}
+                        {boroughs.map((borough) => (
                           <Button
+                            key={borough}
                             variant="contained"
-                            onClick={() => {this.handleAdvanceFilterOpen();}}
+                            onClick={() => {
+                              this.handleFilter(borough);
+                              // this.props.navHook(`/filter/${borough}`)
+                            }}
                             sx={{
-                              backgroundColor: "#ffffff",
-                              color:"#256fd4",
+                              backgroundColor:
+                                this.state.activeFilters.includes(borough)
+                                  ? "white"
+                                  : "#ffffff",
+                              color: this.state.activeFilters.includes(
+                                borough
+                              )
+                                ? "#256fd4"
+                                : "gray",
                               fontWeight: 500,
                               fontSize: 14,
                               padding: {
                                 xs: "2px 3rem 2px 3rem",
-                                md: "2px 14px 2px 14px",
+                                md: "2px 14px 0px 14px",
                               },
+
                               cursor: "pointer",
                               whiteSpace: "nowrap",
                               borderRadius: 5,
@@ -508,15 +505,118 @@ class Map extends Component {
                               textTransform: "none",
                             }}
                           >
-                            More options
+                            {boroughNames[borough]}
                           </Button>
-                        </Stack>
-                      </Box>
+                        ))}
+                        <Button
+                          variant="contained"
+                          onClick={() => { this.handleAdvanceFilterOpen.bind(null, true) }}
+                          sx={{
+                            backgroundColor: "#ffffff",
+                            color: "#256fd4",
+                            fontWeight: 500,
+                            fontSize: 14,
+                            padding: {
+                              xs: "2px 3rem 2px 3rem",
+                              md: "2px 14px 2px 14px",
+                            },
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            borderRadius: 5,
+                            "&:hover": {
+                              backgroundColor: "#efefef",
+                              color: "#256fd4",
+                            },
+                            textTransform: "none",
+                          }}
+                        >
+                          More options
+                        </Button>
+                      </Stack>
                     </Stack>
                   </Toolbar>
                 </AppBar>
-              )}
-            </Box>
+              </Grid>
+
+              <Grid item sx={{
+                display: "flex",
+                flexDirection: {xs: "column", sm: "column", md: "row"},
+                height: "100vh",
+              }}>
+                <Grid sx={{
+                  p: 2,
+                  display: "flex",
+                  overflowY: "scroll",
+                }}
+                  container
+                  spacing={4}>
+                  {langaugeFiltered.slice(indexOfFirstSchool, indexOfLastSchool).map((school, key) => {
+                    return (
+                      <Grid item xs= {12} md={6} key={key}>
+                        <MapCard school={school} loading={this.state.loading}/>
+                      </Grid>
+                    );
+                  })}
+                  <Pagination schoolsPerPage={this.state.schoolsPerPage} totalSchools={schools.length} paginate={this.paginate}/>
+                </Grid>
+                <Grid item xs={6}>
+                  <GoogleMap>
+
+                  </GoogleMap>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+{/* 
+          <Box sx={{ width: "100%", height: "100%",  }}>
+            
+          </Box>
+
+                          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={this.state.center}
+            zoom={this.state.zoom}
+            clickableIcons={false}
+            onClick={() => {
+              this.showCard(false, null);
+              this.handleDirectionsPanel(false);
+              this.props.navHook("/map");
+            }}
+            onZoomChanged={() => {
+              if (this.map && !this.state.directionsRenderer) {
+                this.setState({
+                  zoom: this.map.getZoom(),
+                });
+              }
+            }}
+            onLoad={(map) => (this.map = map)}
+            options={{
+              zoomControl: false,
+              mapTypeControl: false,
+              fullscreenControl: false,
+            }}
+          >
+            <Directions
+              modify={this.handleDirections}
+              card={this.state.card}
+              opened={this.state.directionsRenderer}
+              {...this.state.dirOpts}
+            />
+           
+
+            <StreetViewPanorama
+              onVisibleChanged={() => {
+                this.showCard(false, null);
+                this.setVisible(true, null);
+                console.log("visibility changed");
+              }}
+              onPovChanged={() => {
+                console.log("changed ");
+              }}
+              onCloseclick={(e) => {
+                console.log("closed Street view");
+              }}
+            />
             {langaugeFiltered.map((school, key) => {
               return (
                 <MarkerF
@@ -557,8 +657,14 @@ class Map extends Component {
                 onClose={() => this.setState({ saveList: false })}
               />
             )}
+            {this.state.advanceFilters && (
+              <AdvanceFilters
+                handleClose={() => setOpen(false)}
+              />
+            )}
             
-          </GoogleMap>
+          </GoogleMap> */}
+
         </Box>
       </MapLoader>
     );
