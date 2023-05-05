@@ -8,19 +8,24 @@ const PaginationComponent = ({schoolsPerPage, totalSchools, paginate}) => {
         pageNumbers.push(i)
     }
 
-    return (
-        <nav>
-            <ul className='pagination'>
-                {pageNumbers.map(number => (
-                    <li key={number} className='page-item'>
-                        <a onClick={() => paginate(number)} href='!#' className='page-link'>
-                            {number}
-                        </a>
-                    </li>
-                ))}
-            </ul>
-        </nav>
+    const handleChange = (e, page) => {
+       paginate(page)
+    }
 
+    return (
+        <Pagination 
+            count={pageNumbers.length} 
+            onChange={handleChange} 
+            variant="outlined" 
+            shape="rounded" 
+            sx={{
+                m: 4, 
+                width: "100%", 
+                display: "flex",
+                justifyContent: "flex-end"
+            }}>
+
+        </Pagination>
     )
 }
 

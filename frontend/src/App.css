@@ -380,3 +380,17 @@
 .legend-text {
   fill: black;
 }
+
+.pagination {
+  display: flex;
+}
+.page-item {
+  border: 1px solid rgba(1, 1, 1, 0.4);
+  padding: 0.2rem;  
+  cursor: pointer;
+}
+.page-link {
+  color:rgba(0, 0, 0, 0.8);
+  margin: 1rem 1rem 1rem 1rem;
+  font-size: 19px;
+}
