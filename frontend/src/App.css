@@ -51,9 +51,7 @@
 .fixed-left-container {
   position: sticky;
   top: 2rem;
-
   z-index: 9999;
-  
 }
 
 .left-container h6 {
