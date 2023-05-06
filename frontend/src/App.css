@@ -36,18 +36,24 @@
   border-radius: 15px;
   color: rgb(80, 80, 80);
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
-  font-family: "Open Sans", sans-serif;
+  font-family: "opensans-semibold", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 550;
+  font-size: 14px;
+  color: #707070;
   display: block;
   flex-direction: column;
   margin-left: 1in;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  
 }
 
 .fixed-left-container {
   position: sticky;
   top: 2rem;
-  left: 0;
+
+  z-index: 9999;
+  
 }
 
 .left-container h6 {
@@ -57,7 +63,7 @@
   margin-bottom: 0px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 2px;
-  color: rgb(80, 80, 80);
+  color: rgb(60, 60, 60);
 }
 
 .left-container .Mui-selected {
@@ -82,7 +88,7 @@
 }
 
 .middle-container {
-  background-color: #ffffff;
+  background-color: #FAFAFA;
   height: auto;
   width: 8in;
   overflow: auto;
@@ -132,8 +138,8 @@
 
 @media (max-width: 1260px) {
   .middle-container {
-    margin-left: 8em;
     transition: all 0.5s ease;
+    margin-left: 6em;
   }
 }
 
