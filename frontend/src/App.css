@@ -27,9 +27,9 @@
 
 .left-container {
   background-color: #FAFAFA;
-  height: auto;
+  height: 100vh;
   width: 2in;
-  bottom: 0;
+  bottom: 0rem;
   overflow: auto;
   padding: 1em;
   padding-top: 1.5em;
@@ -41,14 +41,13 @@
   flex-direction: column;
   margin-left: 1in;
   margin-top: 2rem;
-  margin-bottom: 0rem;
+  margin-bottom: 2rem;
 }
 
 .fixed-left-container {
   position: fixed;
   top: 0;
   left: 0;
-  overflow-y: auto;
 }
 
 .left-container h6 {
@@ -381,16 +380,41 @@
   fill: black;
 }
 
-.pagination {
-  display: flex;
+.info-icon {
+  font-size: 20px;
+  color: #16A1DD;
+  justify-content: center;
+  align-items: center
 }
-.page-item {
-  border: 1px solid rgba(1, 1, 1, 0.4);
-  padding: 0.2rem;  
+
+.info-icon:hover {
+  background-color: transparent;
+}
+
+
+#scroll-to-top {
+  position: fixed;
+  width: 80px;
+  height: 50px;
+  bottom: 15%;
+  right: -48px;
+  background-color: #ccc;
+  border: none;
+  border-radius: 25px 0 0 25px;
+  color: #fff;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
-.page-link {
-  color:rgba(0, 0, 0, 0.8);
-  margin: 1rem 1rem 1rem 1rem;
-  font-size: 19px;
+
+#scroll-to-top:hover {
+  background-color: #ccc;
+  color: #333;
+  border-radius: 25px 0 0 25px;
+  right: -10px; 
 }
+
+#scroll-to-top.hidden {
+  display: none;
+}
+
+
