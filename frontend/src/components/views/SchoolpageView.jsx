@@ -1450,7 +1450,14 @@ function SchoolpageView() {
             <Box id="studentSuccess" className="middle-container academics">
               <h3>Student Outcomes</h3>
               <h2>Student Success</h2>
+              <div style={{ display: 'inline-flex', alignItems: 'center' }}>
               <h4 style={{ marginTop: "10px" }}>Attendance</h4>
+              <Tooltip title={hoverDescriptions['Attendance'].description} arrow placement="right">
+                  <IconButton className="info-icon" style={{ marginLeft: '-4px', paddingBottom: '0px' }}>
+                    <MdInfoOutline />
+                  </IconButton>
+                </Tooltip>
+              </div>
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>

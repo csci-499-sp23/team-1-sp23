@@ -45,7 +45,7 @@
   margin-left: 1in;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  
+  border-bottom: 10px solid #ccc;
 }
 
 .fixed-left-container {
@@ -108,7 +108,6 @@
   font-size: 45px;
   color: white;
 }
-
 
 
 @media (max-width: 1260px) {
