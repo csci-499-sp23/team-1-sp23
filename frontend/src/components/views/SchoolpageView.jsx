@@ -18,7 +18,6 @@ import {
   TableRow,
   TableCell,
   TableContainer,
-  TableHead,
   Paper,
   Tab,
   Tabs,
@@ -36,8 +35,6 @@ import {
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -61,7 +58,7 @@ import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi
 import { RiGovernmentLine } from 'react-icons/ri/index.js';
 import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
 import { SiMoleculer } from 'react-icons/si/index.js';
-import { GoArrowUp, GoComment } from 'react-icons/go/index.js';
+import { GoComment } from 'react-icons/go/index.js';
 import { IoAmericanFootball, IoTennisballOutline, IoBaseballOutline, IoAmericanFootballOutline, IoFootballOutline,IoGolfOutline, IoBasketballOutline, IoBowlingBallOutline} from 'react-icons/io5/index.js'
 import { FaArrowUp, FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
 
@@ -90,6 +87,13 @@ function SchoolpageView() {
   const [satScores, setSatScores] = React.useState([]);
   const [demographicInfo, setDemographInfo] = React.useState([]);
   const [qualityInfo, setQualityInfo] = React.useState([]);
+
+  const [pupilTeacherRatio, setPupilTeacherRatio] = React.useState([]);
+  const [pupilCounselorRatio, setPupilCounselorRatio] = React.useState([]);
+
+  const [graduationData, setGraduationData] = React.useState([]);
+  
+
 
   const [tab, setTab] = React.useState(0)
 
@@ -167,13 +171,62 @@ function SchoolpageView() {
         .then(data => {
           setQualityInfo(data);
         })
+         .catch(error => {
+           console.error(error);
+         });
+     };
+   }, [school]);
+
+
+  {/*Students to Teacher Ratio*/ }
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/bqym-t9p9.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setPupilTeacherRatio(data);
+        })
         .catch(error => {
           console.error(error);
         });
     };
   }, [school]);
-  
-   {/*Login*/}
+
+  {/*Students to Guidance Counselor Ratio*/ }
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/yphg-6fug.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setPupilCounselorRatio(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+    {/*Graduation Data for the class of 2015 (graduating in June of 2019*/ }
+    React.useEffect(() => {
+      const schoolDbn = school?.dbn;
+      if (schoolDbn) {
+        const url = `https://data.cityofnewyork.us/resource/3vje-du8p.json?dbn=${schoolDbn}&cohort_year=2015&cohort=4%20year%20June`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            setGraduationData(data);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      };
+    }, [school]);
+
+  {/*Login*/ }
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -420,6 +473,11 @@ function SchoolpageView() {
     sports.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleSuccessClick = () => {
+    const sports = document.getElementById('studentSuccess')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleTabChange = (e, value) => { 
     setTab(value)
   }
@@ -450,6 +508,7 @@ function SchoolpageView() {
       console.log("you are not logged in!");
     }
   };
+  
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -651,6 +710,17 @@ function SchoolpageView() {
 
   const teacherExperience = formatValue((parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1));
   const principalExperience = formatValue(Math.round(qualityInfo[0]?.years_of_principal_experience));
+
+  const pupilToteacherRatio = (Math.round(pupilTeacherRatio[0]?.school_pupil_teacher_ratio));
+  const pupilTocounselorRatio = (Math.round(pupilCounselorRatio[0]?.enrollment_and_ratios_ratio_1));
+
+
+  const grads = graduationData[0]?.grads_1; 
+  const regentsGrads = graduationData[0]?.total_regents_of_cohort;
+  const advancedRegentsGrads = graduationData[0]?.advanced_regents_of_cohort;
+  const localGrads = graduationData[0]?.local_of_cohort;
+  const stillEnrolled = graduationData[0]?.still_enrolled_1;
+  const dropOut = graduationData[0]?.dropout_1;
 
   const quality = [
     {
@@ -856,6 +926,9 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleTestScoresClick}>
                 Test Scores
               </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleSuccessClick}>
+                Student Success
+              </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
             <List>
@@ -878,8 +951,12 @@ function SchoolpageView() {
                 Support Services
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
             <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
+            <List>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
+                Ratings
+              </ListItemButton>
+            </List>
 
           </Box>
         </Grid>
@@ -1235,42 +1312,40 @@ function SchoolpageView() {
                   </IconButton>
                 </Tooltip>
               </div>
-              <Box sx={{ width: "100%" }}>
-                <Table>
-                  <TableBody>
-                    {algebraMeanScore && algebraMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73} />
-                    }
-                    {algebra2MeanScore && algebra2MeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76} />
-                    }
-                    {geometryMeanScore && geometryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73} />
-                    }
-                    {englishMeanScore && englishMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77} />
-                    }
-                    {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73} />
-                    }
-                    {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78} />
-                    }
-                    {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75} />
-                    }
-                    {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74} />
-                    }
-                    {chemistryMeanScore && chemistryMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73} />
-                    }
-                    {physicsMeanScore && physicsMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78} />
-                    }
-                  </TableBody>
-                </Table>
-              </Box>
+              <Table sx={{ width: "100%" }}>
+                <TableBody>
+                  {algebraMeanScore && algebraMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73} />
+                  }
+                  {algebra2MeanScore && algebra2MeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76} />
+                  }
+                  {geometryMeanScore && geometryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73} />
+                  }
+                  {englishMeanScore && englishMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77} />
+                  }
+                  {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73} />
+                  }
+                  {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78} />
+                  }
+                  {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75} />
+                  }
+                  {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74} />
+                  }
+                  {chemistryMeanScore && chemistryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73} />
+                  }
+                  {physicsMeanScore && physicsMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78} />
+                  }
+                </TableBody>
+              </Table>
               {((spanishMeanScore && spanishMeanScore !== "s") ||
                 (frenchMeanScore && frenchMeanScore !== "s") ||
                 (italianMeanScore && italianMeanScore !== "s") ||
@@ -1284,24 +1359,24 @@ function SchoolpageView() {
                     </Tooltip>
                   </div>
                 )}
-              <Box sx={{ width: "100%" }}>
-                <Table>
-                  <TableBody>
-                    {spanishMeanScore && spanishMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Spanish" value={Math.round(spanishMeanScore)} />
-                    }
-                    {frenchMeanScore && frenchMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="French" value={Math.round(frenchMeanScore)} />
-                    }
-                    {italianMeanScore && italianMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Italian" value={Math.round(italianMeanScore)} />
-                    }
-                    {chineseMeanScore && chineseMeanScore !== "s" &&
-                      <HorizontalScoreBar examName="Chinese" value={Math.round(chineseMeanScore)} />
-                    }
-                  </TableBody>
-                </Table>
-              </Box>
+
+              <Table sx={{ width: "100%" }}>
+                <TableBody>
+                  {spanishMeanScore && spanishMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Spanish" value={Math.round(spanishMeanScore)} />
+                  }
+                  {frenchMeanScore && frenchMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="French" value={Math.round(frenchMeanScore)} />
+                  }
+                  {italianMeanScore && italianMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Italian" value={Math.round(italianMeanScore)} />
+                  }
+                  {chineseMeanScore && chineseMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Chinese" value={Math.round(chineseMeanScore)} />
+                  }
+                </TableBody>
+              </Table>
+
               {((apTestTakers && apTestTakers !== "s") ||
                 (apExamsPassed && apExamsPassed !== "s") ||
                 (apTotalExams && apTotalExams !== "s")) && (
@@ -1315,18 +1390,22 @@ function SchoolpageView() {
                   </div>
                 )}
               <Table>
-                {apExamsPassed && apExamsPassed !== "s" && apTotalExams && apTotalExams !== "s" && (
-                  <TableCell sx={{ border: 'none' }}>
-                    <Typography variant="body1">AP Exam Pass Rate</Typography>
-                    <Typography variant="h2">{apPassRate}%</Typography>
-                  </TableCell>
-                )}
-                {apTestTakers && apTestTakers !== "s" && (
-                  <TableCell sx={{ border: 'none' }}>
-                    <Typography variant="body1">AP Exam Enrollment</Typography>
-                    <Typography variant="h2">~{apEnrollment}%</Typography>
-                  </TableCell>
-                )}
+                <TableBody>
+                  <TableRow>
+                    {apExamsPassed && apExamsPassed !== "s" && apTotalExams && apTotalExams !== "s" && (
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">AP Exam Pass Rate</Typography>
+                        <Typography variant="h2">{apPassRate}%</Typography>
+                      </TableCell>
+                    )}
+                    {apTestTakers && apTestTakers !== "s" && (
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">AP Exam Enrollment</Typography>
+                        <Typography variant="h2">~{apEnrollment}%</Typography>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                </TableBody>
               </Table>
               {satScoresAvailable && satCriticalReading != null && satWriting != null && satMath != null && (
                 <div>
@@ -1339,20 +1418,22 @@ function SchoolpageView() {
                     </Tooltip>
                   </div>
                   <Table>
-                    <TableRow>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Typography variant="body1">Average SAT</Typography>
-                        <Typography variant="h2">{satTotal}</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Typography variant="body1">Math</Typography>
-                        <Typography variant="h2">{satMath}</Typography>
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>
-                        <Typography variant="body1">Verbal</Typography>
-                        <Typography variant="h2">{satNewReading}</Typography>
-                      </TableCell>
-                    </TableRow>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ border: 'none' }}>
+                          <Typography variant="body1">Average SAT</Typography>
+                          <Typography variant="h2">{satTotal}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ border: 'none' }}>
+                          <Typography variant="body1">Math</Typography>
+                          <Typography variant="h2">{satMath}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ border: 'none' }}>
+                          <Typography variant="body1">Verbal</Typography>
+                          <Typography variant="h2">{satNewReading}</Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
                   </Table>
                 </div>
               )}
@@ -1364,6 +1445,76 @@ function SchoolpageView() {
                 <h4 style={{ marginRight: "0.5rem" }}>More about {school?.school_name}'s Test Scores</h4>
                 <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
+            </Box>
+{/*Student Success*/}
+            <Box id="studentSuccess" className="middle-container academics">
+              <h3>Student Outcomes</h3>
+              <h2>Student Success</h2>
+              <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <h4 style={{ marginTop: "10px" }}>Attendance</h4>
+              <Tooltip title={hoverDescriptions['Attendance'].description} arrow placement="right">
+                  <IconButton className="info-icon" style={{ marginLeft: '-4px', paddingBottom: '0px' }}>
+                    <MdInfoOutline />
+                  </IconButton>
+                </Tooltip>
+              </div>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    {studentAttendance && (
+                      <TableRow>
+                        <TableCell>Student Attendance</TableCell>
+                        <TableCell align="right">{studentAttendance}%</TableCell>
+                      </TableRow>
+                    )}
+                    {chronicAbsence && (
+                      <TableRow>
+                        <TableCell>Percentage of Students Chronically Absent</TableCell>
+                        <TableCell align="right">{chronicAbsence}%</TableCell>
+                      </TableRow>
+                    )}
+                    {teacherAttendance && (
+                      <TableRow>
+                        <TableCell>Teacher Attendance</TableCell>
+                        <TableCell align="right">{teacherAttendance}%</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <h4 style={{ marginTop: "10px" }}>Graduation</h4>
+              <Table sx={{ width: "100%" }}>
+                <TableBody>
+                  {grads && grads !== "s" &&
+                    <HorizontalScoreBar examName="4-year high school graduation" value={Math.round(grads)} stateAverage={83} />
+                  }
+                  {regentsGrads && regentsGrads !== "s" &&
+                    <HorizontalScoreBar examName="Regents Diploma" value={Math.round(regentsGrads)} stateAverage={76} />
+                  }
+                  {advancedRegentsGrads && advancedRegentsGrads !== "s" &&
+                    <HorizontalScoreBar examName="Advanced Regents Diploma" value={Math.round(advancedRegentsGrads)} stateAverage={34} />
+                  }
+                  {localGrads && localGrads !== "s" &&
+                    <HorizontalScoreBar examName="Local Diploma" value={Math.round(localGrads)} stateAverage={6.7} />
+                  }
+                  {stillEnrolled && stillEnrolled !== "s" &&
+                    <HorizontalScoreBar examName="% Still Enrolled" value={Math.round(stillEnrolled)} stateAverage={17.4} />
+                  }
+                  {dropOut && dropOut !== "s" &&
+                    <HorizontalScoreBar examName="% Drop Out" value={Math.round(dropOut)} stateAverage={6.1} />
+                  }
+                </TableBody>
+              </Table>
+              {school?.college_career_rate && school?.college_career_rate !== "s" &&
+                <h4 style={{ marginTop: "10px" }}>College Enrollment</h4>
+              }
+              <Table sx={{ width: "100%" }}>
+                <TableBody>
+                  {school?.college_career_rate && school?.college_career_rate !== "s" &&
+                    <HorizontalScoreBar examName="Post-Secondary Enrollment" value={Math.round(school?.college_career_rate * 100)} />
+                  }
+                </TableBody>
+              </Table>
             </Box>
 {/*EXTRACURRICULAR ACTIVITIES*/}
 {/*Clubs*/}
@@ -1475,42 +1626,36 @@ function SchoolpageView() {
             <Box id="qualityFeedback" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Quality and Feedback</h2>
-              <h4>Attendance</h4>
+              <h4>Students to Faculty Ratios</h4>
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    {studentAttendance && (
+                    {typeof pupilToteacherRatio === "number" && !isNaN(pupilToteacherRatio) && (
                       <TableRow>
-                        <TableCell>Student Attendance</TableCell>
-                        <TableCell align="right">{studentAttendance}%</TableCell>
+                        <TableCell>Students per Teacher</TableCell>
+                        <TableCell align="right">{pupilToteacherRatio}:1</TableCell>
                       </TableRow>
                     )}
-                    {chronicAbsence && (
+                    {typeof pupilTocounselorRatio === "number" && !isNaN(pupilTocounselorRatio) &&(
                       <TableRow>
-                        <TableCell>Percentage of Students Chronically Absent</TableCell>
-                        <TableCell align="right">{chronicAbsence}%</TableCell>
-                      </TableRow>
-                    )}
-                    {teacherAttendance && (
-                      <TableRow>
-                        <TableCell>Teacher Attendance</TableCell>
-                        <TableCell align="right">{teacherAttendance}%</TableCell>
+                        <TableCell>Students per Counselor</TableCell>
+                        <TableCell align="right">{pupilTocounselorRatio}:1</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <h4 style={{ marginTop: "10px" }}>Experience</h4>
+              <h4 style={{ marginTop: "10px" }}>Faculty Experience</h4>
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    {teacherExperience && (
+                    {teacherExperience && !isNaN(teacherExperience) && (
                       <TableRow>
                         <TableCell>Percent of Teachers with 3 or More Years of Experience</TableCell>
                         <TableCell align="right">{teacherExperience}%</TableCell>
                       </TableRow>
                     )}
-                    {principalExperience && (
+                    {principalExperience && typeof principalExperience === "number" && !isNaN(principalExperience) && (
                       <TableRow>
                         <TableCell>Principal's Years of Experience</TableCell>
                         <TableCell align="right">~{principalExperience} years</TableCell>
@@ -1526,75 +1671,89 @@ function SchoolpageView() {
             <Box id="supportservices" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Support Services</h2>
-              <div>
+              
                 <h4>English Language Learners</h4>
                 <Table>
-                  <TableCell sx={{ border: 'none', display: 'relative', alignItems: 'center' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                      <Typography variant="body1">ELL Programs</Typography>
-                      <Tooltip title={hoverDescriptions['ELLPrograms'].description} arrow placement="right">
-                        <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
-                          <MdInfoOutline />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                    <ul style={{ listStyle: 'disc', paddingLeft: '1rem' }}>
-                      {ellPrograms.map((program) => (
-                        <li key={program}>{program}</li>
-                      ))}
-                    </ul>
-                  </TableCell>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', display: 'relative', alignItems: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Typography variant="body1">ELL Programs</Typography>
+                          <Tooltip title={hoverDescriptions['ELLPrograms'].description} arrow placement="right">
+                            <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                              <MdInfoOutline />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                        <ul style={{ listStyle: 'disc', paddingLeft: '1rem' }}>
+                          {ellPrograms.map((program) => (
+                            <li key={program}>{program}</li>
+                          ))}
+                        </ul>
+                      </TableCell>
 
-                  <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant="body1">ELL Students</Typography>
-                    <Typography variant="h2">{`${ellPercentage}%`}</Typography>
-                  </TableCell>
+                      <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography variant="body1">ELL Students</Typography>
+                        <Typography variant="h2">{`${ellPercentage}%`}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
                 </Table>
 
                 <h4>Economic Indices</h4>
                 <Table>
-                  <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                      <Typography variant="body1">Eligible for Free/Reduced Lunch Program</Typography>
-                      <Tooltip title={hoverDescriptions['FreeReducedLunch'].description} arrow placement="top">
-                        <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
-                          <MdInfoOutline />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                    <Typography variant="h2">{povertyPercentage}</Typography>
-                  </TableCell>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Typography variant="body1">Eligible for Free/Reduced Lunch Program</Typography>
+                          <Tooltip title={hoverDescriptions['FreeReducedLunch'].description} arrow placement="top">
+                            <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                              <MdInfoOutline />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                        <Typography variant="h2">{povertyPercentage}</Typography>
+                      </TableCell>
 
-                  <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                      <Typography variant="body1">Economic Need Index</Typography>
-                      <Tooltip title={hoverDescriptions['economicIndex'].description} arrow placement="top">
-                        <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
-                          <MdInfoOutline />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                    <Typography variant="h2">{economicNeedPercentage}</Typography>
-                  </TableCell>
+                      <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Typography variant="body1">Economic Need Index</Typography>
+                          <Tooltip title={hoverDescriptions['economicIndex'].description} arrow placement="top">
+                            <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                              <MdInfoOutline />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                        <Typography variant="h2">{economicNeedPercentage}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
                 </Table>
 
-                <h4>Accessibility</h4>
-                <TableCell sx={{ border: 'none', height: '100px', display: 'relative', alignItems: 'center' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                    <Typography variant="body1" >
-                      {accessibilityStatus}
-                    </Typography>
-                    <Tooltip title={hoverDescriptions[accessibilityStatus].description} arrow placement="right">
-                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
-                        <MdInfoOutline />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <IconAccessibility style={{ fontSize: '3rem', position: 'absolute', bottom: 0 }} />
-                </TableCell>
-              </div>
+              <h4>Accessibility</h4>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', height: '100px', display: 'relative', alignItems: 'center' }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Typography variant="body1" >
+                          {accessibilityStatus}
+                        </Typography>
+                        <Tooltip title={hoverDescriptions[accessibilityStatus].description} arrow placement="right">
+                          <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                            <MdInfoOutline />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                      <IconAccessibility style={{ fontSize: '3rem', position: 'absolute', bottom: 0 }} />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </Box>
 
+{/* END OF MIDDLE CONTAINERS */}
           </Box>
         </Grid>
 {/*Scroll Up Button*/}
@@ -1641,7 +1800,7 @@ function SchoolpageView() {
 
 function formatValue(value) {
   if (isNaN(value)) {
-    return "Data not available";
+    return "-";
   } else {
     return value;
   }

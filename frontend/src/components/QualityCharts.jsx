@@ -88,7 +88,7 @@ const QualityCharts = ({ quality }) => {
 
 function formatValue(value) {
     if (isNaN(value)) {
-      return "Data unavailable";
+      return "-";
     } else {
       return value;
     }

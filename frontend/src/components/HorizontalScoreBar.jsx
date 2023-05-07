@@ -53,18 +53,28 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
             return 2;
         }
     }, [screenWidth]);
-
-    const getBarColor = (value, stateAverage) => {
-        const difference = value - stateAverage;
-        if(difference <= -15){
-            return "#FF0000"; //red
-        } else if(difference < 0){
-            return "#FFC107"; //yellow
-        } else if(difference <= 15){
-            return "#8BC34A"; //light green
+    const getBarColor = (examName, value, stateAverage) => {
+        if (examName == "4-year high school graduation" ||
+            examName == "Regents Diploma" ||
+            examName == "Advanced Regents Diploma" ||
+            examName == "Local Diploma" ||
+            examName == "% Still Enrolled" ||
+            examName == "Post-Secondary Enrollment" ||
+            examName == "% Drop Out") {
+            return "#00946A"; //pastel green
         } else {
-            return "#388E3C"; //darker green
+            const difference = value - stateAverage;
+            if (difference <= -15) {
+                return "#FF0000"; //red
+            } else if (difference < 0) {
+                return "#FFC107"; //yellow
+            } else if (difference <= 15) {
+                return "#8BC34A"; //light green
+            } else {
+                return "#388E3C"; //darker green
+            }
         }
+
     };
 
     const CustomTooltip = () => {
@@ -79,7 +89,7 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
     return (
         <TableRow>
             <TableCell sx={{ border: 'none' }} width="40%">
-                <Typography variant="body1">{examName}</Typography>
+                <Typography variant="body1" align="left">{examName}</Typography>
             </TableCell>
             <TableCell sx={{ border: 'none' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -105,7 +115,7 @@ const HorizontalScoreBar = ({ examName, value, stateAverage }) => {
                                     position={{ x: stateAverage * tooltipScalingFactor, y: -38 }}
                                 />
                             )}
-                            <Bar dataKey="value" fill={getBarColor(value, stateAverage)} />
+                            <Bar dataKey="value" fill={getBarColor(examName, value, stateAverage)} />
                         </BarChart>
                     </ResponsiveContainer>
                 </Box>
