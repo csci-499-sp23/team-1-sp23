@@ -26,8 +26,8 @@
 }
 
 .left-container {
-  background-color: #FAFAFA;
-  height: 100vh;
+  background-color: #FFFFFF;
+  height: auto;
   width: 2in;
   bottom: 0rem;
   overflow: auto;
@@ -86,7 +86,7 @@
 }
 
 .middle-container {
-  background-color: #FAFAFA;
+  background-color: #FFFFFF;
   height: auto;
   width: 8in;
   overflow: auto;

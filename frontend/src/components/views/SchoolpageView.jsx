@@ -18,7 +18,6 @@ import {
   TableRow,
   TableCell,
   TableContainer,
-  TableHead,
   Paper,
   Tab,
   Tabs,
@@ -88,6 +87,13 @@ function SchoolpageView() {
   const [satScores, setSatScores] = React.useState([]);
   const [demographicInfo, setDemographInfo] = React.useState([]);
   const [qualityInfo, setQualityInfo] = React.useState([]);
+
+  const [pupilTeacherRatio, setPupilTeacherRatio] = React.useState([]);
+  const [pupilCounselorRatio, setPupilCounselorRatio] = React.useState([]);
+
+  const [graduationData, setGraduationData] = React.useState([]);
+  
+
 
   const [tab, setTab] = React.useState(0)
 
@@ -165,13 +171,62 @@ function SchoolpageView() {
         .then(data => {
           setQualityInfo(data);
         })
+         .catch(error => {
+           console.error(error);
+         });
+     };
+   }, [school]);
+
+
+  {/*Students to Teacher Ratio*/ }
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/bqym-t9p9.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setPupilTeacherRatio(data);
+        })
         .catch(error => {
           console.error(error);
         });
     };
   }, [school]);
-  
-   {/*Login*/}
+
+  {/*Students to Guidance Counselor Ratio*/ }
+  React.useEffect(() => {
+    const schoolDbn = school?.dbn;
+    if (schoolDbn) {
+      const url = `https://data.cityofnewyork.us/resource/yphg-6fug.json?dbn=${schoolDbn}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          setPupilCounselorRatio(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+  }, [school]);
+
+    {/*Graduation Data for the class of 2015 (graduating in June of 2019*/ }
+    React.useEffect(() => {
+      const schoolDbn = school?.dbn;
+      if (schoolDbn) {
+        const url = `https://data.cityofnewyork.us/resource/3vje-du8p.json?dbn=${schoolDbn}&cohort_year=2015&cohort=4%20year%20June`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            setGraduationData(data);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      };
+    }, [school]);
+
+  {/*Login*/ }
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -418,6 +473,11 @@ function SchoolpageView() {
     sports.scrollIntoView({ behavior: 'smooth' });
   }
 
+  const handleSuccessClick = () => {
+    const sports = document.getElementById('studentSuccess')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
   const handleTabChange = (e, value) => { 
     setTab(value)
   }
@@ -448,6 +508,7 @@ function SchoolpageView() {
       console.log("you are not logged in!");
     }
   };
+  
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -649,6 +710,17 @@ function SchoolpageView() {
 
   const teacherExperience = formatValue((parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1));
   const principalExperience = formatValue(Math.round(qualityInfo[0]?.years_of_principal_experience));
+
+  const pupilToteacherRatio = (Math.round(pupilTeacherRatio[0]?.school_pupil_teacher_ratio));
+  const pupilTocounselorRatio = (Math.round(pupilCounselorRatio[0]?.enrollment_and_ratios_ratio_1));
+
+
+  const grads = graduationData[0]?.grads_1; 
+  const regentsGrads = graduationData[0]?.total_regents_of_cohort;
+  const advancedRegentsGrads = graduationData[0]?.advanced_regents_of_cohort;
+  const localGrads = graduationData[0]?.local_of_cohort;
+  const stillEnrolled = graduationData[0]?.still_enrolled_1;
+  const dropOut = graduationData[0]?.dropout_1;
 
   const quality = [
     {
@@ -854,6 +926,9 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleTestScoresClick}>
                 Test Scores
               </ListItemButton>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleSuccessClick}>
+                Student Success
+              </ListItemButton>
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
             <List>
@@ -876,8 +951,12 @@ function SchoolpageView() {
                 Support Services
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Student Outcomes</Typography>
             <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
+            <List>
+              <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
+                Ratings
+              </ListItemButton>
+            </List>
 
           </Box>
         </Grid>
@@ -1367,6 +1446,69 @@ function SchoolpageView() {
                 <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
             </Box>
+{/*Student Success*/}
+            <Box id="studentSuccess" className="middle-container academics">
+              <h3>Student Outcomes</h3>
+              <h2>Student Success</h2>
+              <h4 style={{ marginTop: "10px" }}>Attendance</h4>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    {studentAttendance && (
+                      <TableRow>
+                        <TableCell>Student Attendance</TableCell>
+                        <TableCell align="right">{studentAttendance}%</TableCell>
+                      </TableRow>
+                    )}
+                    {chronicAbsence && (
+                      <TableRow>
+                        <TableCell>Percentage of Students Chronically Absent</TableCell>
+                        <TableCell align="right">{chronicAbsence}%</TableCell>
+                      </TableRow>
+                    )}
+                    {teacherAttendance && (
+                      <TableRow>
+                        <TableCell>Teacher Attendance</TableCell>
+                        <TableCell align="right">{teacherAttendance}%</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <h4 style={{ marginTop: "10px" }}>Graduation</h4>
+              <Table sx={{ width: "100%" }}>
+                <TableBody>
+                  {grads && grads !== "s" &&
+                    <HorizontalScoreBar examName="4-year high school graduation" value={Math.round(grads)} stateAverage={83} />
+                  }
+                  {regentsGrads && regentsGrads !== "s" &&
+                    <HorizontalScoreBar examName="Regents Diploma" value={Math.round(regentsGrads)} stateAverage={76} />
+                  }
+                  {advancedRegentsGrads && advancedRegentsGrads !== "s" &&
+                    <HorizontalScoreBar examName="Advanced Regents Diploma" value={Math.round(advancedRegentsGrads)} stateAverage={34} />
+                  }
+                  {localGrads && localGrads !== "s" &&
+                    <HorizontalScoreBar examName="Local Diploma" value={Math.round(localGrads)} stateAverage={6.7} />
+                  }
+                  {stillEnrolled && stillEnrolled !== "s" &&
+                    <HorizontalScoreBar examName="% Still Enrolled" value={Math.round(stillEnrolled)} stateAverage={17.4} />
+                  }
+                  {dropOut && dropOut !== "s" &&
+                    <HorizontalScoreBar examName="% Drop Out" value={Math.round(dropOut)} stateAverage={6.1} />
+                  }
+                </TableBody>
+              </Table>
+              {school?.college_career_rate && school?.college_career_rate !== "s" &&
+                <h4 style={{ marginTop: "10px" }}>College Enrollment</h4>
+              }
+              <Table sx={{ width: "100%" }}>
+                <TableBody>
+                  {school?.college_career_rate && school?.college_career_rate !== "s" &&
+                    <HorizontalScoreBar examName="Post-Secondary Enrollment" value={Math.round(school?.college_career_rate * 100)} />
+                  }
+                </TableBody>
+              </Table>
+            </Box>
 {/*EXTRACURRICULAR ACTIVITIES*/}
 {/*Clubs*/}
             <Box id="clubs" className="middle-container academics">
@@ -1477,42 +1619,36 @@ function SchoolpageView() {
             <Box id="qualityFeedback" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Quality and Feedback</h2>
-              <h4>Attendance</h4>
+              <h4>Students to Faculty Ratios</h4>
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    {studentAttendance && (
+                    {typeof pupilToteacherRatio === "number" && !isNaN(pupilToteacherRatio) && (
                       <TableRow>
-                        <TableCell>Student Attendance</TableCell>
-                        <TableCell align="right">{studentAttendance}%</TableCell>
+                        <TableCell>Students per Teacher</TableCell>
+                        <TableCell align="right">{pupilToteacherRatio}:1</TableCell>
                       </TableRow>
                     )}
-                    {chronicAbsence && (
+                    {typeof pupilTocounselorRatio === "number" && !isNaN(pupilTocounselorRatio) &&(
                       <TableRow>
-                        <TableCell>Percentage of Students Chronically Absent</TableCell>
-                        <TableCell align="right">{chronicAbsence}%</TableCell>
-                      </TableRow>
-                    )}
-                    {teacherAttendance && (
-                      <TableRow>
-                        <TableCell>Teacher Attendance</TableCell>
-                        <TableCell align="right">{teacherAttendance}%</TableCell>
+                        <TableCell>Students per Counselor</TableCell>
+                        <TableCell align="right">{pupilTocounselorRatio}:1</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <h4 style={{ marginTop: "10px" }}>Experience</h4>
+              <h4 style={{ marginTop: "10px" }}>Faculty Experience</h4>
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    {teacherExperience && (
+                    {teacherExperience && !isNaN(teacherExperience) && (
                       <TableRow>
                         <TableCell>Percent of Teachers with 3 or More Years of Experience</TableCell>
                         <TableCell align="right">{teacherExperience}%</TableCell>
                       </TableRow>
                     )}
-                    {principalExperience && (
+                    {principalExperience && typeof principalExperience === "number" && !isNaN(principalExperience) && (
                       <TableRow>
                         <TableCell>Principal's Years of Experience</TableCell>
                         <TableCell align="right">~{principalExperience} years</TableCell>
@@ -1608,7 +1744,6 @@ function SchoolpageView() {
                   </TableRow>
                 </TableBody>
               </Table>
-
             </Box>
 
 {/* END OF MIDDLE CONTAINERS */}
@@ -1658,7 +1793,7 @@ function SchoolpageView() {
 
 function formatValue(value) {
   if (isNaN(value)) {
-    return "Data not available";
+    return "-";
   } else {
     return value;
   }
