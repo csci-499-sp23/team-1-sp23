@@ -1,43 +1,29 @@
 import React, { Component } from "react";
-import { GoogleMap, MarkerF, StreetViewPanorama } from "@react-google-maps/api";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia"
-import Grid from "@mui/material/Grid"
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import InputBase from "@mui/material/InputBase";
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button"
+
 
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc,collection, onSnapshot } from "firebase/firestore";
 
-import Drawerbar from "./DrawerNavBar";
-import InfoCard from "./Card";
-import Directions from "./Directions";
-import SavedSchoolsList from "./SavedSchoolsList";
-import AdvanceFilters from "./AdvanceFilters";
-
 import {IoLocationOutline} from "react-icons/io5/index.js"
 import StarIcon from '@mui/icons-material/Star';
-import HomeIcon from "@mui/icons-material/Home";
-import MapIcon from "@mui/icons-material/Map";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
-import { routerPass } from "./routerPass";
-import { MapLoader } from "./MapLoader";
-import MAutocomplete from "@mui/material/Autocomplete";
 import { Typography } from "@mui/material";
 
-const MapCard = ({ school, loading }) => {
+function MapCard ({ school, loading, openCard, goToSchool }) {
+
+    const onClickEvent = () => {
+        openCard(true, school)
+        goToSchool(Number(school.longitude), Number(school.latitude), school)
+    }
     if (loading) {
         console.log("loading")
     }
@@ -46,7 +32,10 @@ const MapCard = ({ school, loading }) => {
             backgroundColor: "transparent",
             border: "3px solid rgba(44, 44, 44, 0.15)",
             borderRadius: "13px",
-        }}>
+            cursor: "pointer",
+        }}
+        onClick={() => onClickEvent()}
+        >
             <CardMedia
                 sx={{
                     height: 280,
@@ -81,7 +70,11 @@ const MapCard = ({ school, loading }) => {
                     fontWeight: 500,
                     mb: 1,
                 }}>
-                    {school.school_accessibility} • {school.school_accessibility}
+                    <Button variant="outlined">
+                        <Link to={`/school/${school.school_name}`} state={{ school: school }} sx={{ textDecoration: "none", color: "#222222",  }}>
+                            Go To School's Page
+                        </Link>
+                    </Button>
                     <Box sx={{
                         display: "flex",
                         alignItems: "center",
@@ -90,7 +83,9 @@ const MapCard = ({ school, loading }) => {
                         <Typography variant="h6" sx={{ fontWeight: 600, }}>4.7</Typography>
                     </Box>
                 </Typography>
+
             </CardContent>
+
         </Card>
     )
 }

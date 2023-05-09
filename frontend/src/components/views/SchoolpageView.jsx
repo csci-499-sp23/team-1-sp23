@@ -76,7 +76,9 @@ function SchoolpageView() {
   const school = location.state.school;
   const latitude = Number(school?.latitude);
   const longitude = Number(school?.longitude);
-  const card = true;
+  const stats = true;
+  const dbn = school.dbn;
+  const schoolName = school?.school_name;
   const url = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude},${latitude},${longitude},${latitude}&layer=mapnik&marker=${latitude},${longitude}`;
 
   const [username, setUsername] = React.useState("");
@@ -706,7 +708,7 @@ function SchoolpageView() {
   return (
     <>
       <NavBar loggedIn={loggedIn} handleLogout={handleLogout}/>
-      <Grid container>
+      <Grid container sx={{width: "100%"}}>
         <Grid item xs={12} sm={12} md={12} id="header-container">
 {/*MAIN HEADER*/}
           <Box sx={{ bgcolor: '#194973', py: 3.5 }}>
@@ -1358,7 +1360,7 @@ function SchoolpageView() {
               )}
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}
-                state={{ latitude, longitude, school, card }}
+                state={{ latitude, longitude, school, dbn, schoolName, stats }}
                 style={{ color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
               >
                 <h4 style={{ marginRight: "0.5rem" }}>More about {school?.school_name}'s Test Scores</h4>

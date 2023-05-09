@@ -459,14 +459,12 @@ class InfoCard extends Component {
       <>
         <Card
           sx={{
-            maxWidth: { xs: "100vw", sm: 400, md: 400 },
+            maxWidth: { xs: "100vw", sm: 400, md: 1100 },
             maxHeight: "100%",
             zIndex: 100,
-            position: "absolute",
-            top: 0,
-            left: 0,
             height: "100%",
             overflowY: "auto",
+            m: 2
           }}
           onScroll={this.scrollListener}
         >
@@ -1088,7 +1086,7 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Grid container spacing={1} justifyContent="center">
+                  <Grid container spacing={1} justifyContent="center" sx={{display: "flex", flexDirection: "row"}}>
                     <Grid item xs={12} sm container>
                       <Grid
                         item
@@ -1110,7 +1108,7 @@ class InfoCard extends Component {
                             borderRadius: 5,
                             width: {
                               xs: "100%",
-                              md: 220,
+                              md: 210,
                             },
                           }}
                         />
@@ -1135,7 +1133,7 @@ class InfoCard extends Component {
                             borderRadius: 5,
                             width: {
                               xs: "100%",
-                              md: 220,
+                              md: 210,
                             },
                           }}
                         ></LinearProgress>
@@ -1160,7 +1158,7 @@ class InfoCard extends Component {
                             borderRadius: 5,
                             width: {
                               xs: "100%",
-                              md: 220,
+                              md: 210,
                             },
                           }}
                         ></LinearProgress>
@@ -1185,7 +1183,7 @@ class InfoCard extends Component {
                             borderRadius: 5,
                             width: {
                               xs: "100%",
-                              md: 220,
+                              md: 210,
                             },
                           }}
                         ></LinearProgress>
@@ -1210,7 +1208,7 @@ class InfoCard extends Component {
                             borderRadius: 5,
                             width: {
                               xs: "100%",
-                              md: 220,
+                              md: 210,
                             },
                           }}
                         ></LinearProgress>

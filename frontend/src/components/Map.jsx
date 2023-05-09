@@ -18,7 +18,7 @@ import Link from "@mui/material/Link";
 
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc,collection, onSnapshot } from "firebase/firestore";
+import { doc, collection, onSnapshot, getDocs, collectionGroup, query } from "firebase/firestore";
 
 import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
@@ -27,6 +27,7 @@ import SavedSchoolsList from "./SavedSchoolsList";
 import AdvanceFilters from "./AdvanceFilters";
 import MapCard from "./MapCard";
 import Pagination from "./Pagination";
+import Stats from "./Stats"
 
 import {IoLocationOutline} from "react-icons/io5/index.js"
 import StarIcon from '@mui/icons-material/Star';
@@ -37,13 +38,11 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
-import { Typography } from "@mui/material";
 
 const containerStyle = {
-  width: "100%",
   margin: 22,
   borderRadius: 8,
-  flexGrow: 1,
+  width: "100%",
 };
 
 const boroughs = ["Q", "M", "X", "K", "R"];
@@ -61,7 +60,6 @@ class Map extends Component {
     super(props);
     this.state = {
       schools: [],
-      advanceFilteredSchools: [],
       card: false,
       school: null,
       drawer: false,
@@ -81,8 +79,8 @@ class Map extends Component {
       activeFilters: [...boroughs],
       searchQuery: null,
       center: {
-        lat: 40.686065,
-        lng: -73.933439,
+        lat: 40.740977,
+        lng: -73.954670,
       },
       zoom: 11,
       saveList: false,
@@ -97,7 +95,7 @@ class Map extends Component {
       currentPage: 1,
       schoolsPerPage: 10,
       loading: false,
-
+      openStatsPage: false,
     };
     this.goToNearbySchool = this.goToNearbySchool.bind(this);
     this.startDirections = this.startDirections.bind(this);
@@ -125,26 +123,7 @@ class Map extends Component {
     }
   };
 
-  getReviews = () => {
-    const schoolRef = collection(
-      db,
-      `school/`
-    );
-    onSnapshot(schoolRef, (docSnap) => {
-      docSnap.forEach((doc) => {
-        if(doc.exists()) {
-          console.log(doc.data())
-        }
-        
-      })
-    })
-  }
-
   componentDidMount() {
-    this.setState({
-      loading: true
-    })
-    this.getReviews();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -188,6 +167,9 @@ class Map extends Component {
         sports: sport,
       })
     }
+  }
+
+  getReviews = () => {
   }
 
   setSavedSchools = (data) => {
@@ -282,6 +264,16 @@ class Map extends Component {
     })
   }
 
+  setFilters = (borough, neighborhood, apCourse, language, sports) => {
+    this.setState({
+      activeFilters: borough,
+      neighborhood: neighborhood,
+      apCourses: apCourse,
+      languageCourse: language,
+      sports: sports,
+    });
+  };
+
   startDirections = (school) => {
     const coord = school.geocoded_column.coordinates;
     this.showCard(true, school);
@@ -293,7 +285,6 @@ class Map extends Component {
     this.handleDirections("dist", "");
     this.handleDirections("time", "");
   };
-
 
   render() {
     const indexOfLastSchool = this.state.currentPage * this.state.schoolsPerPage
@@ -329,8 +320,10 @@ class Map extends Component {
       return results;
     }
   
-    const apFiltered = apCourses.length !== 0 ? searchObj(apCourses, neighborhoodFiltered) : neighborhoodFiltered;
-    const langaugeFiltered = languageCourse.length !== 0 ? searchObj(languageCourse, neighborhoodFiltered) : apFiltered;
+    const apFiltered = apCourses.length !== 0 ? 
+      searchObj(apCourses, neighborhoodFiltered) : neighborhoodFiltered;
+    const langaugeFiltered = languageCourse.length !== 0 ? 
+      searchObj(languageCourse, neighborhoodFiltered) : apFiltered;
 
     const paginate = (number) => {
       console.log(number)
@@ -350,8 +343,7 @@ class Map extends Component {
               md: "row" 
             },
             backgroundColor: "#ffffff",
-            color: "white",
-            height: "100%",
+            height: "100vh",
           }}
         >
           {/* SIDE MENU BAR */}
@@ -382,13 +374,17 @@ class Map extends Component {
           </Stack>
 
           {/* TOP NAV BAR */}
-          <Box sx={{ width: "100%", height: "100%"}} className= "navBar">
+          <Box sx={{ width: "100%", height: "100%" }} className= "navBar">
             <Grid container sx={{display: "flex", flexDirection: "column"}}>
               <Grid item sx={{ backgroundColor: "transparent" }}>
                 <AppBar elevation={0} position="static" sx={{ backgroundColor: "transparent" }}>
                   <Toolbar sx={{ zIndex: { xs: 1, md: 100 } }} disableGutters>
                     <Stack
-                      direction={{ xs: "column", sm: "column", md: "row" }}
+                      direction={{ 
+                        xs: "column", 
+                        sm: "column", 
+                        md: "row" 
+                      }}
                       spacing={{ xs: 2, sm: 2, md: 2 }}
                       sx={{
                         display: "flex",
@@ -430,8 +426,7 @@ class Map extends Component {
                         sx={{
                           ml: { xs: 0, sm: 2, md: 2 },
                           m: { xs: 2 },
-                          width: { xs: "93%", md: 570 },
-                          backgroundColor: "transparent",
+                          maxWidth: { xs: "100%", md: 800 },
                         }}
                         renderInput={(params) => {
                           return (
@@ -456,16 +451,20 @@ class Map extends Component {
                           );
                         }}
                       />
+                      {/* FILTERS */}
                       <Stack
                         direction="row"
                         spacing={2}
                         sx={{
-                          overflow: "auto",
-                          ml: {
-                            xs: 1,
+                          m: {
+                            xs: 9,
                             md: 1,
                           },
-                          p: 1,
+                          p: {xs: 0, md: 1},
+                          display: "flex",
+                          alignItems: "center",
+                          maxWidth: { xs: "100vw", sm: "100%", md: "100%" },
+                          overflowX: "auto",
                         }}
                       >
                         {boroughs.map((borough) => (
@@ -508,7 +507,7 @@ class Map extends Component {
                         ))}
                         <Button
                           variant="contained"
-                          onClick={() => { this.handleAdvanceFilterOpen.bind(null, true) }}
+                          onClick={() => this.handleAdvanceFilterOpen(true, null) }
                           sx={{
                             backgroundColor: "#ffffff",
                             color: "#256fd4",
@@ -540,129 +539,161 @@ class Map extends Component {
               <Grid item sx={{
                 display: "flex",
                 flexDirection: { 
-                  xs: "column", 
-                  sm: "column", 
+                  xs: "column-reverse", 
                   md: "row" 
                 },
-                flexGrow: 1,
-                maxHeight: 850
+                maxHeight: {xs: "100%", sm: 600, md: 850},
+                height: {xs: "100%", sm: 600, md: "100%"},
               }}>
+
+                {/* STATS AND USER LIST */}
+                {this.props.openStatsPage && (
+                  <Stats
+                    onClose={() => this.setState({ openStatsPage: false })}
+                    school={this.props.location.state.dbn}
+                    schoolName={this.props.location.state.school_name}
+                  />
+                )}
+                {this.state.saveList && (
+                  <SavedSchoolsList
+                    goToSchool={this.goToNearbySchool}
+                    onClose={() => this.setState({ saveList: false })}
+                  />
+                )}
+
+                {/* SIDE CARDS OF ALL SCHOOLS */}
                 <Grid sx={{
                   p: 2,
                   overflowY: "scroll",
                   "&::-webkit-scrollbar-track": {
                     m: 6
-                  }
-
+                  },
+                  display: {xs: "none", md: "flex"}
                 }}
                   container
                   spacing={4}>
                   {langaugeFiltered.slice(indexOfFirstSchool, indexOfLastSchool).map((school, key) => {
                     return (
                       <Grid item xs={12} md={6} key={key}>
-                        <MapCard school={school} loading={this.state.loading} />
+                        <MapCard 
+                          school={school} 
+                          loading={this.state.loading} 
+                          openCard={this.showCard} 
+                          goToSchool={this.goToNearbySchool}
+                        />
                       </Grid>
                     );
                   })}
-                  <Pagination
+                 {this.state.card ? null : <Pagination
                     schoolsPerPage={this.state.schoolsPerPage}
-                    totalSchools={schools.length}
+                    totalSchools={langaugeFiltered.length}
                     paginate={paginate}
-                  />
+                  />}
                   
                 </Grid>
-                <GoogleMap
-                  mapContainerStyle={containerStyle}
-                  center={this.state.center}
-                  zoom={this.state.zoom}
-                  clickableIcons={false}
-                  onClick={() => {
-                    this.showCard(false, null);
-                    this.handleDirectionsPanel(false);
-                    this.props.navHook("/map");
-                  }}
-                  onZoomChanged={() => {
-                    if (this.map && !this.state.directionsRenderer) {
-                      this.setState({
-                        zoom: this.map.getZoom(),
-                      });
-                    }
-                  }}
-                  onLoad={(map) => (this.map = map)}
-                  options={{
-                    zoomControl: false,
-                    mapTypeControl: false,
-                    fullscreenControl: false,
-                  }}
-                >
-                  <Directions
-                    modify={this.handleDirections}
-                    card={this.state.card}
-                    opened={this.state.directionsRenderer}
-                    {...this.state.dirOpts}
-                  />
-                  <StreetViewPanorama
-                    onVisibleChanged={() => {
-                      this.showCard(false, null);
-                      this.setVisible(true, null);
-                      console.log("visibility changed");
-                    }}
-                    onPovChanged={() => {
-                      console.log("changed ");
-                    }}
-                    onCloseclick={(e) => {
-                      console.log("closed Street view");
-                    }}
-                  />
-                  {langaugeFiltered.map((school, key) => {
-                    return (
-                      <MarkerF
-                        key={key}
-                        position={{
-                          lat: Number(school.latitude),
-                          lng: Number(school.longitude),
-                        }}
-                        onClick={() => {
-                          this.startDirections(school);
-                          this.props.navHook(`${school.school_name}`, {
-                            state: {
-                              school: school,
-                              latitude: Number(school.latitude),
-                              longitude: Number(school.longitude),
-                            },
-                          });
-                        }}
+
+                {/* MIDDLE POP UP CARD */}
+
+                <Grid continer sx={{
+                  overflowY: "scroll",
+                  "&::-webkit-scrollbar-track": {
+                    m: 2
+                  },
+                }}>
+                  <Grid item xs={12} sx={{
+                    width: "100%",
+                  }}>
+                    {this.state.card && (
+                      <InfoCard
+                        school={this.state.school}
+                        key={this.state.school + "2031"}
+                        updateDirOpts={this.handleDirections}
+                        handleDirPanel={this.handleDirectionsPanel}
+                        opened={this.state.directionsRenderer}
+                        {...this.state.dirOpts}
+                        goToSchool={this.goToNearbySchool}
+                        mobileClose={this.showCard}
                       />
-                    );
-                  })}
-                  {this.state.card && (
-                    <InfoCard
-                      school={this.state.school}
-                      key={this.state.school + "2031"}
-                      updateDirOpts={this.handleDirections}
-                      handleDirPanel={this.handleDirectionsPanel}
+                    )}
+                  </Grid>
+                </Grid>
+
+                {/* MAP */}
+  
+                  <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={this.state.center}
+                    zoom={this.state.zoom}
+                    clickableIcons={false}
+                    onClick={() => {
+                      this.showCard(false, null);
+                      this.handleDirectionsPanel(false);
+                      this.props.navHook("/map");
+                    }}
+                    onZoomChanged={() => {
+                      if (this.map && !this.state.directionsRenderer) {
+                        this.setState({
+                          zoom: this.map.getZoom(),
+                        });
+                      }
+                    }}
+                    onLoad={(map) => (this.map = map)}
+                    options={{
+                      zoomControl: false,
+                      mapTypeControl: false,
+                      fullscreenControl: false,
+                    }}
+                  >
+                    <Directions
+                      modify={this.handleDirections}
+                      card={this.state.card}
                       opened={this.state.directionsRenderer}
                       {...this.state.dirOpts}
-                      goToSchool={this.goToNearbySchool}
-                      mobileClose={this.showCard}
-                      openStats={this.props.location.state.card}
                     />
-                  )}
-                  {this.state.saveList && (
-                    <SavedSchoolsList
-                      goToSchool={this.goToNearbySchool}
-                      onClose={() => this.setState({ saveList: false })}
+                    <StreetViewPanorama
+                      onVisibleChanged={() => {
+                        this.showCard(false, null);
+                        this.setVisible(true, null);
+                      }}
+                      onPovChanged={() => {
+                        console.log("changed ");
+                      }}
+                      onCloseclick={(e) => {
+                        console.log("closed Street view");
+                      }}
                     />
-                  )}
-                  {this.state.advanceFilters && (
-                    <AdvanceFilters
-                      handleClose={() => setOpen(false)}
-                    />
-                  )}
+                    {langaugeFiltered.map((school, key) => {
+                      return (
+                        <MarkerF
+                          key={key}
+                          position={{
+                            lat: Number(school.latitude),
+                            lng: Number(school.longitude),
+                          }}
+                          onClick={() => {
+                            this.startDirections(school);
+                            this.props.navHook(`${school.school_name}`, {
+                              state: {
+                                school: school,
+                                latitude: Number(school.latitude),
+                                longitude: Number(school.longitude),
+                              },
+                            });
+                          }}
+                        />
+                      );
+                    })}
+                    {this.state.advanceFilters && (
+                      <AdvanceFilters
+                        handleClose={() => this.handleAdvanceFilterOpen(false)}
+                        handleFilter={() => this.setFilters}
+                        mapPage={true}
+                      />
+                    )}
+                  </GoogleMap>
+                </Grid>
 
-                </GoogleMap>
-              </Grid>
-              
+      
             </Grid>
           </Box>
         </Box>
