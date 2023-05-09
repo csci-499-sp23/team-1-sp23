@@ -1,16 +1,8 @@
 import { Box, Typography, MenuItem, Menu } from "@mui/material";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormLabel from '@mui/material/FormLabel';
-import Chip from '@mui/material/Chip';
-import Select from "@mui/material/Select";
+
 import LiveSearch from "../LiveSearch";
-import ListSubheader from "@mui/material/ListSubheader";
+import AdvanceFilters from "../AdvanceFilters";
 
 import { useNavigate } from 'react-router-dom';
 
@@ -78,15 +70,6 @@ export default function HomepageView() {
     }
   }, []);
 
-  const filteredNeighborhoodArr = Schools.reduce((acc, current) => {
-    const x = acc.find((item) => (item.neighborhood === current.neighborhood));
-    if (!x) {
-      return acc.concat([current]);
-    } else {
-      return acc;
-    }
-  }, [])
-
   filteredArr.forEach(school => {
     if (school.language_classes != undefined) {
       const language = school.language_classes.trim().split(", ")
@@ -121,17 +104,7 @@ export default function HomepageView() {
     coedSportArr.sort()
   })
 
-  const filteredLanguageArr = [...new Set(languageArr)]
-  const filteredSportsArr = [...new Set(boysSportArr)]
-  const filteredGirlsSportsArr = [...new Set(girlsSportArr)]
-  const filtredCoedSportsArr = [...new Set(coedSportArr)]
-
   const [open, setOpen] = React.useState(false);
-  const [borough, setBorough] = React.useState([]);
-  const [neighborhood, setNeighborhood] = React.useState([])
-  const [apCourse, setAPcourse] = React.useState([])
-  const [language, setLanguage] = React.useState([]);
-  const [sports, setSports] = React.useState([])
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
@@ -140,75 +113,9 @@ export default function HomepageView() {
     });
   }, []);
 
-  const handleChange = (e) => {
-    setBorough((e.target.value));
-  };
-
-  const handleAPChange = (e) => {
-    const {
-      target: { value },
-    } = e
-    setAPcourse(
-      typeof value === "string" ? value.split(',') : value
-    )
-  }
-
-  const handleNeighborhoodChange = (e) => {
-    const {
-      target: { value },
-    } = e
-    setNeighborhood(
-      typeof value === "string" ? value.split(',') : value
-    )
-  }
-
-  const handleLanguageChange = (e) => {
-    const {
-      target: { value },
-    } = e
-    setLanguage(
-      typeof value === "string" ? value.split(',') : value
-    )
-  }
-
-  const handleSportsChange = (e) => {
-    const {
-      target: { value },
-    } = e
-    setSports(
-      typeof value === "string" ? value.split(',') : value
-    )
-  }
-
-  const handleSearch = () => {
-    navigate(`./map/`, {
-      state: {
-        borough: borough,
-        neighborhood: neighborhood,
-        apCourse: apCourse,
-        language: language,
-        sports: sports,
-      }
-    });
-  }
-
   const handleClickOpen = () => {
     setOpen(true);
   };
-
-  const handleClose = (event, reason) => {
-    if (reason !== "backdropClick") {
-      setOpen(false);
-    }
-  };
-
-  const clearFilters = () => {
-    setBorough([])
-    setAPcourse([])
-    setLanguage([])
-    setSports([])
-    setNeighborhood([])
-  }
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -245,243 +152,7 @@ export default function HomepageView() {
           >
             Advance Search
           </Button>
-          <Dialog disableEscapeKeyDown open={open} onClose={handleClose} fullWidth maxWidth="md">
-            <DialogTitle>Filter your Search</DialogTitle>
-            <DialogContent>
-              <Box
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  flexDirection: "column"
-                }}
-              >
-                <Box sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  maxWidth: "100%"
-                }}>
-                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "50%" }}>
-                    <FormLabel component="legend">Borough</FormLabel>
-                    <Select
-                      multiple
-                      displayEmpty
-                      value={borough}
-                      onChange={handleChange}
-                      labelId="borough-selector"
-                    >
-                      <MenuItem value={"Q"}>Queens</MenuItem>
-                      <MenuItem value={"K"}>Brooklyn</MenuItem>
-                      <MenuItem value={"X"}>Bronx</MenuItem>
-                      <MenuItem value={"M"}>Manhattan</MenuItem>
-                      <MenuItem value={"R"}>Staten Island</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <FormControl sx={{ m: 1, width: "100%", maxWidth: "50%" }}>
-                    <FormLabel component="legend">Neighborhood</FormLabel>
-                    <Select
-                      multiple
-                      displayEmpty
-                      value={neighborhood}
-                      onChange={handleNeighborhoodChange}
-                      labelId="neighborhood-selector"
-                      MenuProps={{sx: {maxHeight: 350}}}
-                    >
-                      <ListSubheader sx={{
-                          fontSize: "1rem",
-                          ml: 1,
-                          mr: 1,
-                          borderBottom: "1px solid #222222"
-                        }}>Queens</ListSubheader>
-                      {filteredNeighborhoodArr.map((school) =>
-                        school.borocode == "Q" ?
-                        <MenuItem
-                          key={school.neighborhood}
-                          value={school.neighborhood}
-                        >
-                          {school.neighborhood}
-                        </MenuItem> : null
-                      )}
-                      <ListSubheader sx={{
-                        fontSize: "1rem",
-                        ml: 1,
-                        mr: 1,
-                        borderBottom: "1px solid #222222"
-                      }}>Manhattan</ListSubheader>
-                      {filteredNeighborhoodArr.map((school) =>
-                        school.borocode == "M" ?
-                          <MenuItem
-                            key={school.neighborhood}
-                            value={school.neighborhood}
-                          >
-                            {school.neighborhood}
-                          </MenuItem> : null
-                      )}
-                      <ListSubheader sx={{
-                        fontSize: "1rem",
-                        ml: 1,
-                        mr: 1,
-                        borderBottom: "1px solid #222222"
-                      }}>Brooklyn</ListSubheader>
-                      {filteredNeighborhoodArr.map((school) =>
-                        school.borocode == "K" ?
-                          <MenuItem
-                            key={school.neighborhood}
-                            value={school.neighborhood}
-                          >
-                            {school.neighborhood}
-                          </MenuItem> : null
-                      )}
-                      <ListSubheader sx={{
-                        fontSize: "1rem",
-                        ml: 1,
-                        mr: 1,
-                        borderBottom: "1px solid #222222"
-                      }}>Bronx</ListSubheader>
-                      {filteredNeighborhoodArr.map((school) =>
-                        school.borocode == "X" ?
-                          <MenuItem
-                            key={school.neighborhood}
-                            value={school.neighborhood}
-                          >
-                            {school.neighborhood}
-                          </MenuItem> : null
-                      )}
-                      <ListSubheader sx={{
-                        fontSize: "1rem",
-                        ml: 1,
-                        mr: 1,
-                        borderBottom: "1px solid #222222"
-                      }}>Staten Island</ListSubheader>
-                      {filteredNeighborhoodArr.map((school) =>
-                        school.borocode == "R" ?
-                          <MenuItem
-                            key={school.neighborhood}
-                            value={school.neighborhood}
-                          >
-                            {school.neighborhood}
-                          </MenuItem> : null
-                      )}
-                    </Select>
-                  </FormControl>
-
-                </Box>
-                <Box sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  maxWidth: "100%"
-                }}>
-
-                  <FormControl sx={{ m: 1, width: "100%" }}>
-                    <FormLabel component="legend">AP Courses</FormLabel>
-                    <FormGroup>
-                      <Select
-                        multiple
-                        value={apCourse}
-                        onChange={handleAPChange}
-                        MenuProps={{sx: {maxHeight: 350}}}
-                      >
-                        {apCourses.map(course =>
-                          <MenuItem
-                            key={course}
-                            value={course}
-                          >
-                            {course}
-                          </MenuItem>
-                        )}
-                      </Select>
-
-                    </FormGroup>
-                  </FormControl>
-
-                  <FormControl sx={{ m: 1, width: "100%" }}>
-                    <FormLabel component="legend">Language Classes</FormLabel>
-                    <FormGroup>
-                      <Select
-                        multiple
-                        value={language}
-                        onChange={handleLanguageChange}
-                        MenuProps={{sx: {maxHeight: 350}}}
-                      >
-                        {filteredLanguageArr.map((language) => (
-                          <MenuItem
-                            key={language}
-                            value={language}
-                          >
-                            {language}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormGroup>
-                  </FormControl>
-                </Box>
-
-                <Box sx={{
-                  display: "flex",
-                  flexDirection: "column"
-                }}>
-                  <FormControl sx={{ m: 1 }}>
-                    <FormLabel component="legend">Sports</FormLabel>
-                    <FormGroup>
-                      <Select
-                        multiple
-                        value={sports}
-                        onChange={handleSportsChange}
-                        MenuProps={{sx: {maxHeight: 400}}}
-                      >
-                        <ListSubheader sx={{
-                          fontSize: "1rem",
-                          mr: 2,
-                          ml: 2,
-                          borderBottom: "1px solid #222222"
-                        }}>Girls Sports</ListSubheader>
-                        {filteredGirlsSportsArr.map((sport, key) =>
-                          <MenuItem
-                            key={key}
-                            value={sport}>
-                            {sport}
-                          </MenuItem>
-                        )}
-
-                        <ListSubheader sx={{
-                          fontSize: "1rem",
-                          m: 2,
-                          borderBottom: "1px solid #222222"
-                        }}>Coed Sports</ListSubheader>
-                        {filtredCoedSportsArr.map((sport, key) =>
-                          <MenuItem
-                            key={key}
-                            value={sport}>
-                            {sport}
-                          </MenuItem>
-                        )}
-                        <ListSubheader sx={{
-                          fontSize: "1rem",
-                          m: 2,
-                          borderBottom: "1px solid #222222"
-                        }}>Boys Sports</ListSubheader>
-                        {filteredSportsArr.map((sport, key) =>
-                          <MenuItem
-                            key={"boy"+key}
-                            value={sport}
-                          >
-                            {sport}
-                          </MenuItem>
-                        )}
-                      </Select>
-                    </FormGroup>
-                  </FormControl>
-                </Box>
-
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={clearFilters}>Clear Filters</Button>
-              <Button onClick={handleSearch}>Search</Button>
-            </DialogActions>
-          </Dialog>
+          {open && (<AdvanceFilters handleClose={() => setOpen(false)}/>)}
         </div>
       </Box>
     </>

@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import { GoogleMap, MarkerF, StreetViewPanorama } from "@react-google-maps/api";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia"
+import Grid from "@mui/material/Grid"
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -10,28 +15,32 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import Link from "@mui/material/Link";
-import HomeIcon from "@mui/icons-material/Home";
-import MapIcon from "@mui/icons-material/Map";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { auth } from "../config/firebase";
+
+import { auth, db } from "../config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, collection, onSnapshot, getDocs, collectionGroup, query } from "firebase/firestore";
+
 import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
 import Directions from "./Directions";
 import SavedSchoolsList from "./SavedSchoolsList";
+import AdvanceFilters from "./AdvanceFilters";
+import MapCard from "./MapCard";
+import Pagination from "./Pagination";
+import Stats from "./Stats"
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormLabel from '@mui/material/FormLabel';
+import {IoLocationOutline} from "react-icons/io5/index.js"
+import StarIcon from '@mui/icons-material/Star';
+import HomeIcon from "@mui/icons-material/Home";
+import MapIcon from "@mui/icons-material/Map";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
 
 const containerStyle = {
+  borderRadius: 8,
   width: "100%",
   height: "100%",
 };
@@ -51,11 +60,10 @@ class Map extends Component {
     super(props);
     this.state = {
       schools: [],
-      advanceFilteredSchools: [],
       card: false,
       school: null,
       drawer: false,
-      savedSchools: false,
+      List: false,
       advanceFilters: false,
       dirOpts: {
         origin: "",
@@ -71,8 +79,8 @@ class Map extends Component {
       activeFilters: [...boroughs],
       searchQuery: null,
       center: {
-        lat: 40.702944,
-        lng: -73.89347,
+        lat: 40.740977,
+        lng: -73.954670,
       },
       zoom: 11,
       saveList: false,
@@ -82,12 +90,52 @@ class Map extends Component {
       apCourses: [],
       languageCourse: [],
       sports: [],
+      savedSchoolsList: [],
+
+      currentPage: 1,
+      schoolsPerPage: 10,
+      loading: false,
+      openStatsPage: false,
     };
     this.goToNearbySchool = this.goToNearbySchool.bind(this);
     this.startDirections = this.startDirections.bind(this);
   }
 
+  handleSave = (name) => {
+    if (auth.currentUser != null || undefined) {
+      if(!this.state.List.includes(name)) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        return updateDoc(docRef, {
+          saved_schools: arrayUnion(name),
+        });
+      }
+      else {
+        const docRef = doc(db, 'users', auth.currentUser.uid)
+        const removedSchool = this.state.List.filter(
+          school => school !== name
+        )
+        return updateDoc(docRef, {
+          saved_schools: removedSchool
+        })
+      }
+    } else {
+      console.log("you are not logged in!");
+    }
+  };
+
   componentDidMount() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+            this.setSavedSchools(docSnap.data().saved_schools);
+          } else {
+            console.log("document does not exist");
+          }
+        })
+      }
+    });
     if (this.props.location.state && this.props.location.state.longitude) {
       const { longitude, latitude, school, card } = this.props.location.state;
       this.setState({
@@ -99,7 +147,8 @@ class Map extends Component {
       .then((response) => response.json())
       .then((data) => {
         this.setState({ 
-          schools: data 
+          schools: data,
+          loading: false,
         });
       })
       .catch((error) => console.log(error));
@@ -118,6 +167,15 @@ class Map extends Component {
         sports: sport,
       })
     }
+  }
+
+  getReviews = () => {
+  }
+
+  setSavedSchools = (data) => {
+    this.setState({
+      savedSchoolsList: data
+    })
   }
 
   showCard = (bool, obj) => {
@@ -149,13 +207,6 @@ class Map extends Component {
     }
     this.setState({ activeFilters, selectedBorough: borough });
   }
-
-  navbarVisibility = (bool) => {
-    console.log("entered street view", bool);
-    this.setState({
-      navbar: bool,
-    });
-  };
 
   handleListOpen = (bool) => {
     this.setState({
@@ -207,6 +258,22 @@ class Map extends Component {
     });
   };
 
+  handleAdvanceFilterOpen = (bool) => {
+    this.setState({
+      advanceFilters: bool,
+    })
+  }
+
+  setFilters = (borough, neighborhood, apCourse, language, sports) => {
+    this.setState({
+      activeFilters: borough,
+      neighborhood: neighborhood,
+      apCourses: apCourse,
+      languageCourse: language,
+      sports: sports,
+    });
+  };
+
   startDirections = (school) => {
     const coord = school.geocoded_column.coordinates;
     this.showCard(true, school);
@@ -219,13 +286,10 @@ class Map extends Component {
     this.handleDirections("time", "");
   };
 
-  handleAdvanceFilterOpen = (bool) => {
-    this.setState({
-      advanceFilters: bool,
-    })
-  }
-
   render() {
+    const indexOfLastSchool = this.state.currentPage * this.state.schoolsPerPage
+    const indexOfFirstSchool = indexOfLastSchool - this.state.schoolsPerPage
+
     const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
     const schoolsFiltered = schools.filter((school) =>
       activeFilters.includes(school.borocode)
@@ -251,31 +315,355 @@ class Map extends Component {
             })
           }
         }
-      })
-      console.log("we updating")
+      }, [])
+      console.log("updating")
       return results;
     }
   
-    const apFiltered = apCourses.length !== 0 ? searchObj(apCourses, neighborhoodFiltered) : neighborhoodFiltered;
-    const langaugeFiltered = languageCourse.length !== 0 ? searchObj(languageCourse, neighborhoodFiltered) : apFiltered;
+    const apFiltered = apCourses.length !== 0 ? 
+      searchObj(apCourses, neighborhoodFiltered) : neighborhoodFiltered;
+    const langaugeFiltered = languageCourse.length !== 0 ? 
+      searchObj(languageCourse, neighborhoodFiltered) : apFiltered;
+
+    const paginate = (number) => {
+      console.log(number)
+      this.setState({
+        currentPage: number
+      })
+    }
 
     return (
-      <MapLoader>
+      // <Grid container sx={{
+      //   display: "flex",
+      //   flexDirection: {
+      //     xs: "column",
+      //     md: "column"
+      //   },
+      //   backgroundColor: "#ffffff",
+      //   height: "100dvh",
+      // }}>
+
+      //   {/* TOP NAV SEARCH AND FILTER BAR */}
+      //   <Grid item>
+      //     <AppBar elevation={0} position="static" sx={{ backgroundColor: "transparent", height: 80 }}>
+      //       <Toolbar sx={{ zIndex: { xs: 1, md: 100 } }} disableGutters>
+      //         <Stack
+      //           direction={{
+      //             xs: "column",
+      //             sm: "column",
+      //             md: "row"
+      //           }}
+      //           spacing={{ xs: 2, sm: 2, md: 2 }}
+      //           sx={{
+      //             display: "flex",
+      //             justifyContent: "flex-start",
+      //             maxWidth: "100%",
+      //             width: "100%"
+      //           }}
+      //         >
+      //           <MAutocomplete
+      //             options={this.state.schools}
+      //             getOptionLabel={(option) => option.school_name}
+      //             noOptionsText="School not found"
+      //             blurOnSelect
+      //             onChange={(e, school) => {
+      //               this.props.navHook(`${school.school_name}`, {
+      //                 state: {
+      //                   school: school,
+      //                   latitude: Number(school.latitude),
+      //                   longitude: Number(school.longitude),
+      //                 },
+      //               });
+      //               this.goToNearbySchool(
+      //                 Number(school.longitude),
+      //                 Number(school.latitude),
+      //                 school
+      //               );
+      //             }}
+      //             PaperComponent={(props) => (
+      //               <Paper
+      //                 {...props}
+      //                 sx={{
+      //                   borderRadius: 0,
+      //                   borderBottomLeftRadius: 15,
+      //                   borderBottomRightRadius: 15,
+      //                   boxShadow: "0 0.25rem 0.25rem gray",
+      //                   mt: "-0.6rem",
+      //                 }}
+      //               />
+      //             )}
+      //             sx={{
+      //               ml: { xs: 0, sm: 2, md: 2 },
+      //               m: { xs: 2 },
+      //               maxWidth: { xs: "100%", md: 500 },
+      //               width: "100%"
+      //             }}
+      //             renderInput={(params) => {
+      //               return (
+      //                 <Paper
+      //                   ref={params.InputProps.ref}
+      //                   sx={{
+      //                     p: "0.5rem",
+      //                     display: "flex",
+      //                     borderRadius: 3,
+      //                   }}
+      //                   elevation={3}
+      //                 >
+      //                   <SearchIcon
+      //                     sx={{ color: "#1877d2", alignSelf: "center" }}
+      //                   />
+      //                   <InputBase
+      //                     inputProps={{ ...params.inputProps }}
+      //                     placeholder="Search for a school"
+      //                     sx={{ width: "100%", ml: "0.25rem" }}
+      //                   />
+      //                 </Paper>
+      //               );
+      //             }}
+      //           />
+      //           {/* FILTERS */}
+      //           <Stack
+      //             direction="row"
+      //             spacing={2}
+      //             sx={{
+      //               m: {
+      //                 xs: 9,
+      //                 md: 1,
+      //               },
+      //               p: { xs: 0, md: 1 },
+      //               display: "flex",
+      //               alignItems: "center",
+      //               maxWidth: { xs: "100vw", sm: "100%", md: "100%" },
+      //               overflowX: "auto",
+      //               width: "100%"
+      //             }}
+      //           >
+      //             {boroughs.map((borough) => (
+      //               <Button
+      //                 key={borough}
+      //                 variant="contained"
+      //                 onClick={() => {
+      //                   this.handleFilter(borough);
+      //                   // this.props.navHook(`/filter/${borough}`)
+      //                 }}
+      //                 sx={{
+      //                   backgroundColor:
+      //                     this.state.activeFilters.includes(borough)
+      //                       ? "white"
+      //                       : "#ffffff",
+      //                   color: this.state.activeFilters.includes(
+      //                     borough
+      //                   )
+      //                     ? "#256fd4"
+      //                     : "gray",
+      //                   fontWeight: 500,
+      //                   fontSize: 14,
+      //                   padding: {
+      //                     xs: "2px 3rem 2px 3rem",
+      //                     md: "2px 14px 0px 14px",
+      //                   },
+
+      //                   cursor: "pointer",
+      //                   whiteSpace: "nowrap",
+      //                   borderRadius: 5,
+      //                   "&:hover": {
+      //                     backgroundColor: "#efefef",
+      //                     color: "#256fd4",
+      //                   },
+      //                   textTransform: "none",
+      //                 }}
+      //               >
+      //                 {boroughNames[borough]}
+      //               </Button>
+      //             ))}
+      //             <Button
+      //               variant="contained"
+      //               onClick={() => this.handleAdvanceFilterOpen(true, null)}
+      //               sx={{
+      //                 backgroundColor: "#ffffff",
+      //                 color: "#256fd4",
+      //                 fontWeight: 500,
+      //                 fontSize: 14,
+      //                 padding: {
+      //                   xs: "2px 3rem 2px 3rem",
+      //                   md: "2px 14px 2px 14px",
+      //                 },
+      //                 cursor: "pointer",
+      //                 whiteSpace: "nowrap",
+      //                 borderRadius: 5,
+      //                 "&:hover": {
+      //                   backgroundColor: "#efefef",
+      //                   color: "#256fd4",
+      //                 },
+      //                 textTransform: "none",
+      //               }}
+      //             >
+      //               More options
+      //             </Button>
+      //           </Stack>
+      //         </Stack>
+      //       </Toolbar>
+      //     </AppBar>
+      //   </Grid>
+
+      //   {/* MIDDLE CONTAINER */}
+      //   <Grid item sx={{display: "flex", maxHeight: "100%" }}>
+      //     <Grid sx={{
+      //       p: 2,
+      //       overflowY: "scroll",
+      //       "&::-webkit-scrollbar-track": {
+      //         m: 6
+      //       },
+      //       display: { xs: "none", md: "flex" },
+      //       height: "92vh",
+      //     }}
+      //       container
+      //       spacing={3}>
+      //       {langaugeFiltered.slice(indexOfFirstSchool, indexOfLastSchool).map((school, key) => {
+      //         return (
+      //           <Grid item xs={12} sm={12} md={6} key={key}>
+      //             <MapCard
+      //               school={school}
+      //               loading={this.state.loading}
+      //               openCard={this.showCard}
+      //               goToSchool={this.goToNearbySchool}
+      //             />
+      //           </Grid>
+      //         );
+      //       })}
+      //       {this.state.card ? null : <Pagination
+      //         schoolsPerPage={this.state.schoolsPerPage}
+      //         totalSchools={langaugeFiltered.length}
+      //         paginate={paginate}
+      //       />}
+
+      //     </Grid>
+
+      //     {/* MIDDLE POP UP CARD */}
+
+      //     <Grid continer sx={{
+      //       overflowY: "scroll",
+      //       "&::-webkit-scrollbar-track": {
+      //         m: 2
+      //       },
+      //     }}>
+      //       <Grid item xs={12} sx={{
+      //         width: "100%",
+      //       }}>
+      //         {this.state.card && (
+      //           <InfoCard
+      //             school={this.state.school}
+      //             key={this.state.school + "2031"}
+      //             updateDirOpts={this.handleDirections}
+      //             handleDirPanel={this.handleDirectionsPanel}
+      //             opened={this.state.directionsRenderer}
+      //             {...this.state.dirOpts}
+      //             goToSchool={this.goToNearbySchool}
+      //             mobileClose={this.showCard}
+      //           />
+      //         )}
+      //       </Grid>
+      //     </Grid>
+
+      //     <Grid item sx={{ width: "100%", maxHeight: "100%", m: 2}}>
+      //       <MapLoader>
+      //         <GoogleMap
+      //           mapContainerStyle={containerStyle}
+      //           center={this.state.center}
+      //           zoom={this.state.zoom}
+      //           clickableIcons={false}
+      //           onClick={() => {
+      //             this.showCard(false, null);
+      //             this.handleDirectionsPanel(false);
+      //             this.props.navHook("/map");
+      //           }}
+      //           onZoomChanged={() => {
+      //             if (this.map && !this.state.directionsRenderer) {
+      //               this.setState({
+      //                 zoom: this.map.getZoom(),
+      //               });
+      //             }
+      //           }}
+      //           onLoad={(map) => (this.map = map)}
+      //           options={{
+      //             zoomControl: false,
+      //             mapTypeControl: false,
+      //             fullscreenControl: false,
+      //           }}
+      //         >
+      //           <Directions
+      //             modify={this.handleDirections}
+      //             card={this.state.card}
+      //             opened={this.state.directionsRenderer}
+      //             {...this.state.dirOpts}
+      //           />
+      //           <StreetViewPanorama
+      //             onVisibleChanged={() => {
+      //               this.showCard(false, null);
+      //               this.setVisible(true, null);
+      //             }}
+      //             onPovChanged={() => {
+      //               console.log("changed ");
+      //             }}
+      //             onCloseclick={(e) => {
+      //               console.log("closed Street view");
+      //             }}
+      //           />
+      //           {langaugeFiltered.map((school, key) => {
+      //             return (
+      //               <MarkerF
+      //                 key={key}
+      //                 position={{
+      //                   lat: Number(school.latitude),
+      //                   lng: Number(school.longitude),
+      //                 }}
+      //                 onClick={() => {
+      //                   this.startDirections(school);
+      //                   this.props.navHook(`${school.school_name}`, {
+      //                     state: {
+      //                       school: school,
+      //                       latitude: Number(school.latitude),
+      //                       longitude: Number(school.longitude),
+      //                     },
+      //                   });
+      //                 }}
+      //               />
+      //             );
+      //           })}
+      //           {this.state.advanceFilters && (
+      //             <AdvanceFilters
+      //               handleClose={() => this.handleAdvanceFilterOpen(false)}
+      //               handleFilter={() => this.setFilters}
+      //               mapPage={true}
+      //             />
+      //           )}
+      //         </GoogleMap>
+      //       </MapLoader>
+      //     </Grid>
+          
+      //   </Grid>
+      // </Grid>
+
+      <>
         <Drawerbar status={this.state.drawer} toggle={this.openDrawer} />
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column-reverse", md: "row" },
-            backgroundColor: "#2b2d42",
-            color: "white",
-            height: "100%",
+            flexDirection: {
+              xs: "column-reverse",
+              md: "row"
+            },
+            backgroundColor: "#ffffff",
+            height: "100vh",
           }}
         >
+          {/* SIDE MENU BAR */}
           <Stack
             sx={{
-              m: 1,
+              p: 1,
               flexDirection: { xs: "row", md: "column" },
               justifyContent: { xs: "space-evenly", md: "start" },
+              backgroundColor: "#2b2d42",
             }}
           >
             <Link href="/" sx={{ color: "white" }}>
@@ -295,68 +683,25 @@ class Map extends Component {
               </IconButton>
             ) : null}
           </Stack>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={this.state.center}
-            zoom={this.state.zoom}
-            clickableIcons={false}
-            onClick={() => {
-              this.showCard(false, null);
-              this.handleDirectionsPanel(false);
-              this.props.navHook("/map");
-            }}
-            onZoomChanged={() => {
-              if (this.map && !this.state.directionsRenderer) {
-                this.setState({
-                  zoom: this.map.getZoom(),
-                });
-              }
-            }}
-            onLoad={(map) => (this.map = map)}
-            options={{
-              zoomControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-            }}
-          >
-            <Directions
-              modify={this.handleDirections}
-              card={this.state.card}
-              opened={this.state.directionsRenderer}
-              {...this.state.dirOpts}
-            />
-            {/* Child components, such as markers, info windows, etc. this.navbarVisibility(false, null)*/}
 
-            <StreetViewPanorama
-              onVisibleChanged={() => {
-                this.showCard(false, null);
-                this.navbarVisibility(false, null);
-                this.setVisible(true, null);
-                console.log("visibility changed");
-              }}
-              onPovChanged={() => {
-                console.log("changed ");
-              }}
-              onCloseclick={(e) => {
-                console.log("closed Street view");
-              }}
-            />
-
-            <Box sx={{ flexGrow: 1 }}>
-              {this.state.navbar && (
-                <AppBar position="static">
-                  <Toolbar sx={{ zIndex: { xs: 1, md: 200 } }} disableGutters>
+          {/* TOP NAV BAR */}
+          <Box sx={{ width: "100%", height: "100%" }} className="navBar">
+            <Grid container sx={{ display: "flex", flexDirection: "column" }}>
+              <Grid item sx={{ backgroundColor: "transparent" }}>
+                <AppBar elevation={0} position="static" sx={{ backgroundColor: "transparent" }}>
+                  <Toolbar sx={{ zIndex: { xs: 1, md: 100 } }} disableGutters>
                     <Stack
-                      direction={{ xs: "column", sm: "column", md: "row" }}
-                      spacing={{ xs: 2, sm: 2, md: 4 }}
+                      direction={{
+                        xs: "column",
+                        sm: "column",
+                        md: "row"
+                      }}
+                      spacing={{ xs: 2, sm: 2, md: 2 }}
                       sx={{
                         display: "flex",
-                        justifyContent: "center",
-                        alignItems: {
-                          xs: "flex-start",
-                          md: "center",
-                        },
+                        justifyContent: "flex-start",
                         maxWidth: "100%",
+                        width: "100%"
                       }}
                     >
                       <MAutocomplete
@@ -393,8 +738,11 @@ class Map extends Component {
                         sx={{
                           ml: { xs: 0, sm: 2, md: 2 },
                           m: { xs: 2 },
-                          width: { xs: "93%", md: 570 },
-                          backgroundColor: "transparent",
+                          maxWidth: { xs: "100%", md: 500 },
+                          width: {
+                            xs: "auto", 
+                            md: "100%"
+                          }
                         }}
                         renderInput={(params) => {
                           return (
@@ -419,85 +767,47 @@ class Map extends Component {
                           );
                         }}
                       />
-                      <Box
+                      {/* FILTERS */}
+                      <Stack
+                        direction="row"
+                        spacing={2}
                         sx={{
-                          position: {
-                            md: "relative",
+                          m: {
+                            xs: 9,
+                            md: 1,
                           },
+                          p: { xs: 0, md: 1 },
                           display: "flex",
-                          justifyContent: {
-                            xs: "space-evenly",
-                            md: "flex-start",
-                          },
-                          width: "100%",
-                          ml: {
-                            xs: 0,
-                            md: 2,
-                          },
-                          maxWidth: "100%",
+                          alignItems: "center",
+                          maxWidth: { xs: "100vw", sm: "100%", md: "100%" },
+                          overflowX: "auto",
                         }}
                       >
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          sx={{
-                            overflow: "auto",
-                            ml: {
-                              xs: 2,
-                              md: 2,
-                            },
-                            p: 1,
-                          }}
-                        >
-                          {boroughs.map((borough) => (
-                            <Button
-                              key={borough}
-                              variant="contained"
-                              onClick={() => {
-                                this.handleFilter(borough);
-                                // this.props.navHook(`/filter/${borough}`)
-                              }}
-                              sx={{
-                                backgroundColor:
-                                  this.state.activeFilters.includes(borough)
-                                    ? "white"
-                                    : "#ffffff",
-                                color: this.state.activeFilters.includes(
-                                  borough
-                                )
-                                  ? "#256fd4"
-                                  : "gray",
-                                fontWeight: 500,
-                                fontSize: 14,
-                                padding: {
-                                  xs: "2px 3rem 2px 3rem",
-                                  md: "2px 14px 2px 14px",
-                                },
-                                cursor: "pointer",
-                                whiteSpace: "nowrap",
-                                borderRadius: 5,
-                                "&:hover": {
-                                  backgroundColor: "#efefef",
-                                  color: "#256fd4",
-                                },
-                                textTransform: "none",
-                              }}
-                            >
-                              {boroughNames[borough]}
-                            </Button>
-                          ))}
+                        {boroughs.map((borough) => (
                           <Button
+                            key={borough}
                             variant="contained"
-                            onClick={() => {this.handleAdvanceFilterOpen();}}
+                            onClick={() => {
+                              this.handleFilter(borough);
+                              // this.props.navHook(`/filter/${borough}`)
+                            }}
                             sx={{
-                              backgroundColor: "#ffffff",
-                              color:"#256fd4",
+                              backgroundColor:
+                                this.state.activeFilters.includes(borough)
+                                  ? "white"
+                                  : "#ffffff",
+                              color: this.state.activeFilters.includes(
+                                borough
+                              )
+                                ? "#256fd4"
+                                : "gray",
                               fontWeight: 500,
                               fontSize: 14,
                               padding: {
                                 xs: "2px 3rem 2px 3rem",
-                                md: "2px 14px 2px 14px",
+                                md: "2px 14px 0px 14px",
                               },
+
                               cursor: "pointer",
                               whiteSpace: "nowrap",
                               borderRadius: 5,
@@ -508,59 +818,211 @@ class Map extends Component {
                               textTransform: "none",
                             }}
                           >
-                            More options
+                            {boroughNames[borough]}
                           </Button>
-                        </Stack>
-                      </Box>
+                        ))}
+                        <Button
+                          variant="contained"
+                          onClick={() => this.handleAdvanceFilterOpen(true, null)}
+                          sx={{
+                            backgroundColor: "#ffffff",
+                            color: "#256fd4",
+                            fontWeight: 500,
+                            fontSize: 14,
+                            padding: {
+                              xs: "2px 3rem 2px 3rem",
+                              md: "2px 14px 2px 14px",
+                            },
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            borderRadius: 5,
+                            "&:hover": {
+                              backgroundColor: "#efefef",
+                              color: "#256fd4",
+                            },
+                            textTransform: "none",
+                          }}
+                        >
+                          More options
+                        </Button>
+                      </Stack>
                     </Stack>
                   </Toolbar>
                 </AppBar>
-              )}
-            </Box>
-            {langaugeFiltered.map((school, key) => {
-              return (
-                <MarkerF
-                  key={key}
-                  position={{
-                    lat: Number(school.latitude),
-                    lng: Number(school.longitude),
-                  }}
-                  onClick={() => {
-                    this.startDirections(school);
-                    this.props.navHook(`${school.school_name}`, {
-                      state: {
-                        school: school,
-                        latitude: Number(school.latitude),
-                        longitude: Number(school.longitude),
-                      },
-                    });
-                  }}
-                />
-              );
-            })}
-            {this.state.card && (
-              <InfoCard
-                school={this.state.school}
-                key={this.state.school + "2031"}
-                updateDirOpts={this.handleDirections}
-                handleDirPanel={this.handleDirectionsPanel}
-                opened={this.state.directionsRenderer}
-                {...this.state.dirOpts}
-                goToSchool={this.goToNearbySchool}
-                mobileClose={this.showCard}
-                openStats={this.props.location.state.card}
-              />
-            )}
-            {this.state.saveList && (
-              <SavedSchoolsList
-                goToSchool={this.goToNearbySchool}
-                onClose={() => this.setState({ saveList: false })}
-              />
-            )}
-            
-          </GoogleMap>
+              </Grid>
+
+              {/* MIDDLE CONTENT */}
+              <Grid item sx={{
+                display: "flex",
+                flexDirection: {
+                  xs: "column-reverse",
+                  md: "row"
+                },
+                maxHeight: { xs: "100%", sm: 600, md: 850 },
+                height: { xs: "100%", sm: 600, md: "100%" },
+              }}>
+
+                {/* STATS AND USER LIST */}
+                {this.props.openStatsPage && (
+                  <Stats
+                    onClose={() => this.setState({ openStatsPage: false })}
+                    school={this.props.location.state.dbn}
+                    schoolName={this.props.location.state.school_name}
+                  />
+                )}
+                {this.state.saveList && (
+                  <SavedSchoolsList
+                    goToSchool={this.goToNearbySchool}
+                    onClose={() => this.setState({ saveList: false })}
+                  />
+                )}
+
+                {/* SIDE CARDS OF ALL SCHOOLS */}
+                <Grid sx={{
+                  p: 2,
+                  overflowY: "scroll",
+                  "&::-webkit-scrollbar-track": {
+                    m: 6
+                  },
+                  display: { xs: "none", md: "flex" }
+                }}
+                  container
+                  spacing={4}>
+                  {langaugeFiltered.slice(indexOfFirstSchool, indexOfLastSchool).map((school, key) => {
+                    return (
+                      <Grid item xs={12} md={6} key={key}>
+                        <MapCard
+                          school={school}
+                          loading={this.state.loading}
+                          openCard={this.showCard}
+                          goToSchool={this.goToNearbySchool}
+                        />
+                      </Grid>
+                    );
+                  })}
+                  {this.state.card ? null : <Pagination
+                    schoolsPerPage={this.state.schoolsPerPage}
+                    totalSchools={langaugeFiltered.length}
+                    paginate={paginate}
+                  />}
+
+                </Grid>
+
+                {/* MIDDLE POP UP CARD */}
+
+                <Grid continer sx={{
+                  overflowY: "scroll",
+                  "&::-webkit-scrollbar-track": {
+                    m: 2
+                  },
+                }}>
+                  <Grid item xs={12} sx={{
+                    width: "100%",
+                  }}>
+                    {this.state.card && (
+                      <InfoCard
+                        school={this.state.school}
+                        key={this.state.school + "2031"}
+                        updateDirOpts={this.handleDirections}
+                        handleDirPanel={this.handleDirectionsPanel}
+                        opened={this.state.directionsRenderer}
+                        {...this.state.dirOpts}
+                        goToSchool={this.goToNearbySchool}
+                        mobileClose={this.showCard}
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+
+                {/* MAP */}
+
+                <Grid item sx={{ m: {
+                  xs: 2, 
+                  md: 2
+                }, 
+                  width: {xs: "auto", md: "100%"}, 
+                  maxHeight: "100%", 
+                  height: {xs: 400, md: "auto"}
+                }}>
+                  <MapLoader>
+                    <GoogleMap
+                      mapContainerStyle={containerStyle}
+                      center={this.state.center}
+                      zoom={this.state.zoom}
+                      clickableIcons={false}
+                      onClick={() => {
+                        this.showCard(false, null);
+                        this.handleDirectionsPanel(false);
+                        this.props.navHook("/map");
+                      }}
+                      onZoomChanged={() => {
+                        if (this.map && !this.state.directionsRenderer) {
+                          this.setState({
+                            zoom: this.map.getZoom(),
+                          });
+                        }
+                      }}
+                      onLoad={(map) => (this.map = map)}
+                      options={{
+                        zoomControl: false,
+                        mapTypeControl: false,
+                        fullscreenControl: false,
+                      }}
+                    >
+                      <Directions
+                        modify={this.handleDirections}
+                        card={this.state.card}
+                        opened={this.state.directionsRenderer}
+                        {...this.state.dirOpts}
+                      />
+                      <StreetViewPanorama
+                        onVisibleChanged={() => {
+                          this.showCard(false, null);
+                          this.setVisible(true, null);
+                        }}
+                        onPovChanged={() => {
+                          console.log("changed ");
+                        }}
+                        onCloseclick={(e) => {
+                          console.log("closed Street view");
+                        }}
+                      />
+                      {langaugeFiltered.map((school, key) => {
+                        return (
+                          <MarkerF
+                            key={key}
+                            position={{
+                              lat: Number(school.latitude),
+                              lng: Number(school.longitude),
+                            }}
+                            onClick={() => {
+                              this.startDirections(school);
+                              this.props.navHook(`${school.school_name}`, {
+                                state: {
+                                  school: school,
+                                  latitude: Number(school.latitude),
+                                  longitude: Number(school.longitude),
+                                },
+                              });
+                            }}
+                          />
+                        );
+                      })}
+                      {this.state.advanceFilters && (
+                        <AdvanceFilters
+                          handleClose={() => this.handleAdvanceFilterOpen(false)}
+                          handleFilter={() => this.setFilters}
+                          mapPage={true}
+                        />
+                      )}
+                    </GoogleMap>
+                  </MapLoader>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
-      </MapLoader>
+      </>
     );
   }
 }
