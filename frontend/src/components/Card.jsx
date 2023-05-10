@@ -468,7 +468,7 @@ class InfoCard extends Component {
         >
           <CardMedia
             sx={{ height: 190 }}
-            image={`/src/assets/school-images/${this.props.school.dbn}.png`}
+            image={`./src/assets/school-images/${this.props.school.dbn}.png`}
             title={this.props.school.school_name}
             ref={this.scrollToTop}
           >
@@ -1034,7 +1034,7 @@ class InfoCard extends Component {
                           >
                             <CardMedia
                               sx={{ height: 120 }}
-                              image={`/src/assets/school-images/${data.dbn}.png`}
+                              image={`./src/assets/school-images/${data.dbn}.png`}
                               title={data.school_name}
                             />
                             <CardContent>
