@@ -1,93 +1,135 @@
 import React, { Component } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia"
+import CardMedia from "@mui/material/CardMedia";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button"
+import Button from "@mui/material/Button";
 
-
-import { auth, db } from "../config/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc,collection, onSnapshot } from "firebase/firestore";
-
-import {IoLocationOutline} from "react-icons/io5/index.js"
-import StarIcon from '@mui/icons-material/Star';
+import { IoLocationOutline } from "react-icons/io5/index.js";
+import StarIcon from "@mui/icons-material/Star";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 import { Typography } from "@mui/material";
 
-function MapCard ({ school, loading, openCard, goToSchool }) {
+function MapCard({ school, loading, openCard, goToSchool }) {
+  const onClickEvent = () => {
+    openCard(true, school);
+    goToSchool(Number(school.longitude), Number(school.latitude), school);
+  };
+  if (loading) {
+    console.log("loading");
+  }
 
-    const onClickEvent = () => {
-        openCard(true, school)
-        goToSchool(Number(school.longitude), Number(school.latitude), school)
-    }
-    if (loading) {
-        console.log("loading")
-    }
-    return (
-        <Card elevation={0} sx={{
-            backgroundColor: "transparent",
-            border: "3px solid rgba(44, 44, 44, 0.15)",
-            borderRadius: "13px",
-            cursor: "pointer",
+  return (
+    <Card
+      elevation={0}
+      sx={{
+        backgroundColor: "transparent",
+        boxShadow:
+          "0px 0.4px 0.5px hsl(0deg 0% 52% / 0.35),0px 1.7px 2.1px -0.6px hsl(0deg 0% 52% / 0.41),0px 4px 4.9px -1.2px hsl(0deg 0% 52% / 0.47),0.1px 9.4px 11.5px -1.8px hsl(0deg 0% 52% / 0.53)",
+        borderRadius: "13px",
+        cursor: "pointer",
+      }}
+      onClick={() => onClickEvent()}
+    >
+      <CardMedia
+        sx={{
+          height: 180,
+          borderTopLeftRadius: "5px",
+          borderBottomRightRadius: "5px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "flex-start",
         }}
-        onClick={() => onClickEvent()}
+        image={`/src/assets/school-images/${school.dbn}.png`}
+        title={school.school_name}
+      ></CardMedia>
+      <CardContent sx={{ position: "relative" }}>
+        <IconButton
+          size="sm"
+          sx={{
+            color: "gray",
+            position: "absolute",
+            top: -8,
+            right: -8,
+          }}
+          onClick={() => this.handleSave(school.school_name)}
         >
-            <CardMedia
-                sx={{
-                    height: 280,
-                    m: 2,
-                    borderRadius: "5px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-start"
-                }}
-                image="./src/assets/highschool.png"
-                title="school"
+          <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
+        </IconButton>
+        <Typography variant="h6" noWrap textOverflow="ellipsis" sx={{ mb: 1 }}>
+          {school.school_name}
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            opacity: "85%",
+            mb: 1,
+          }}
+        >
+          <IoLocationOutline />
+          <Typography noWrap textOverflow="ellipsis">
+            {school.neighborhood + ", "}
+            {school.borough
+              .toLowerCase()
+              .split(" ")
+              .map((word) => {
+                if (word == "is") {
+                  word += "land";
+                  return word.replace(/[a-z]/, (l) => l.toUpperCase());
+                } else {
+                  return word.replace(/[a-z]/, (l) => l.toUpperCase());
+                }
+              })
+              .join(" ")}
+          </Typography>
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            fontWeight: 500,
+            mt: 2,
+            mb: 1,
+          }}
+        >
+          <Button variant="outlined" sx={{ height: 30, overflow: "hidden" }}>
+            <Link
+              to={`/school/${school.school_name}`}
+              state={{ school: school }}
             >
-                <IconButton size="sm" sx={{ color: "white" }} onClick={() => this.handleSave(school.school_name)}>
-                    <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
-                </IconButton>
-            </CardMedia>
-            <CardContent>
-                <Typography variant="h6" noWrap textOverflow="ellipsis" sx={{ mb: 1 }}>{school.school_name}</Typography>
-                <Typography variant="subtitle1" sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    opacity: "85%",
-                    mb: 1
-                }}>
-                    <IoLocationOutline /> {school.neighborhood}, {school.borough.toLowerCase()}
-                </Typography>
-
-                <Typography variant="body1" sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    fontWeight: 500,
-                    mb: 1,
-                }}>
-                    <Button variant="outlined">
-                        <Link to={`/school/${school.school_name}`} state={{ school: school }} sx={{ textDecoration: "none", color: "#222222",  }}>
-                            Go To School's Page
-                        </Link>
-                    </Button>
-                    <Box sx={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}>
-                        <StarIcon sx={{ color: "#fcba03", mr: 1 }} />
-                        <Typography variant="h6" sx={{ fontWeight: 600, }}>4.7</Typography>
-                    </Box>
-                </Typography>
-
-            </CardContent>
-
-        </Card>
-    )
+              <Typography
+                sx={{
+                  color: "#78a6eb",
+                  fontWeight: 400,
+                }}
+                noWrap
+              >
+                Learn More
+              </Typography>
+            </Link>
+          </Button>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <StarIcon sx={{ color: "#fcba03", mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              4.7
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default MapCard;
