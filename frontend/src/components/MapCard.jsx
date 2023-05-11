@@ -43,7 +43,7 @@ function MapCard({ school, loading, openCard, goToSchool }) {
           justifyContent: "flex-end",
           alignItems: "flex-start",
         }}
-        image={`./src/assets/school-images/${school.dbn}.png`}
+        image={`/school-images/${school.dbn}.png`}
         title={school.school_name}
       ></CardMedia>
       <CardContent sx={{ position: "relative" }}>
