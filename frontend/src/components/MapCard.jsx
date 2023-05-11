@@ -9,16 +9,30 @@ import Button from "@mui/material/Button"
 
 
 import { auth, db } from "../config/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc,collection, onSnapshot } from "firebase/firestore";
+import { doc,collection, updateDoc } from "firebase/firestore";
 
 import {IoLocationOutline} from "react-icons/io5/index.js"
 import StarIcon from '@mui/icons-material/Star';
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark"
 
 import { Typography } from "@mui/material";
 
-function MapCard ({ school, loading, openCard, goToSchool }) {
+function MapCard ({ school, loading, openCard, goToSchool, savedSchools, saveSchool }) {
+    const handleSave = (schoolName) => {
+        if(!savedSchools.includes(schoolName)) {
+            saveSchool(schoolName)
+        }
+        else {
+            const docRef = doc(db, 'users', auth.currentUser.uid)
+            const removedSchool = savedSchools.filter(
+                school => school !== schoolName
+            )
+            return updateDoc(docRef, {
+                saved_schools: removedSchool
+            })
+        }
+    }
 
     const onClickEvent = () => {
         openCard(true, school)
@@ -33,6 +47,7 @@ function MapCard ({ school, loading, openCard, goToSchool }) {
             border: "3px solid rgba(44, 44, 44, 0.15)",
             borderRadius: "13px",
             cursor: "pointer",
+            zIndex: 1,
         }}
         onClick={() => onClickEvent()}
         >
@@ -48,8 +63,8 @@ function MapCard ({ school, loading, openCard, goToSchool }) {
                 image="./src/assets/highschool.png"
                 title="school"
             >
-                <IconButton size="sm" sx={{ color: "white" }} onClick={() => this.handleSave(school.school_name)}>
-                    <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
+                <IconButton size="sm" sx={{ color: "white", zIndex: 20 }} onClick={() => handleSave(school.school_name)}>
+                     {savedSchools.includes(school.school_name) ? <BookmarkIcon sx={{color: "#2196f3"}}/> : <BookmarkBorderIcon /> }
                 </IconButton>
             </CardMedia>
             <CardContent>
@@ -60,7 +75,10 @@ function MapCard ({ school, loading, openCard, goToSchool }) {
                     opacity: "85%",
                     mb: 1
                 }}>
-                    <IoLocationOutline /> {school.neighborhood}, {school.borough.toLowerCase()}
+                    <IoLocationOutline /> {school.neighborhood}, {school.borough.toLowerCase()
+                        .split(" ")
+                        .map((word) => word.replace(/^./, (c) => c.toUpperCase()))
+                        .join(" ")}
                 </Typography>
 
                 <Typography variant="body1" sx={{
@@ -70,8 +88,11 @@ function MapCard ({ school, loading, openCard, goToSchool }) {
                     fontWeight: 500,
                     mb: 1,
                 }}>
-                    <Button variant="outlined">
-                        <Link to={`/school/${school.school_name}`} state={{ school: school }} sx={{ textDecoration: "none", color: "#222222",  }}>
+                    <Button variant="contained" sx={{color: "red"}}>
+                        <Link to={`/school/${school.school_name}`} state={{ school: school }} style={{
+                            textDecoration: "none",
+                            color: "white",
+                        }}>
                             Go To School's Page
                         </Link>
                     </Button>

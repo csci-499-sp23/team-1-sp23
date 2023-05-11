@@ -53,7 +53,6 @@ export default function SignupView() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       navigate("/");
-      console.log("sending verification email")
       sendEmailVerification(auth.currentUser)
     } else {
       console.log("Failed to make an account");

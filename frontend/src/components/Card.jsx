@@ -186,8 +186,6 @@ class InfoCard extends Component {
   }
 
   componentDidMount() {
-    this.getReviews();
-    this.getNearbySchools();
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -278,6 +276,7 @@ class InfoCard extends Component {
     this.setState({
       compareInfo: true,
     });
+    this.props.compareSchool(true)
   };
 
   handleBookmarkRemoveOpen = () => {
@@ -355,12 +354,6 @@ class InfoCard extends Component {
   profileOpen = () => {
     this.setState({
       profile: true,
-    });
-  };
-
-  compareOpen = () => {
-    this.setState({
-      compareInfo: true,
     });
   };
 
@@ -459,12 +452,13 @@ class InfoCard extends Component {
       <>
         <Card
           sx={{
-            maxWidth: { xs: "100vw", sm: 400, md: 1100 },
+            maxWidth: { xs: "100vw", sm: 400, md: this.props.compareOpened ? 1900 : 1100 },
             maxHeight: "100%",
             zIndex: 100,
             height: "100%",
             overflowY: "auto",
-            m: 2
+            m: 2,
+            width: "100%"
           }}
           onScroll={this.scrollListener}
         >
@@ -584,7 +578,7 @@ class InfoCard extends Component {
                     </Tooltip>
 
                     <Tooltip title="Compare">
-                      <IconButton size="large" onClick={this.compareOpen}>
+                      <IconButton size="large" onClick={this.handleCompareInfoOpen}>
                         <CompareArrowsIcon />
                       </IconButton>
                     </Tooltip>
@@ -954,11 +948,12 @@ class InfoCard extends Component {
                   </Typography>
                   <Box
                     sx={{
-                      maxWidth: { xs: "100vw", sm: 350, md: 350 },
+                      maxWidth: { xs: "100vw", sm: 350, md: this.props.compareOpened ? 400 : 350 },
                       display: "flex",
                       overflowX: "auto",
                       whiteSpace: "nowrap",
                       textAlign: "center",
+                      width: "100%"
                     }}
                     onMouseEnter={this.handleMouseEnter}
                     onMouseLeave={this.handleMouseLeave}
