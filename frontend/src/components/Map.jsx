@@ -671,7 +671,6 @@ class Map extends Component {
                 }}>
                   <Grid item xs={12} sx={{
                     width: "100%",
-                    backgroundColor: "red"
                   }}>
                       <InfoCard
                         school={this.state.comparedSchool}
