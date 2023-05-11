@@ -659,7 +659,7 @@ class Map extends Component {
                     schoolsPerPage={this.state.schoolsPerPage}
                     totalSchools={langaugeFiltered.length}
                     paginate={paginate}
-                  />
+                  />}
                 </Grid>
 
                 {/* MIDDLE POP UP CARD */}
