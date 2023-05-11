@@ -272,11 +272,11 @@ class InfoCard extends Component {
     });
   };
 
-  handleCompareInfoOpen = () => {
+  handleCompareInfoOpen = (bool) => {
     this.setState({
       compareInfo: true,
     });
-    this.props.compareSchool(true)
+    this.props.compareSchool(bool)
   };
 
   handleBookmarkRemoveOpen = () => {
@@ -606,7 +606,7 @@ class InfoCard extends Component {
                     </Tooltip>
 
                     <Tooltip title="Compare">
-                      <IconButton size="large" onClick={this.handleCompareInfoOpen}>
+                      <IconButton size="large" onClick={() => this.handleCompareInfoOpen(true)}>
                         <CompareArrowsIcon />
                       </IconButton>
                     </Tooltip>
@@ -975,12 +975,12 @@ class InfoCard extends Component {
                   </Typography>
                   <Box
                     sx={{
-                      maxWidth: { xs: "100vw", sm: 350, md: this.props.compareOpened ? 400 : 350 },
+                      maxWidth: { xs: "100vw", sm: 350, md: this.props.compareOpened ? 550 : 350 },
                       display: "flex",
                       overflowX: "auto",
                       whiteSpace: "nowrap",
                       textAlign: "center",
-                      width: "100%"
+                      width: "100%",
                     }}
                     onMouseEnter={this.handleMouseEnter}
                     onMouseLeave={this.handleMouseLeave}

@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import SchoolsData from "../schoolData";
 
-export default function AdvanceFilters(props ) {
+export default function AdvanceFilters(props) {
 
     const navigate = useNavigate();
     const Schools = SchoolsData();
@@ -168,20 +168,15 @@ export default function AdvanceFilters(props ) {
     }
 
     const handleSearch = () => {
-        if (props.mapPage) {
-            props.setFilters(borough, neighborhood, apCourse, language, sports)
-        }
-        else {
-            navigate(`./map/`, {
-                state: {
-                    borough: borough,
-                    neighborhood: neighborhood,
-                    apCourse: apCourse,
-                    language: language,
-                    sports: sports,
-                }
-            });
-        }
+        navigate(`./map/`, {
+            state: {
+                borough: borough,
+                neighborhood: neighborhood,
+                apCourse: apCourse,
+                language: language,
+                sports: sports,
+            }
+        });
     }
 
 
@@ -420,7 +415,7 @@ export default function AdvanceFilters(props ) {
             <DialogActions>
                 <Button onClick={props.handleClose}>Cancel</Button>
                 <Button onClick={clearFilters}>Clear Filters</Button>
-                <Button onClick={() => handleSearch}>Search</Button>
+                <Button onClick={() => props.mapPage ? props.setFilters(borough, neighborhood, apCourse, language, sports) : handleSearch}>Search</Button>
             </DialogActions>
         </Dialog>
     )

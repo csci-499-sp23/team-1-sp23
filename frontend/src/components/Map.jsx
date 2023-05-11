@@ -264,17 +264,21 @@ class Map extends Component {
   }
 
   setFilters = (borough, neighborhood, apCourse, language, sports) => {
-    console.log(borough, neighborhood, apCourse, language, sports)
     this.setState({
-      activeFilters: borough,
-      neighborhood: neighborhood,
-      apCourses: apCourse,
-      languageCourse: language,
-      sports: sports,
+      activeFilters:
+        borough.length !== 0 || null || undefined
+          ? [...borough]
+          : [...boroughs],
+      neighborhood: [...neighborhood],
+      apCourses: [...apCourse],
+      languageCourse: [...language],
+      sports: [...sports],
+      advanceFilters: false,
     });
   };
 
   startDirections = (school) => {
+    console.log(this.state.compareSchool, this.state.selectedSecondMarker)
     if (this.state.compareSchool) {
       this.handleComparing(school)
     }
@@ -292,16 +296,15 @@ class Map extends Component {
   };
 
   compareOpen = (bool) => {
+    console.log(bool)
     this.setState({
       compareSchool: bool,
     });
   };
 
-  handleComparing = (school) =>{
+  handleComparing = (school) => {
     if (this.state.compareSchool) {
-      console.log(school, this.state.school)
-      if (school.school_name != this.state.school.school_name) {
-        console.log(school)
+      if (school != this.state.school) {
         this.setState({
           comparedSchool: school,
           selectedSecondMarker: true,
@@ -363,7 +366,6 @@ class Map extends Component {
           }
         }
       }, []);
-      console.log("updating");
       return results;
     };
 
@@ -632,7 +634,7 @@ class Map extends Component {
                   "&::-webkit-scrollbar-track": {
                     m: 6
                   },
-                  display: { xs: "none", md: "flex" },
+                  display: { xs: "none", md: this.state.selectedSecondMarker != false ? "none" : "flex"  },
                   width: {
                     xs: 0,
                     sm: 0, 
@@ -692,7 +694,7 @@ class Map extends Component {
 
                 {/* COMPARE SCHOOL CARD */}
 
-                {this.state.selectedSecondMarker && (<Grid continer sx={{
+                {(this.state.selectedSecondMarker && this.state.compareSchool) && (<Grid continer sx={{
                   overflowY: "scroll",
                   "&::-webkit-scrollbar-track": {
                     m: 2
@@ -738,6 +740,7 @@ class Map extends Component {
                       clickableIcons={false}
                       onClick={() => {
                         this.showCard(false, null);
+                        this.showComparisonCard(false, null);
                         this.handleDirectionsPanel(false);
                         this.props.navHook("/map");
                       }}
@@ -771,7 +774,7 @@ class Map extends Component {
                             }}
                             onClick={() => {
                               this.startDirections(school);
-                              this.handleComparing(school);
+                              this.handleComparing(school)
                               this.props.navHook(`${school.school_name}`, {
                                 state: {
                                   school: school,
@@ -786,7 +789,7 @@ class Map extends Component {
                       {this.state.advanceFilters && (
                         <AdvanceFilters
                           handleClose={() => this.handleAdvanceFilterOpen(false)}
-                          setFilters={() => this.setFilters}
+                          setFilters={this.setFilters}
                           mapPage={true}
                         />
                       )}
