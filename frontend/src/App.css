@@ -26,8 +26,8 @@
 }
 
 .left-container {
-  background-color: #FAFAFA;
-  height: 100vh;
+  background-color: #FFFFFF;
+  height: auto;
   width: 2in;
   bottom: 0rem;
   overflow: auto;
@@ -36,18 +36,22 @@
   border-radius: 15px;
   color: rgb(80, 80, 80);
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
-  font-family: "Open Sans", sans-serif;
+  font-family: "opensans-semibold", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 550;
+  font-size: 14px;
+  color: #707070;
   display: block;
   flex-direction: column;
   margin-left: 1in;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  border-bottom: 10px solid #ccc;
 }
 
 .fixed-left-container {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: sticky;
+  top: 2rem;
+  z-index: 9999;
 }
 
 .left-container h6 {
@@ -57,7 +61,7 @@
   margin-bottom: 0px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 2px;
-  color: rgb(80, 80, 80);
+  color: rgb(60, 60, 60);
 }
 
 .left-container .Mui-selected {
@@ -71,7 +75,20 @@
 .left-container .MuiListItemButton-root:hover {
   background-color: #ffffff;
   color: rgb(22, 161, 221);
+  position: relative;
+  padding-left: 6px; /* added padding */
 }
+
+.left-container .MuiListItemButton-root:hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background-color: rgb(22, 161, 221);
+}
+
 
 .middle-containers-wrapper {
   display: flex;
@@ -82,7 +99,7 @@
 }
 
 .middle-container {
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   height: auto;
   width: 8in;
   overflow: auto;
@@ -104,7 +121,6 @@
   font-size: 45px;
   color: white;
 }
-
 
 
 @media (max-width: 1260px) {
@@ -132,8 +148,8 @@
 
 @media (max-width: 1260px) {
   .middle-container {
-    margin-left: 8em;
     transition: all 0.5s ease;
+    margin-left: 6em;
   }
 }
 
