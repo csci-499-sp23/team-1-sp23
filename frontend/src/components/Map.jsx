@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { GoogleMap, MarkerF, StreetViewPanorama } from "@react-google-maps/api";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia"
-import Grid from "@mui/material/Grid"
+import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -20,17 +16,14 @@ import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot, updateDoc, arrayUnion } from "firebase/firestore";
 
-import Drawerbar from "./DrawerNavBar";
 import InfoCard from "./Card";
 import Directions from "./Directions";
 import SavedSchoolsList from "./SavedSchoolsList";
 import AdvanceFilters from "./AdvanceFilters";
 import MapCard from "./MapCard";
 import Pagination from "./Pagination";
-import Stats from "./Stats"
+import Stats from "./Stats";
 
-import {IoLocationOutline} from "react-icons/io5/index.js"
-import StarIcon from '@mui/icons-material/Star';
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -82,7 +75,7 @@ class Map extends Component {
       searchQuery: null,
       center: {
         lat: 40.740977,
-        lng: -73.954670,
+        lng: -73.95467,
       },
       zoom: 11,
       saveList: false,
@@ -117,8 +110,8 @@ class Map extends Component {
           school => school !== name
         )
         return updateDoc(docRef, {
-          saved_schools: removedSchool
-        })
+          saved_schools: removedSchool,
+        });
       }
     } else {
       console.log("you are not logged in!");
@@ -135,47 +128,54 @@ class Map extends Component {
           } else {
             console.log("document does not exist");
           }
-        })
+        });
       }
     });
     if (this.props.location.state && this.props.location.state.longitude) {
       const { longitude, latitude, school, card } = this.props.location.state;
       this.setState({
-        card: card
-      })
+        card: card,
+      });
       this.goToNearbySchool(longitude, latitude, school);
     }
     fetch("https://data.cityofnewyork.us/resource/23z9-6uk9.json")
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ 
+        this.setState({
           schools: data,
           loading: false,
         });
       })
       .catch((error) => console.log(error));
-    if (this.props.location.state && this.props.location.state.borough != undefined && 
+    if (
+      this.props.location.state &&
+      this.props.location.state.borough != undefined &&
       (this.props.location.state.borough.length != 0 ||
         this.props.location.state.neighborhood.length != 0 ||
-        this.props.location.state.apCourse.length != 0||
+        this.props.location.state.apCourse.length != 0 ||
         this.props.location.state.language.length != 0 ||
-        this.props.location.state.sports.length != 0)) {
-      const { borough, neighborhood, apCourse, language, sport } = this.props.location.state;      
+        this.props.location.state.sports.length != 0)
+    ) {
+      const { borough, neighborhood, apCourse, language, sport } =
+        this.props.location.state;
       this.setState({
-        activeFilters: borough.length !== 0 || null || undefined ? [...borough] : [...boroughs],
+        activeFilters:
+          borough.length !== 0 || null || undefined
+            ? [...borough]
+            : [...boroughs],
         neighborhood: [...neighborhood],
         apCourses: [...apCourse],
         languageCourse: [...language],
         sports: sport,
-      })
+      });
     }
   }
 
   setSavedSchools = (data) => {
     this.setState({
-      savedSchoolsList: data
-    })
-  }
+      savedSchoolsList: data,
+    });
+  };
 
   showCard = (bool, obj) => {
     if (this.state.saveList === true) {
@@ -251,6 +251,12 @@ class Map extends Component {
     }
   };
 
+  setVisible = (bool) => {
+    this.setState({
+      visible: bool,
+    });
+  };
+
   handleAdvanceFilterOpen = (bool) => {
     this.setState({
       advanceFilters: bool,
@@ -317,68 +323,84 @@ class Map extends Component {
   };
 
   render() {
-    const indexOfLastSchool = this.state.currentPage * this.state.schoolsPerPage
-    const indexOfFirstSchool = indexOfLastSchool - this.state.schoolsPerPage
+    const indexOfLastSchool =
+      this.state.currentPage * this.state.schoolsPerPage;
+    const indexOfFirstSchool = indexOfLastSchool - this.state.schoolsPerPage;
 
-    const { schools, activeFilters, neighborhood, apCourses, languageCourse, sports } = this.state;
+    const {
+      schools,
+      activeFilters,
+      neighborhood,
+      apCourses,
+      languageCourse,
+      sports,
+    } = this.state;
     const schoolsFiltered = schools.filter((school) =>
       activeFilters.includes(school.borocode)
     );
-    const neighborhoodFiltered = neighborhood.length != 0 || null ? schoolsFiltered.filter((school) => 
-      neighborhood.includes(school.neighborhood)
-    ) : schoolsFiltered;
+    const neighborhoodFiltered =
+      neighborhood.length != 0 || null
+        ? schoolsFiltered.filter((school) =>
+            neighborhood.includes(school.neighborhood)
+          )
+        : schoolsFiltered;
 
     const searchObj = (searchParams, objectArr) => {
-      const searchInput = searchParams.map((param) => param.toLowerCase())
+      const searchInput = searchParams.map((param) => param.toLowerCase());
       const results = [];
-  
+
       objectArr.map((object) => {
         for (const property in object) {
           if (typeof object[property] === "string") {
-            object[property].split(',').forEach((string) => {
-              const trimmedSubstring = string.trim().toLowerCase()
+            object[property].split(",").forEach((string) => {
+              const trimmedSubstring = string.trim().toLowerCase();
               searchInput.forEach((input) => {
                 if (trimmedSubstring.toLowerCase().includes(input)) {
-                  results.push(object)
+                  results.push(object);
                 }
-              })
-            })
+              });
+            });
           }
         }
-      }, [])
-      console.log("updating")
+      }, []);
+      console.log("updating");
       return results;
-    }
-  
-    const apFiltered = apCourses.length !== 0 ? 
-      searchObj(apCourses, neighborhoodFiltered) : neighborhoodFiltered;
-    const langaugeFiltered = languageCourse.length !== 0 ? 
-      searchObj(languageCourse, neighborhoodFiltered) : apFiltered;
+    };
+
+    const apFiltered =
+      apCourses.length !== 0
+        ? searchObj(apCourses, neighborhoodFiltered)
+        : neighborhoodFiltered;
+    const langaugeFiltered =
+      languageCourse.length !== 0
+        ? searchObj(languageCourse, neighborhoodFiltered)
+        : apFiltered;
 
     const paginate = (number) => {
       this.setState({
-        currentPage: number
-      })
-    }
+        currentPage: number,
+      });
+    };
 
     return (
       <>
-        <Drawerbar status={this.state.drawer} toggle={this.openDrawer} />
         <Box
           sx={{
             display: "flex",
             flexDirection: {
               xs: "column-reverse",
-              md: "row"
+              md: "row",
             },
+            maxHeight: "100vh",
             backgroundColor: "#ffffff",
-            height: "100vh",
+            overflow: "hidden",
           }}
         >
           {/* SIDE MENU BAR */}
           <Stack
             sx={{
               p: 1,
+              display: "flex",
               flexDirection: { xs: "row", md: "column" },
               justifyContent: { xs: "space-evenly", md: "start" },
               backgroundColor: "#2b2d42",
@@ -402,24 +424,31 @@ class Map extends Component {
             ) : null}
           </Stack>
 
-          {/* TOP NAV BAR */}
-          <Box sx={{ width: "100%", height: "100%" }} className="navBar">
+          <Box sx={{ width: "100%", height: "100%" }}>
             <Grid container sx={{ display: "flex", flexDirection: "column" }}>
-              <Grid item sx={{ backgroundColor: "transparent" }}>
-                <AppBar elevation={0} position="static" sx={{ backgroundColor: "transparent" }}>
+              {/* Upper navbar + search + bourough selections */}
+              <Grid
+                item
+                sx={{ backgroundColor: "transparent", height: "10vh" }}
+              >
+                <AppBar
+                  elevation={0}
+                  position="static"
+                  sx={{ backgroundColor: "transparent" }}
+                >
                   <Toolbar sx={{ zIndex: { xs: 1, md: 100 } }} disableGutters>
                     <Stack
                       direction={{
                         xs: "column",
                         sm: "column",
-                        md: "row"
+                        md: "row",
                       }}
                       spacing={{ xs: 2, sm: 2, md: 2 }}
                       sx={{
                         display: "flex",
                         justifyContent: "flex-start",
                         maxWidth: "100%",
-                        width: "100%"
+                        width: "100%",
                       }}
                     >
                       <MAutocomplete
@@ -458,9 +487,9 @@ class Map extends Component {
                           m: { xs: 2 },
                           maxWidth: { xs: "100%", md: 500 },
                           width: {
-                            xs: "auto", 
-                            md: "100%"
-                          }
+                            xs: "auto",
+                            md: "100%",
+                          },
                         }}
                         renderInput={(params) => {
                           return (
@@ -514,9 +543,7 @@ class Map extends Component {
                                 this.state.activeFilters.includes(borough)
                                   ? "white"
                                   : "#ffffff",
-                              color: this.state.activeFilters.includes(
-                                borough
-                              )
+                              color: this.state.activeFilters.includes(borough)
                                 ? "#256fd4"
                                 : "gray",
                               fontWeight: 500,
@@ -541,7 +568,9 @@ class Map extends Component {
                         ))}
                         <Button
                           variant="contained"
-                          onClick={() => this.handleAdvanceFilterOpen(true, null)}
+                          onClick={() =>
+                            this.handleAdvanceFilterOpen(true, null)
+                          }
                           sx={{
                             backgroundColor: "#ffffff",
                             color: "#256fd4",
@@ -570,16 +599,17 @@ class Map extends Component {
               </Grid>
 
               {/* MIDDLE CONTENT */}
-              <Grid item sx={{
-                display: "flex",
-                flexDirection: {
-                  xs: "column-reverse",
-                  md: "row"
-                },
-                maxHeight: { xs: "100%", sm: 600, md: 850 },
-                height: { xs: "100%", sm: 600, md: "100%" },
-              }}>
-
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  flexDirection: {
+                    xs: "column-reverse",
+                    md: "row",
+                  },
+                  height: "90vh",
+                }}
+              >
                 {/* STATS AND USER LIST */}
                 {this.props.openStatsPage && (
                   <Stats
@@ -629,8 +659,7 @@ class Map extends Component {
                     schoolsPerPage={this.state.schoolsPerPage}
                     totalSchools={langaugeFiltered.length}
                     paginate={paginate}
-                  />}
-
+                  />
                 </Grid>
 
                 {/* MIDDLE POP UP CARD */}
@@ -689,14 +718,18 @@ class Map extends Component {
 
                 {/* MAP */}
 
-                <Grid item sx={{ m: {
-                  xs: 2, 
-                  md: 2
-                }, 
-                  width: {xs: "auto", md: "100%"}, 
-                  maxHeight: "100%", 
-                  height: {xs: 400, md: "auto"}
-                }}>
+                <Grid
+                  item
+                  sx={{
+                    m: {
+                      xs: 2,
+                      md: 2,
+                    },
+                    width: { xs: "auto", md: "100%" },
+                    maxHeight: "100%",
+                    // height: { xs: 400, md: "auto" },
+                  }}
+                >
                   <MapLoader>
                     <GoogleMap
                       mapContainerStyle={containerStyle}

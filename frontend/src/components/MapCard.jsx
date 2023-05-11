@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia"
+import CardMedia from "@mui/material/CardMedia";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button"
+import Button from "@mui/material/Button";
 
 
 import { auth, db } from "../config/firebase";

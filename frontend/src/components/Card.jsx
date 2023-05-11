@@ -24,7 +24,7 @@ import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -44,9 +44,9 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { Link } from "react-router-dom";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import ArticleIcon from '@mui/icons-material/Article';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import ArticleIcon from "@mui/icons-material/Article";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import "./ScrollbarStyle.css";
 import ReviewsModal from "./ReviewsModal";
@@ -156,7 +156,7 @@ class InfoCard extends Component {
         }
       });
       this.setReviewData(toAdd, stars);
-    })
+    });
   };
 
   getNearbySchools = async () => {
@@ -181,9 +181,9 @@ class InfoCard extends Component {
 
   setSavedSchools = (data) => {
     this.setState({
-      savedSchools: data
-    })
-  }
+      savedSchools: data,
+    });
+  };
 
   componentDidMount() {
     //CHECK AUTH STATE ON LOAD
@@ -192,22 +192,22 @@ class InfoCard extends Component {
         const docRef = doc(db, "users", auth.currentUser.uid);
         onSnapshot(docRef, (docSnap) => {
           if (docSnap.exists()) {
-              this.setUsername(docSnap.data().username);
-              this.setRole(docSnap.data().role);
-              this.setUid(auth.currentUser.uid);
-              this.setSavedSchools(docSnap.data().saved_schools);
-              if (
-                user.emailVerified &&
-                this.badVerificationMethod(docSnap.data().username, "highschool")
-              ) {
-                this.setVerified(true);
-              } else {
-                this.setVerified(false);
-              }
+            this.setUsername(docSnap.data().username);
+            this.setRole(docSnap.data().role);
+            this.setUid(auth.currentUser.uid);
+            this.setSavedSchools(docSnap.data().saved_schools);
+            if (
+              user.emailVerified &&
+              this.badVerificationMethod(docSnap.data().username, "highschool")
+            ) {
+              this.setVerified(true);
             } else {
-              console.log("document does not exist");
+              this.setVerified(false);
             }
-        })
+          } else {
+            console.log("document does not exist");
+          }
+        });
       }
     });
   }
@@ -281,9 +281,9 @@ class InfoCard extends Component {
 
   handleBookmarkRemoveOpen = () => {
     this.setState({
-      removedOpen: true
-    })
-  }
+      removedOpen: true,
+    });
+  };
 
   handleSnackbarClose = (e, reason) => {
     if (reason === "clickaway") {
@@ -294,28 +294,27 @@ class InfoCard extends Component {
       snackbarSuccessOpen: false,
       directionError: false,
       compareInfo: false,
-      removedOpen: false
+      removedOpen: false,
     });
   };
 
   handleSave = () => {
     if (auth.currentUser != null || undefined) {
-      if(!this.state.savedSchools.includes(this.props.school.school_name)) {
+      if (!this.state.savedSchools.includes(this.props.school.school_name)) {
         const docRef = doc(db, "users", auth.currentUser.uid);
         this.handleSnackbarSuccessOpen();
         return updateDoc(docRef, {
           saved_schools: arrayUnion(this.props.school.school_name),
         });
-      }
-      else {
-        const docRef = doc(db, 'users', auth.currentUser.uid)
+      } else {
+        const docRef = doc(db, "users", auth.currentUser.uid);
         const removedSchool = this.state.savedSchools.filter(
-          school => school !== this.props.school.school_name
-        )
-        this.handleBookmarkRemoveOpen()
+          (school) => school !== this.props.school.school_name
+        );
+        this.handleBookmarkRemoveOpen();
         return updateDoc(docRef, {
-          saved_schools: removedSchool
-        })
+          saved_schools: removedSchool,
+        });
       }
     } else {
       console.log("you are not logged in!");
@@ -435,17 +434,16 @@ class InfoCard extends Component {
   };
 
   scrollListener = () => {
-    if(this.elem.getBoundingClientRect().bottom < 0) {
+    if (this.elem.getBoundingClientRect().bottom < 0) {
       this.setState({
-        scrollIntoView: true
-      })
-    }
-    else {
+        scrollIntoView: true,
+      });
+    } else {
       this.setState({
-        scrollIntoView: false
-      })
+        scrollIntoView: false,
+      });
     }
-  }
+  };
 
   render() {
     return (
@@ -464,38 +462,55 @@ class InfoCard extends Component {
         >
           <CardMedia
             sx={{ height: 190 }}
-            image="./src/assets/highschool.png"
-            title="school"
+            image={`/school-images/${this.props.school.dbn}.png`}
+            title={this.props.school.school_name}
             ref={this.scrollToTop}
           >
-            <IconButton size="large" sx={{color: "white"}} onClick={() => this.props.mobileClose(false, null)}>
-              <ExpandMoreIcon sx={{fontSize: "2.1rem"}}/>
+            <IconButton
+              size="large"
+              sx={{ color: "white" }}
+              onClick={() => this.props.mobileClose(false, null)}
+            >
+              <ExpandMoreIcon sx={{ fontSize: "2.1rem" }} />
             </IconButton>
           </CardMedia>
-          
+
           {this.state.scrollIntoView && (
-            <Paper elevation={5} sx={{
-              display: {
-                xs: "flex",
-                sm: "flex",
-                md: "none"
-              },
-              position: "sticky",
-              top: 0,
-              zIndex: 999,
-              p: 2,
-              backgroundColor: "white",
-            }}>
-              <IconButton size="large" sx={{position: "absolute", bottom: "50%", transform: "translate(0%, 50%)"}} onClick={() => this.props.mobileClose(false, null)}>
+            <Paper
+              elevation={5}
+              sx={{
+                display: {
+                  xs: "flex",
+                  sm: "flex",
+                  md: "none",
+                },
+                position: "sticky",
+                top: 0,
+                // zIndex: 999,
+                p: 2,
+                backgroundColor: "white",
+              }}
+            >
+              <IconButton
+                size="large"
+                sx={{
+                  position: "absolute",
+                  bottom: "50%",
+                  transform: "translate(0%, 50%)",
+                }}
+                onClick={() => this.props.mobileClose(false, null)}
+              >
                 <ExpandMoreIcon />
               </IconButton>
-              <Box sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                width: "100%",
-                justifyContent: "center"
-              }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "100%",
+                  justifyContent: "center",
+                }}
+              >
                 <Typography
                   variant="h6"
                   component="div"
@@ -508,7 +523,7 @@ class InfoCard extends Component {
               </Box>
             </Paper>
           )}
-      
+
           <CardContent>
             <Typography
               gutterBottom
@@ -518,7 +533,14 @@ class InfoCard extends Component {
             >
               {this.props.school.school_name}
             </Typography>
-            <Typography gutterBottom variant="body2" component="div" ref={elem => {this.elem = elem}}>
+            <Typography
+              gutterBottom
+              variant="body2"
+              component="div"
+              ref={(elem) => {
+                this.elem = elem;
+              }}
+            >
               {`${this.props.school.neighborhood}, ${this.props.school.borough
                 .toLowerCase()
                 .split(" ")
@@ -564,7 +586,13 @@ class InfoCard extends Component {
                   >
                     <Tooltip title="Bookmark">
                       <IconButton size="large" onClick={this.handleSave}>
-                        {this.state.savedSchools.includes(this.props.school.school_name) ? <BookmarkIcon sx={{color: "#2196f3"}}/> : <BookmarkBorderIcon />}
+                        {this.state.savedSchools.includes(
+                          this.props.school.school_name
+                        ) ? (
+                          <BookmarkIcon sx={{ color: "#2196f3" }} />
+                        ) : (
+                          <BookmarkBorderIcon />
+                        )}
                       </IconButton>
                     </Tooltip>
 
@@ -600,7 +628,6 @@ class InfoCard extends Component {
                         </IconButton>
                       </Link>
                     </Tooltip>
-                    
                   </Box>
                   <Divider
                     sx={{
@@ -666,7 +693,7 @@ class InfoCard extends Component {
                       mb: 2,
                     }}
                   />
-                  <Box sx={{width: "100%"}}>
+                  <Box sx={{ width: "100%" }}>
                     <Typography variant="body2" color="text.secondary">
                       {this.props.school.overview_paragraph}
                     </Typography>
@@ -967,8 +994,8 @@ class InfoCard extends Component {
                             borderRadius: "50%",
                             height: 40,
                             width: 40,
-                            position: "absolute",
-                            left: 0,
+                            // position: "absolute",
+                            // left: 0,
                             mt: 8,
                             zIndex: 3,
                             backgroundColor: "white",
@@ -1002,8 +1029,8 @@ class InfoCard extends Component {
                           >
                             <CardMedia
                               sx={{ height: 120 }}
-                              image="./src/assets/highschool.png"
-                              title="school"
+                              image={`/school-images/${data.dbn}.png`}
+                              title={data.school_name}
                             />
                             <CardContent>
                               <Typography
@@ -1032,8 +1059,8 @@ class InfoCard extends Component {
                           borderRadius: "50%",
                           height: 40,
                           width: 40,
-                          position: "absolute",
-                          right: 0,
+                          // position: "absolute",
+                          // right: 0,
                           mt: 8,
                           zIndex: 3,
                           backgroundColor: "white",
@@ -1081,7 +1108,12 @@ class InfoCard extends Component {
                   index={this.state.selectedTab}
                   sx={{ p: 2 }}
                 >
-                  <Grid container spacing={1} justifyContent="center" sx={{display: "flex", flexDirection: "row"}}>
+                  <Grid
+                    container
+                    spacing={1}
+                    justifyContent="center"
+                    sx={{ display: "flex", flexDirection: "row" }}
+                  >
                     <Grid item xs={12} sm container>
                       <Grid
                         item
@@ -1662,10 +1694,10 @@ class InfoCard extends Component {
             sx={{
               maxWidth: { xs: "100vw", sm: 400, md: 400 },
               maxHeight: "100%",
-              zIndex: 999,
-              position: "absolute",
-              top: 0,
-              left: 0,
+              // zIndex: 999,
+              // position: "absolute",
+              // top: 0,
+              // left: 0,
               height: "100%",
               width: "100%",
               overflowY: "auto",
@@ -1811,7 +1843,8 @@ class InfoCard extends Component {
                       component="span"
                       sx={{ display: "block", mt: 1 }}
                     >
-                      Subway: <Typography>{this.props.school.subway}</Typography>
+                      Subway:{" "}
+                      <Typography>{this.props.school.subway}</Typography>
                     </Typography>
                     <Typography
                       variant="h6"
@@ -1820,7 +1853,6 @@ class InfoCard extends Component {
                     >
                       Subway: <Typography>{this.props.school.bus}</Typography>
                     </Typography>
-                    
                   </Typography>
                 </Box>
               </Box>
