@@ -18,68 +18,79 @@ import BookmarkIcon from "@mui/icons-material/Bookmark"
 
 import { Typography } from "@mui/material";
 
-function MapCard ({ school, loading, openCard, goToSchool, savedSchools, saveSchool }) {
-    const handleSave = (schoolName) => {
-        if(!savedSchools.includes(schoolName)) {
-            saveSchool(schoolName)
-        }
-        else {
-            const docRef = doc(db, 'users', auth.currentUser.uid)
-            const removedSchool = savedSchools.filter(
-                school => school !== schoolName
-            )
-            return updateDoc(docRef, {
-                saved_schools: removedSchool
-            })
-        }
-    }
+function MapCard({ school, loading, openCard, goToSchool }) {
+  const onClickEvent = () => {
+    openCard(true, school);
+    goToSchool(Number(school.longitude), Number(school.latitude), school);
+  };
+  if (loading) {
+    console.log("loading");
+  }
 
-    const onClickEvent = () => {
-        openCard(true, school)
-        goToSchool(Number(school.longitude), Number(school.latitude), school)
-    }
-    if (loading) {
-        console.log("loading")
-    }
-    return (
-        <Card elevation={0} sx={{
-            backgroundColor: "transparent",
-            border: "3px solid rgba(44, 44, 44, 0.15)",
-            borderRadius: "13px",
-            cursor: "pointer",
-            zIndex: 1,
+  return (
+    <Card
+      elevation={0}
+      sx={{
+        backgroundColor: "transparent",
+        boxShadow:
+          "0px 0.4px 0.5px hsl(0deg 0% 52% / 0.35),0px 1.7px 2.1px -0.6px hsl(0deg 0% 52% / 0.41),0px 4px 4.9px -1.2px hsl(0deg 0% 52% / 0.47),0.1px 9.4px 11.5px -1.8px hsl(0deg 0% 52% / 0.53)",
+        borderRadius: "13px",
+        cursor: "pointer",
+      }}
+      onClick={() => onClickEvent()}
+    >
+      <CardMedia
+        sx={{
+          height: 180,
+          borderTopLeftRadius: "5px",
+          borderBottomRightRadius: "5px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "flex-start",
         }}
-        onClick={() => onClickEvent()}
+        image={`/school-images/${school.dbn}.png`}
+        title={school.school_name}
+      ></CardMedia>
+      <CardContent sx={{ position: "relative" }}>
+              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+
+                  <Typography variant="h6" noWrap textOverflow="ellipsis" >
+                      {school.school_name}
+                  </Typography>
+                  <IconButton
+                      size="sm"
+
+                      onClick={() => this.handleSave(school.school_name)}
+                  >
+                      <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
+                  </IconButton>
+              </Box>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            opacity: "85%",
+            mb: 1,
+          }}
         >
-            <CardMedia
-                sx={{
-                    height: 280,
-                    m: 2,
-                    borderRadius: "5px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-start"
-                }}
-                image="./src/assets/highschool.png"
-                title="school"
-            >
-                <IconButton size="sm" sx={{ color: "white", zIndex: 20 }} onClick={() => handleSave(school.school_name)}>
-                     {savedSchools.includes(school.school_name) ? <BookmarkIcon sx={{color: "#2196f3"}}/> : <BookmarkBorderIcon /> }
-                </IconButton>
-            </CardMedia>
-            <CardContent>
-                <Typography variant="h6" noWrap textOverflow="ellipsis" sx={{ mb: 1 }}>{school.school_name}</Typography>
-                <Typography variant="subtitle1" sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    opacity: "85%",
-                    mb: 1
-                }}>
-                    <IoLocationOutline /> {school.neighborhood}, {school.borough.toLowerCase()
-                        .split(" ")
-                        .map((word) => word.replace(/^./, (c) => c.toUpperCase()))
-                        .join(" ")}
-                </Typography>
+          <IoLocationOutline />
+          <Typography noWrap textOverflow="ellipsis">
+            {school.neighborhood + ", "}
+            {school.borough
+              .toLowerCase()
+              .split(" ")
+              .map((word) => {
+                if (word == "is") {
+                  word += "land";
+                  return word.replace(/[a-z]/, (l) => l.toUpperCase());
+                } else {
+                  return word.replace(/[a-z]/, (l) => l.toUpperCase());
+                }
+              })
+              .join(" ")}
+          </Typography>
+        </Typography>
 
                 <Typography variant="body1" sx={{
                     display: "flex",
