@@ -38,7 +38,7 @@ function MapCard({ school, loading, openCard, goToSchool }) {
         sx={{
           height: 180,
           borderTopLeftRadius: "5px",
-          borderBottomRightRadius: "5px",
+          borderTopRightRadius: "5px",
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "flex-start",
@@ -47,19 +47,19 @@ function MapCard({ school, loading, openCard, goToSchool }) {
         title={school.school_name}
       ></CardMedia>
       <CardContent sx={{ position: "relative" }}>
-              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-
-                  <Typography variant="h6" noWrap textOverflow="ellipsis" >
-                      {school.school_name}
-                  </Typography>
-                  <IconButton
-                      size="sm"
-
-                      onClick={() => this.handleSave(school.school_name)}
-                  >
-                      <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
-                  </IconButton>
-              </Box>
+        <Box
+          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+        >
+          <Typography variant="h6" noWrap textOverflow="ellipsis">
+            {school.school_name}
+          </Typography>
+          <IconButton
+            size="sm"
+            onClick={() => this.handleSave(school.school_name)}
+          >
+            <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
+          </IconButton>
+        </Box>
         <Typography
           variant="subtitle1"
           sx={{
@@ -92,23 +92,16 @@ function MapCard({ school, loading, openCard, goToSchool }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            fontWeight: 500,
-            mt: 2,
+            mt: 1.5,
             mb: 1,
           }}
         >
-          <Button variant="outlined" sx={{ height: 30, overflow: "hidden" }}>
+          <Button variant="contained" sx={{ height: 30, overflow: "hidden" }}>
             <Link
               to={`/school/${school.school_name}`}
               state={{ school: school }}
             >
-              <Typography
-                sx={{
-                  color: "#78a6eb",
-                  fontWeight: 400,
-                }}
-                noWrap
-              >
+              <Typography sx={{ color: "white" }} noWrap>
                 Learn More
               </Typography>
             </Link>

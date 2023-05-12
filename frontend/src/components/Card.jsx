@@ -24,7 +24,6 @@ import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -173,8 +172,8 @@ class InfoCard extends Component {
       .every((q) =>
         new RegExp(
           "\b(highschool)\b|\b(.edu)\b|(highschool)" +
-            q +
-            "\b(highschool)\b|\b(.edu)\b|(highschool)"
+          q +
+          "\b(highschool)\b|\b(.edu)\b|(highschool)"
         ).test(email)
       );
   };
@@ -186,8 +185,6 @@ class InfoCard extends Component {
   };
 
   componentDidMount() {
-    this.getReviews();
-    this.getNearbySchools();
     //CHECK AUTH STATE ON LOAD
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -274,10 +271,11 @@ class InfoCard extends Component {
     });
   };
 
-  handleCompareInfoOpen = () => {
+  handleCompareInfoOpen = (bool) => {
     this.setState({
       compareInfo: true,
     });
+    this.props.compareSchool(bool);
   };
 
   handleBookmarkRemoveOpen = () => {
@@ -354,12 +352,6 @@ class InfoCard extends Component {
   profileOpen = () => {
     this.setState({
       profile: true,
-    });
-  };
-
-  compareOpen = () => {
-    this.setState({
-      compareInfo: true,
     });
   };
 
@@ -457,12 +449,16 @@ class InfoCard extends Component {
       <>
         <Card
           sx={{
-            maxWidth: { xs: "100vw", sm: 400, md: 1100 },
+            maxWidth: {
+              xs: "100vw",
+              sm: 400,
+              md: this.props.compareOpened ? 1900 : 1100,
+            },
             maxHeight: "100%",
-            zIndex: 100,
             height: "100%",
             overflowY: "auto",
             m: 2,
+            position: "relative",
           }}
           onScroll={this.scrollListener}
         >
@@ -492,7 +488,6 @@ class InfoCard extends Component {
                 },
                 position: "sticky",
                 top: 0,
-                // zIndex: 999,
                 p: 2,
                 backgroundColor: "white",
               }}
@@ -519,7 +514,6 @@ class InfoCard extends Component {
               >
                 <Typography
                   variant="h6"
-                  component="div"
                   sx={{ fontWeight: 500, textAlign: "center", maxWidth: "75%" }}
                   noWrap
                   textOverflow="ellipsis"
@@ -612,7 +606,10 @@ class InfoCard extends Component {
                     </Tooltip>
 
                     <Tooltip title="Compare">
-                      <IconButton size="large" onClick={this.compareOpen}>
+                      <IconButton
+                        size="large"
+                        onClick={() => this.handleCompareInfoOpen(true)}
+                      >
                         <CompareArrowsIcon />
                       </IconButton>
                     </Tooltip>
@@ -670,8 +667,8 @@ class InfoCard extends Component {
                       sx={{ display: "flex", alignItems: "center" }}
                     >
                       {this.props.school.psal_sports_boys ||
-                      this.props.school.psal_sports_girls ||
-                      this.props.school.extracurricular_activities != null ? (
+                        this.props.school.psal_sports_girls ||
+                        this.props.school.extracurricular_activities != null ? (
                         <CheckIcon fontSize="small" color="success" />
                       ) : (
                         <CloseIcon fontSize="small" color="error" />
@@ -685,7 +682,7 @@ class InfoCard extends Component {
                       textOverflow="ellipsis"
                     >
                       {this.props.school.school_accessibility ==
-                      "Fully Accessible" ? (
+                        "Fully Accessible" ? (
                         <CheckIcon fontSize="small" color="success" />
                       ) : (
                         <CloseIcon fontSize="small" color="error" />
@@ -981,11 +978,16 @@ class InfoCard extends Component {
                   </Typography>
                   <Box
                     sx={{
-                      maxWidth: { xs: "100vw", sm: 350, md: 350 },
+                      maxWidth: {
+                        xs: "100vw",
+                        sm: 350,
+                        md: this.props.compareOpened ? 550 : 350,
+                      },
                       display: "flex",
                       overflowX: "auto",
                       whiteSpace: "nowrap",
                       textAlign: "center",
+                      width: "100%",
                     }}
                     onMouseEnter={this.handleMouseEnter}
                     onMouseLeave={this.handleMouseLeave}
@@ -1620,6 +1622,174 @@ class InfoCard extends Component {
               <Button size="small">Learn More</Button>
             </Link>
           </CardActions>
+          {this.props.opened && (
+            <Card
+              sx={{
+                maxHeight: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: "100%",
+                width: "100%",
+                overflowY: "auto",
+              }}
+            >
+              <CardContent>
+                <IconButton
+                  onClick={() => {
+                    this.props.handleDirPanel(false);
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    mt: 3,
+                  }}
+                >
+                  <ToggleButtonGroup
+                    value={this.props.travelMode}
+                    exclusive
+                    onChange={(_, mode) => {
+                      this.props.updateDirOpts("travelMode", mode);
+                    }}
+                    fullWidth
+                  >
+                    <ToggleButton value="DRIVING">
+                      <Tooltip title="Driving">
+                        <DirectionsCarIcon />
+                      </Tooltip>
+                    </ToggleButton>
+                    <ToggleButton value="TRANSIT">
+                      <Tooltip title="Transit">
+                        <DirectionsSubwayIcon />
+                      </Tooltip>
+                    </ToggleButton>
+                    <ToggleButton value="WALKING">
+                      <Tooltip title="Walking">
+                        <DirectionsWalkIcon />
+                      </Tooltip>
+                    </ToggleButton>
+                    <ToggleButton value="BICYCLING">
+                      <Tooltip title="Cycling">
+                        <DirectionsBikeIcon />
+                      </Tooltip>
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+
+                  <Box sx={{ mt: 5 }}>
+                    <Typography>From:</Typography>
+                    <Autocomplete
+                      onLoad={this.onLoad}
+                      onPlaceChanged={this.onPlaceChanged}
+                    >
+                      <Paper
+                        component="form"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          mt: { xs: 1, sm: 1, md: 1 },
+                          p: 1,
+                          outline: "1px solid",
+                        }}
+                      >
+                        <InputBase
+                          sx={{ ml: 1, flex: 1 }}
+                          placeholder="Please enter your starting position"
+                          inputProps={{ "aria-label": "search google maps" }}
+                          onChange={(e) => {
+                            if (this.props.send)
+                              this.props.updateDirOpts("send", false);
+                            this.props.updateDirOpts("origin", e.target.value);
+                          }}
+                          onKeyPress={(e) => {
+                            e.key === "Enter" && e.preventDefault();
+                          }}
+                        />
+                      </Paper>
+                    </Autocomplete>
+                  </Box>
+
+                  <Box sx={{ mt: 2 }}>
+                    <Typography>To:</Typography>
+                    <Paper
+                      component="form"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        mt: { xs: 1, sm: 1, md: 1 },
+                        p: 1,
+                        outline: "1px solid",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        inputProps={{
+                          "aria-label": "search google maps",
+                          readOnly: true,
+                        }}
+                        value={this.props.school.school_name}
+                      />
+                    </Paper>
+                  </Box>
+                  <Button
+                    sx={{ mt: 2 }}
+                    variant="contained"
+                    onClick={() => this.props.updateDirOpts("send", true)}
+                  >
+                    Get Directions
+                  </Button>
+                  <Box
+                    sx={{
+                      mt: 3,
+                    }}
+                  >
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                      Distance
+                      <Typography
+                        variant="h4"
+                        component="span"
+                        sx={{ display: "block" }}
+                      >
+                        {this.props.dist}
+                      </Typography>
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                      Commute Time
+                      <Typography
+                        variant="h4"
+                        component="span"
+                        sx={{ display: "block" }}
+                      >
+                        {this.props.time}
+                      </Typography>
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                      Transit Information
+                      <Typography
+                        variant="h6"
+                        component="span"
+                        sx={{ display: "block", mt: 1 }}
+                      >
+                        Subway:{" "}
+                        <Typography>{this.props.school.subway}</Typography>
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        component="span"
+                        sx={{ display: "block", mt: 1 }}
+                      >
+                        Subway: <Typography>{this.props.school.bus}</Typography>
+                      </Typography>
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          )}
         </Card>
 
         {this.state.profile && (
@@ -1693,177 +1863,6 @@ class InfoCard extends Component {
             Removed Bookmark
           </Alert>
         </Snackbar>
-
-        {this.props.opened && (
-          <Card
-            sx={{
-              maxWidth: { xs: "100vw", sm: 400, md: 400 },
-              maxHeight: "100%",
-              // zIndex: 999,
-              // position: "absolute",
-              // top: 0,
-              // left: 0,
-              height: "100%",
-              width: "100%",
-              overflowY: "auto",
-            }}
-          >
-            <CardContent>
-              <IconButton
-                onClick={() => {
-                  this.props.handleDirPanel(false);
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  mt: 3,
-                }}
-              >
-                <ToggleButtonGroup
-                  value={this.props.travelMode}
-                  exclusive
-                  onChange={(_, mode) => {
-                    this.props.updateDirOpts("travelMode", mode);
-                  }}
-                  fullWidth
-                >
-                  <ToggleButton value="DRIVING">
-                    <Tooltip title="Driving">
-                      <DirectionsCarIcon />
-                    </Tooltip>
-                  </ToggleButton>
-                  <ToggleButton value="TRANSIT">
-                    <Tooltip title="Transit">
-                      <DirectionsSubwayIcon />
-                    </Tooltip>
-                  </ToggleButton>
-                  <ToggleButton value="WALKING">
-                    <Tooltip title="Walking">
-                      <DirectionsWalkIcon />
-                    </Tooltip>
-                  </ToggleButton>
-                  <ToggleButton value="BICYCLING">
-                    <Tooltip title="Cycling">
-                      <DirectionsBikeIcon />
-                    </Tooltip>
-                  </ToggleButton>
-                </ToggleButtonGroup>
-
-                <Box sx={{ mt: 5 }}>
-                  <Typography>From:</Typography>
-                  <Autocomplete
-                    onLoad={this.onLoad}
-                    onPlaceChanged={this.onPlaceChanged}
-                  >
-                    <Paper
-                      component="form"
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        mt: { xs: 1, sm: 1, md: 1 },
-                        p: 1,
-                        outline: "1px solid",
-                      }}
-                    >
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Please enter your starting position"
-                        inputProps={{ "aria-label": "search google maps" }}
-                        onChange={(e) => {
-                          if (this.props.send)
-                            this.props.updateDirOpts("send", false);
-                          this.props.updateDirOpts("origin", e.target.value);
-                        }}
-                        onKeyPress={(e) => {
-                          e.key === "Enter" && e.preventDefault();
-                        }}
-                      />
-                    </Paper>
-                  </Autocomplete>
-                </Box>
-
-                <Box sx={{ mt: 2 }}>
-                  <Typography>To:</Typography>
-                  <Paper
-                    component="form"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      mt: { xs: 1, sm: 1, md: 1 },
-                      p: 1,
-                      outline: "1px solid",
-                    }}
-                  >
-                    <InputBase
-                      sx={{ ml: 1, flex: 1 }}
-                      inputProps={{
-                        "aria-label": "search google maps",
-                        readOnly: true,
-                      }}
-                      value={this.props.school.school_name}
-                    />
-                  </Paper>
-                </Box>
-                <Button
-                  sx={{ mt: 2 }}
-                  variant="contained"
-                  onClick={() => this.props.updateDirOpts("send", true)}
-                >
-                  Get Directions
-                </Button>
-                <Box
-                  sx={{
-                    mt: 3,
-                  }}
-                >
-                  <Typography variant="body1" sx={{ mt: 2 }}>
-                    Distance
-                    <Typography
-                      variant="h4"
-                      component="span"
-                      sx={{ display: "block" }}
-                    >
-                      {this.props.dist}
-                    </Typography>
-                  </Typography>
-                  <Typography variant="body1" sx={{ mt: 2 }}>
-                    Commute Time
-                    <Typography
-                      variant="h4"
-                      component="span"
-                      sx={{ display: "block" }}
-                    >
-                      {this.props.time}
-                    </Typography>
-                  </Typography>
-                  <Typography variant="body1" sx={{ mt: 2 }}>
-                    Transit Information
-                    <Typography
-                      variant="h6"
-                      component="span"
-                      sx={{ display: "block", mt: 1 }}
-                    >
-                      Subway:{" "}
-                      <Typography>{this.props.school.subway}</Typography>
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      component="span"
-                      sx={{ display: "block", mt: 1 }}
-                    >
-                      Subway: <Typography>{this.props.school.bus}</Typography>
-                    </Typography>
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        )}
       </>
     );
   }
