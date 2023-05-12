@@ -7,14 +7,9 @@ import IconButton from "@mui/material/IconButton";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 
-
-import { auth, db } from "../config/firebase";
-import { doc,collection, updateDoc } from "firebase/firestore";
-
-import {IoLocationOutline} from "react-icons/io5/index.js"
-import StarIcon from '@mui/icons-material/Star';
+import { IoLocationOutline } from "react-icons/io5/index.js";
+import StarIcon from "@mui/icons-material/Star";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark"
 
 import { Typography } from "@mui/material";
 
@@ -43,7 +38,7 @@ function MapCard({ school, loading, openCard, goToSchool }) {
         sx={{
           height: 180,
           borderTopLeftRadius: "5px",
-          borderBottomRightRadius: "5px",
+          borderTopRightRadius: "5px",
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "flex-start",
@@ -52,19 +47,19 @@ function MapCard({ school, loading, openCard, goToSchool }) {
         title={school.school_name}
       ></CardMedia>
       <CardContent sx={{ position: "relative" }}>
-              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-
-                  <Typography variant="h6" noWrap textOverflow="ellipsis" >
-                      {school.school_name}
-                  </Typography>
-                  <IconButton
-                      size="sm"
-
-                      onClick={() => this.handleSave(school.school_name)}
-                  >
-                      <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
-                  </IconButton>
-              </Box>
+        <Box
+          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+        >
+          <Typography variant="h6" noWrap textOverflow="ellipsis">
+            {school.school_name}
+          </Typography>
+          <IconButton
+            size="sm"
+            onClick={() => this.handleSave(school.school_name)}
+          >
+            <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
+          </IconButton>
+        </Box>
         <Typography
           variant="subtitle1"
           sx={{
@@ -92,34 +87,40 @@ function MapCard({ school, loading, openCard, goToSchool }) {
           </Typography>
         </Typography>
 
-                <Typography variant="body1" sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    fontWeight: 500,
-                    mb: 1,
-                }}>
-                    <Button variant="contained" sx={{color: "red"}}>
-                        <Link to={`/school/${school.school_name}`} state={{ school: school }} style={{
-                            textDecoration: "none",
-                            color: "white",
-                        }}>
-                            Go To School's Page
-                        </Link>
-                    </Button>
-                    <Box sx={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}>
-                        <StarIcon sx={{ color: "#fcba03", mr: 1 }} />
-                        <Typography variant="h6" sx={{ fontWeight: 600, }}>4.7</Typography>
-                    </Box>
-                </Typography>
-
-            </CardContent>
-
-        </Card>
-    )
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mt: 1.5,
+            mb: 1,
+          }}
+        >
+          <Button variant="contained" sx={{ height: 30, overflow: "hidden" }}>
+            <Link
+              to={`/school/${school.school_name}`}
+              state={{ school: school }}
+            >
+              <Typography sx={{ color: "white" }} noWrap>
+                Learn More
+              </Typography>
+            </Link>
+          </Button>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <StarIcon sx={{ color: "#fcba03", mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              4.7
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default MapCard;

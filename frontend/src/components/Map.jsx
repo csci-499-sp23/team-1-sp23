@@ -54,7 +54,7 @@ class Map extends Component {
     this.state = {
       schools: [], // ENTIRE SCHOOLS OBJECT IN AN ARRAY
       card: false,
-      school: null, 
+      school: null,
       currentSelectedSchool: null, // CURRENT SELECTED SCHOOL
       comparedSchool: null, // COMPARED SCHCOOL
       drawer: false,
@@ -98,17 +98,16 @@ class Map extends Component {
 
   handleSave = (name) => {
     if (auth.currentUser != null || undefined) {
-      if(!this.state.savedSchoolsList.includes(name)) {
+      if (!this.state.savedSchoolsList.includes(name)) {
         const docRef = doc(db, "users", auth.currentUser.uid);
         return updateDoc(docRef, {
           saved_schools: arrayUnion(name),
         });
-      }
-      else {
-        const docRef = doc(db, 'users', auth.currentUser.uid)
+      } else {
+        const docRef = doc(db, "users", auth.currentUser.uid);
         const removedSchool = this.state.savedSchoolsList.filter(
-          school => school !== name
-        )
+          (school) => school !== name
+        );
         return updateDoc(docRef, {
           saved_schools: removedSchool,
         });
@@ -260,8 +259,8 @@ class Map extends Component {
   handleAdvanceFilterOpen = (bool) => {
     this.setState({
       advanceFilters: bool,
-    })
-  }
+    });
+  };
 
   setFilters = (borough, neighborhood, apCourse, language, sports) => {
     this.setState({
@@ -278,11 +277,10 @@ class Map extends Component {
   };
 
   startDirections = (school) => {
-    console.log(this.state.compareSchool, this.state.selectedSecondMarker)
+    console.log(this.state.compareSchool, this.state.selectedSecondMarker);
     if (this.state.compareSchool) {
-      this.handleComparing(school)
-    }
-    else {
+      this.handleComparing(school);
+    } else {
       const coord = school.geocoded_column.coordinates;
       this.showCard(true, school);
       this.handleDirections("destination", school.school_name);
@@ -296,7 +294,7 @@ class Map extends Component {
   };
 
   compareOpen = (bool) => {
-    console.log(bool)
+    console.log(bool);
     this.setState({
       compareSchool: bool,
     });
@@ -308,15 +306,14 @@ class Map extends Component {
         this.setState({
           comparedSchool: school,
           selectedSecondMarker: true,
-        })
-      }
-      else {
+        });
+      } else {
         this.setState({
-          selectedSecondMarker: false
-        })
+          selectedSecondMarker: false,
+        });
       }
     }
-  }
+  };
 
   showComparisonCard = (bool, obj) => {
     this.setState({
@@ -344,8 +341,8 @@ class Map extends Component {
     const neighborhoodFiltered =
       neighborhood.length != 0 || null
         ? schoolsFiltered.filter((school) =>
-            neighborhood.includes(school.neighborhood)
-          )
+          neighborhood.includes(school.neighborhood)
+        )
         : schoolsFiltered;
 
     const searchObj = (searchParams, objectArr) => {
@@ -610,6 +607,7 @@ class Map extends Component {
                     md: "row",
                   },
                   height: "90vh",
+                  width: "100%",
                 }}
               >
                 {/* STATS AND USER LIST */}
@@ -628,95 +626,129 @@ class Map extends Component {
                 )}
 
                 {/* SIDE CARDS OF ALL SCHOOLS */}
-                <Grid sx={{
-                  p: 2,
-                  overflowY: "scroll",
-                  "&::-webkit-scrollbar-track": {
-                    m: 6
-                  },
-                  display: { xs: "none", md: this.state.selectedSecondMarker != false ? "none" : "flex"  },
-                  width: {
-                    xs: 0,
-                    sm: 0, 
-                    md: "100%"
-                  }
-                }}
+                <Grid
+                  sx={{
+                    p: 2,
+                    overflowY: "scroll",
+                    "&::-webkit-scrollbar-track": {
+                      m: 6,
+                    },
+                    display: {
+                      xs: "none",
+                      md:
+                        this.state.selectedSecondMarker != false
+                          ? "none"
+                          : "flex",
+                    },
+                    width: {
+                      xs: 0,
+                      sm: 0,
+                      md: "100%",
+                    },
+                  }}
                   container
-                  spacing={4}>
-                  {langaugeFiltered.slice(indexOfFirstSchool, indexOfLastSchool).map((school, key) => {
-                    return (
-                      <Grid item xs={12} sm={12} md={this.state.selectedSecondMarker ? 12 : 6} key={key}>
-                        <MapCard
-                          school={school}
-                          loading={this.state.loading}
-                          openCard={this.showCard}
-                          goToSchool={this.goToNearbySchool}
-                          savedSchools={this.state.savedSchoolsList}
-                          saveSchool={this.handleSave}
-                        />
-                      </Grid>
-                    );
-                  })}
-                  {this.state.card ? null : <Pagination
+                  spacing={4}
+                >
+                  {langaugeFiltered
+                    .slice(indexOfFirstSchool, indexOfLastSchool)
+                    .map((school, key) => {
+                      return (
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={this.state.selectedSecondMarker ? 12 : 6}
+                          key={key}
+                        >
+                          <MapCard
+                            school={school}
+                            loading={this.state.loading}
+                            openCard={this.showCard}
+                            goToSchool={this.goToNearbySchool}
+                            savedSchools={this.state.savedSchoolsList}
+                            saveSchool={this.handleSave}
+                          />
+                        </Grid>
+                      );
+                    })}
+                  <Pagination
                     schoolsPerPage={this.state.schoolsPerPage}
                     totalSchools={langaugeFiltered.length}
                     paginate={paginate}
-                  />}
+                  />
                 </Grid>
 
                 {/* MIDDLE POP UP CARD */}
 
-                {this.state.card && (<Grid continer sx={{
-                  overflowY: "scroll",
-                  "&::-webkit-scrollbar-track": {
-                    m: 2
-                  },
-                  maxHeight: "100%",
-                  height: "auto"
-                }}>
-                  <Grid item xs={12} sx={{
-                    width: "100%",
-                  }}>
-                    <InfoCard
-                      school={this.state.school}
-                      key={this.state.school + "2031"}
-                      updateDirOpts={this.handleDirections}
-                      handleDirPanel={this.handleDirectionsPanel}
-                      opened={this.state.directionsRenderer}
-                      {...this.state.dirOpts}
-                      goToSchool={this.goToNearbySchool}
-                      mobileClose={this.showCard}
-                      compareSchool={this.compareOpen}
-                      compareOpened={this.state.selectedSecondMarker}
-                    />
-                  </Grid>
-                </Grid>)}
-
-                {/* COMPARE SCHOOL CARD */}
-
-                {(this.state.selectedSecondMarker && this.state.compareSchool) && (<Grid continer sx={{
-                  overflowY: "scroll",
-                  "&::-webkit-scrollbar-track": {
-                    m: 2
-                  },
-                }}>
-                  <Grid item xs={12} sx={{
-                    width: "100%",
-                  }}>
+                {this.state.card && (
+                  <Grid
+                    container
+                    sx={{
+                      overflowY: "scroll",
+                      "&::-webkit-scrollbar-track": {
+                        m: 2,
+                      },
+                      maxHeight: "100%",
+                      height: "auto",
+                    }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sx={{
+                        width: "100%",
+                      }}
+                    >
                       <InfoCard
-                        school={this.state.comparedSchool}
+                        school={this.state.school}
                         key={this.state.school + "2031"}
                         updateDirOpts={this.handleDirections}
                         handleDirPanel={this.handleDirectionsPanel}
                         opened={this.state.directionsRenderer}
                         {...this.state.dirOpts}
                         goToSchool={this.goToNearbySchool}
-                        mobileClose={this.showComparisonCard}
+                        mobileClose={this.showCard}
+                        compareSchool={this.compareOpen}
                         compareOpened={this.state.selectedSecondMarker}
                       />
+                    </Grid>
                   </Grid>
-                </Grid>)}
-                
+                )}
+
+                {/* COMPARE SCHOOL CARD */}
+
+                {this.state.selectedSecondMarker &&
+                  this.state.compareSchool && (
+                    <Grid
+                      container
+                      sx={{
+                        overflowY: "scroll",
+                        "&::-webkit-scrollbar-track": {
+                          m: 2,
+                        },
+                      }}
+                    >
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{
+                          width: "100%",
+                        }}
+                      >
+                        <InfoCard
+                          school={this.state.comparedSchool}
+                          key={this.state.school + "2031"}
+                          updateDirOpts={this.handleDirections}
+                          handleDirPanel={this.handleDirectionsPanel}
+                          opened={this.state.directionsRenderer}
+                          {...this.state.dirOpts}
+                          goToSchool={this.goToNearbySchool}
+                          mobileClose={this.showComparisonCard}
+                          compareOpened={this.state.selectedSecondMarker}
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
 
                 {/* MAP */}
 
@@ -729,7 +761,6 @@ class Map extends Component {
                     },
                     width: { xs: "auto", md: "100%" },
                     maxHeight: "100%",
-                    // height: { xs: 400, md: "auto" },
                   }}
                 >
                   <MapLoader>
@@ -774,7 +805,7 @@ class Map extends Component {
                             }}
                             onClick={() => {
                               this.startDirections(school);
-                              this.handleComparing(school)
+                              this.handleComparing(school);
                               this.props.navHook(`${school.school_name}`, {
                                 state: {
                                   school: school,
@@ -788,7 +819,9 @@ class Map extends Component {
                       })}
                       {this.state.advanceFilters && (
                         <AdvanceFilters
-                          handleClose={() => this.handleAdvanceFilterOpen(false)}
+                          handleClose={() =>
+                            this.handleAdvanceFilterOpen(false)
+                          }
                           setFilters={this.setFilters}
                           mapPage={true}
                         />
