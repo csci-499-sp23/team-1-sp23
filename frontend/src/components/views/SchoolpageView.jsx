@@ -4,6 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 import {
   Box,
   Button,
+  Card,
   Grid,
   List,
   ListItem,
@@ -21,6 +22,10 @@ import {
   Paper,
   Tab,
   Tabs,
+  Divider,
+  Avatar,
+  Rating,
+  LinearProgress
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import {
@@ -43,7 +48,7 @@ import {
     doc,
     updateDoc,
     onSnapshot,
-    deleteDoc,
+    collection,
     arrayUnion
   } from "firebase/firestore";
 
@@ -61,7 +66,6 @@ import { SiMoleculer } from 'react-icons/si/index.js';
 import { GoComment } from 'react-icons/go/index.js';
 import { IoAmericanFootball, IoTennisballOutline, IoBaseballOutline, IoAmericanFootballOutline, IoFootballOutline,IoGolfOutline, IoBasketballOutline, IoBowlingBallOutline} from 'react-icons/io5/index.js'
 import { FaArrowUp, FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
-
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
 import DemographicCharts from "../DemographicCharts";
@@ -95,6 +99,9 @@ function SchoolpageView() {
 
   const [graduationData, setGraduationData] = React.useState([]);
   
+  const [userReviews, setReviewsData] = React.useState([]);
+  const [stars, setStarsData] = React.useState([]);
+  const [reviewCounts, setReviewCounts] = React.useState({});
 
 
   const [tab, setTab] = React.useState(0)
@@ -227,6 +234,31 @@ function SchoolpageView() {
           });
       };
     }, [school]);
+
+  // GET SCHOOL REVIEWS
+  React.useEffect(() => {
+    const schoolRef = collection(
+      db,
+      `school/${schoolName}/reviews`
+    );
+
+    onSnapshot(schoolRef, (docSnap) => {
+      const toAdd = [];
+      const stars = [];
+      docSnap.forEach((doc) => {
+        if (doc.exists()) {
+          toAdd.push(doc.data());
+          stars.push(doc.data().stars);
+        } else {
+          console.log("No reviews yet");
+          return null;
+        }
+      });
+      setReviewsData(toAdd)
+      setStarsData(stars)
+      countReviews(stars)
+    });
+  }, [])
 
   {/*Login*/ }
   React.useEffect(() => {
@@ -473,6 +505,11 @@ function SchoolpageView() {
   const handleSupportServicesClick = () => {
     const sports = document.getElementById('supportservices')
     sports.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const handleRatingsClick = () => {
+    const ratings = document.getElementById('ratings')
+    ratings.scrollIntoView({ behavior: 'smooth' });
   }
 
   const handleSuccessClick = () => {
@@ -758,6 +795,14 @@ function SchoolpageView() {
 
   const IconAccessibility = iconsForAccessibility[accessibilityStatus];
 
+  const countReviews = (arr) => {
+    for (const num of arr) {
+      reviewCounts[num] = reviewCounts[num]
+        ? reviewCounts[num] + 1
+        : 1;
+    }
+  }
+
   const Label = ({ text, backcolor, color }) => {
     return (
       <Chip
@@ -955,8 +1000,8 @@ function SchoolpageView() {
             </List>
             <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
             <List>
-              <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
-                Ratings
+              <ListItemButton sx={{ pl: 0 }} onClick={handleRatingsClick}>
+                User Ratings
               </ListItemButton>
             </List>
 
@@ -1753,6 +1798,228 @@ function SchoolpageView() {
                   </TableRow>
                 </TableBody>
               </Table>
+            </Box>
+
+            <Box id="ratings" className="middle-container academics">
+              <h3>Reviews</h3>
+              <h2>User Ratings</h2>
+              <Grid container spacing={3} sx={{display: "flex", flexDirection: "row"}}>
+                <Grid item sx={{
+                  width: {xs:"100%", md:220},
+                  height: 220,
+                }}>
+                  <Card elevation={1} sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column"
+                  }}>
+                    <Typography variant="h5" sx={{
+                      fontSize: "4.3rem",
+                      fontWeight: "500"
+                    }}>{stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0}</Typography>
+                    <Rating name="read-only"
+                      readOnly
+                      precision={0.5}
+                      defaultValue={0.0}
+                      value={
+                        stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0
+                      }
+                      size="small" />
+                    <Typography variant="body2" sx={{
+                      fontWeight: "400"
+                    }}>{stars.length} reviews</Typography>
+                  </Card>
+                </Grid>
+
+                <Grid item>
+                <Grid container justifyContent="center" sx={{ display: {xs:"none", md:"flex"}, flexDirection: "column" }}>
+
+                    <Grid item
+                      xs={12}
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center">
+                      <Typography sx={{ mr: 1 }}>5</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          reviewCounts[5] == null || undefined ? 0 : reviewCounts[5]
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          width: {
+                            xs: "100%",
+                            md: 300,
+                          },
+                        }}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center">
+                      <Typography sx={{ mr: 1 }}>4</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          reviewCounts[4] == null || undefined ? 0 : reviewCounts[4]
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          width: {
+                            xs: "100%",
+                            md: 300,
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center">
+                      <Typography sx={{ mr: 1 }}>3</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          reviewCounts[3] == null || undefined ? 0 : reviewCounts[3]
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          width: {
+                            xs: "100%",
+                            md: 300,
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center">
+                      <Typography sx={{ mr: 1 }}>2</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          reviewCounts[2] == null || undefined ? 0 : reviewCounts[2]
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          width: {
+                            xs: "100%",
+                            md: 300,
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center">
+                      <Typography sx={{ mr: 1 }}>1</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          reviewCounts[1] == null || undefined ? 0 : reviewCounts[1]
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          width: {
+                            xs: "100%",
+                            md: 300,
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                  </Grid>
+                </Grid>
+              </Grid>
+              
+              <Button variant="contained" sx={{mt: 5, width: "100%"}}>Write a review</Button>
+
+              {userReviews.length != 0 ?
+                <Box sx={{ p: 4 }}>
+                  {userReviews.map((data, key) => (
+                    <>
+                      <Grid
+                        container
+                        columns={12}
+                        direction="column"
+                        spacing={2}
+                        key={key}
+                      >
+                        <Grid
+                          item
+                          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Avatar>{data.user[0]}</Avatar>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexGrow: 1,
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Box sx={{ pl: 1 }}>
+                              <Typography variant="body1">
+                                {data.user}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {data.role + " • "}{" "}
+                                {data.verified
+                                  ? "verified user"
+                                  : "unverified user"}
+                              </Typography>
+                            </Box>
+                            <Typography variant="body1">
+                              {data.datePosted}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          item
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Rating
+                            name="read-only"
+                            readOnly
+                            value={data.stars}
+                          />
+                        </Grid>
+                        <Grid item>
+                          <Typography>{data.content}</Typography>
+                        </Grid>
+                      </Grid>
+                      <Divider sx={{ opacity: 1, mt: 2, mb: 2 }} />
+                    </>
+                  ))}
+                </Box>
+                :
+                <Box sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                  <Typography sx={{
+                    fontWeight: "600"
+                  }}>No reviews for this school yet!</Typography>
+                </Box>
+              }
             </Box>
 
 {/* END OF MIDDLE CONTAINERS */}

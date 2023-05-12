@@ -47,21 +47,19 @@ function MapCard({ school, loading, openCard, goToSchool }) {
         title={school.school_name}
       ></CardMedia>
       <CardContent sx={{ position: "relative" }}>
-        <IconButton
-          size="sm"
-          sx={{
-            color: "gray",
-            position: "absolute",
-            top: -8,
-            right: -8,
-          }}
-          onClick={() => this.handleSave(school.school_name)}
-        >
-          <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
-        </IconButton>
-        <Typography variant="h6" noWrap textOverflow="ellipsis" sx={{ mb: 1 }}>
-          {school.school_name}
-        </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+
+                  <Typography variant="h6" noWrap textOverflow="ellipsis" >
+                      {school.school_name}
+                  </Typography>
+                  <IconButton
+                      size="sm"
+
+                      onClick={() => this.handleSave(school.school_name)}
+                  >
+                      <BookmarkBorderIcon sx={{ fontSize: "1.7rem" }} />
+                  </IconButton>
+              </Box>
         <Typography
           variant="subtitle1"
           sx={{
