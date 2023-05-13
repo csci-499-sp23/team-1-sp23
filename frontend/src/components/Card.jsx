@@ -104,6 +104,7 @@ class InfoCard extends Component {
       avg: null,
       reviewCounts: {},
       nearbySchools: [],
+      webResults: null,
       scrollRight: false,
       scrollLeft: false,
       currentScrollPos: 0,
@@ -167,6 +168,15 @@ class InfoCard extends Component {
     this.setNearbySchools(data);
   };
 
+  getWebResults = async () => {
+    const response = await fetch(`https://www.googleapis.com/customsearch/v1/siterestrict?key=AIzaSyBlzvLIfshBsJsg97DoGkFO9olqi94AMEI&cx=b61ece1ccdeb442fd&q=${this.props.school.school_name}`)
+    const data = await response.json();
+    this.setState({
+      webResults: data
+    })
+    console.log("updating")
+  }
+
   badVerificationMethod = (email, query) => {
     return query
       .split(" ")
@@ -185,8 +195,23 @@ class InfoCard extends Component {
     });
   };
 
+  onVisibilityChange = () => {
+    if (this.elem.getBoundingClientRect().bottom < 0) {
+      this.setState({
+        scrollIntoView: true,
+      });
+    } else {
+      this.setState({
+        scrollIntoView: false,
+      });
+    }
+  }
+
   componentDidMount() {
     //CHECK AUTH STATE ON LOAD
+    const observer = new IntersectionObserver(this.onVisibilityChange)
+    observer.observe(this.elem)
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", auth.currentUser.uid);
@@ -216,6 +241,7 @@ class InfoCard extends Component {
     if (prevProps.school.school_name !== prevState.currSchool) {
       this.getReviews();
       this.getNearbySchools();
+      this.getWebResults();
     }
   }
 
@@ -433,18 +459,6 @@ class InfoCard extends Component {
     this.scrollToTop.current.scrollIntoView({ behavior: "auto" });
   };
 
-  scrollListener = () => {
-    if (this.elem.getBoundingClientRect().bottom < 0) {
-      this.setState({
-        scrollIntoView: true,
-      });
-    } else {
-      this.setState({
-        scrollIntoView: false,
-      });
-    }
-  };
-
   render() {
     return (
       <>
@@ -463,7 +477,6 @@ class InfoCard extends Component {
             width: {xs: "100vw", md:"100%"},
             overflowY: "auto",
           }}
-          onScroll={this.scrollListener}
         >
           <CardMedia
             sx={{ height: 190 }}
@@ -1110,6 +1123,34 @@ class InfoCard extends Component {
                   >
                     Web Results
                   </Typography>
+                  <Box sx={{
+                    maxWidth: { xs: "92vw", sm: 350, md: this.props.compareOpened ? 520 : 370 },
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-around",
+                    width: "100%"
+                  }}>
+                    {this.state.webResults != null ?
+                      this.state.webResults.items.slice(0, 3).map((result, key) => (
+                        <Link to={result.formattedUrl}>
+                          <Card elevation={0} sx={{
+                            m: 1,
+                            p: 2,
+                            border: "1px solid rgba(25, 25, 25, 0.1)",
+                            borderRadius: "13px"
+                          }}
+                            key={key}>
+                            <Typography variant="subtitle1" noWrap textOverflow="ellipsis">{result.displayLink}</Typography>
+                            <Typography variant="body1" noWrap textOverflow="ellipsis" sx={{ fontSize: "1.4rem" }}>{result.title}</Typography>
+                            <Divider sx={{ mt: 2, mb: 2 }} />
+                            <Typography sx={{ opacity: "0.9" }}>{result.snippet}</Typography>
+                          </Card>
+                        </Link>))
+                      :
+                      <Typography>No web results available</Typography>}
+                  </Box>
+                  <Box>
+                  </Box>
                 </TabPanel>
 
                 {/* END OF OVERVIEW TAB 

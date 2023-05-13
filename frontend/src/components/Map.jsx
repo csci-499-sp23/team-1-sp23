@@ -281,7 +281,6 @@ class Map extends Component {
   };
 
   startDirections = (school) => {
-    console.log(this.state.compareSchool, this.state.selectedSecondMarker);
     if (this.state.compareSchool) {
       this.handleComparing(school);
     } else {
@@ -615,6 +614,7 @@ class Map extends Component {
                   display: "flex",
                   flexDirection: {
                     xs: "column-reverse",
+                    sm: "row",
                     md: "row",
                   },
                   height: "90vh",
@@ -646,6 +646,9 @@ class Map extends Component {
                     },
                     display: {
                       xs: "none",
+                      sm: this.state.selectedSecondMarker != false
+                        ? "block"
+                        : "flex",
                       md:
                         this.state.selectedSecondMarker != false
                           ? "none"
@@ -654,7 +657,7 @@ class Map extends Component {
                     mr: 2,
                     width: {
                       xs: 0,
-                      sm: 0,
+                      sm: "50%",
                       md: "100%",
                     },
                   }}
@@ -714,6 +717,7 @@ class Map extends Component {
                       mobileClose={this.showCard}
                       compareSchool={this.compareOpen}
                       compareOpened={this.state.selectedSecondMarker}
+                      webResults={this.state.webResults}
                     />
                   </Grid>
                 </Grid>)}
@@ -931,11 +935,12 @@ class Map extends Component {
                       xs: 2,
                       md: 2,
                     },
-                    width: { xs: "auto", md: "100%" },
+                    width: { xs: "auto", sm: "auto", md: "100%" },
                     maxHeight: "100%",
-                    height: { xs: 600, md: "auto" },
+                    height: { xs: 600, sm: 100, md: "auto" },
                     display: {
                       xs: this.state.card ? "none" : "block",
+                      sm: "block",
                       md: "block"
                     }
                   }}
