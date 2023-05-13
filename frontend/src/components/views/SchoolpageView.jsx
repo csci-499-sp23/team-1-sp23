@@ -71,6 +71,7 @@ import HorizontalScoreBar from "../HorizontalScoreBar";
 import DemographicCharts from "../DemographicCharts";
 import QualityCharts from "../QualityCharts"
 import hoverDescriptions  from "../hoverDescriptions";
+import ReviewsModal from "../ReviewsModal";
 
 function SchoolpageView() {
   const location = useLocation();
@@ -85,6 +86,7 @@ function SchoolpageView() {
   const [username, setUsername] = React.useState("");
   const [role, setRole] = React.useState("");
   const [savedSchools, setSavedSchools] = React.useState([]);
+  const [verified, setVerified] = React.useState([]);
   const [reviews, setReviews] = React.useState([]);
   const [loggedIn, setLoggedIn] = React.useState(false);
 
@@ -102,7 +104,7 @@ function SchoolpageView() {
   const [userReviews, setReviewsData] = React.useState([]);
   const [stars, setStarsData] = React.useState([]);
   const [reviewCounts, setReviewCounts] = React.useState({});
-
+  const [reviewsOpen, setReviewsOpen] = React.useState(false);
 
   const [tab, setTab] = React.useState(0)
 
@@ -274,6 +276,7 @@ function SchoolpageView() {
             setRole(docSnap.data().role);
             setSavedSchools(docSnap.data().saved_schools);
             setReviews(docSnap.data().reviews);
+            setVerified(docSnap.data().verified)
           } else {
             console.log("document does not exist");
           }
@@ -519,6 +522,10 @@ function SchoolpageView() {
 
   const handleTabChange = (e, value) => { 
     setTab(value)
+  }
+
+  const handleOpenReviewsModal = (bool) => {
+    setReviewsOpen(bool)
   }
 
   const TabPanel = ({ children, value, index }) => {
@@ -1842,7 +1849,7 @@ function SchoolpageView() {
                       display="flex"
                       flexDirection="row"
                       alignItems="center">
-                      <Typography sx={{ mr: 1 }}>5</Typography>
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>5</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
@@ -1853,7 +1860,7 @@ function SchoolpageView() {
                           borderRadius: 5,
                           width: {
                             xs: "100%",
-                            md: 300,
+                            md: 500,
                           },
                         }}
                         />
@@ -1863,7 +1870,7 @@ function SchoolpageView() {
                       display="flex"
                       flexDirection="row"
                       alignItems="center">
-                      <Typography sx={{ mr: 1 }}>4</Typography>
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>4</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
@@ -1874,7 +1881,7 @@ function SchoolpageView() {
                           borderRadius: 5,
                           width: {
                             xs: "100%",
-                            md: 300,
+                            md: 500,
                           },
                         }}
                       />
@@ -1884,7 +1891,7 @@ function SchoolpageView() {
                       display="flex"
                       flexDirection="row"
                       alignItems="center">
-                      <Typography sx={{ mr: 1 }}>3</Typography>
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>3</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
@@ -1895,7 +1902,7 @@ function SchoolpageView() {
                           borderRadius: 5,
                           width: {
                             xs: "100%",
-                            md: 300,
+                            md: 500,
                           },
                         }}
                       />
@@ -1905,7 +1912,7 @@ function SchoolpageView() {
                       display="flex"
                       flexDirection="row"
                       alignItems="center">
-                      <Typography sx={{ mr: 1 }}>2</Typography>
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>2</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
@@ -1916,7 +1923,7 @@ function SchoolpageView() {
                           borderRadius: 5,
                           width: {
                             xs: "100%",
-                            md: 300,
+                            md: 500,
                           },
                         }}
                       />
@@ -1926,7 +1933,7 @@ function SchoolpageView() {
                       display="flex"
                       flexDirection="row"
                       alignItems="center">
-                      <Typography sx={{ mr: 1 }}>1</Typography>
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>1</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
@@ -1937,7 +1944,7 @@ function SchoolpageView() {
                           borderRadius: 5,
                           width: {
                             xs: "100%",
-                            md: 300,
+                            md: 500,
                           },
                         }}
                       />
@@ -1947,7 +1954,7 @@ function SchoolpageView() {
                 </Grid>
               </Grid>
               
-              <Button variant="contained" sx={{mt: 5, width: "100%"}}>Write a review</Button>
+              <Button variant="contained" sx={{mt: 5, width: "100%"}} onClick={() => handleOpenReviewsModal(true)}>Write a review</Button>
 
               {userReviews.length != 0 ?
                 <Box sx={{ p: 4 }}>
@@ -2014,6 +2021,7 @@ function SchoolpageView() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  mt: 4
                 }}>
                   <Typography sx={{
                     fontWeight: "600"
@@ -2046,6 +2054,14 @@ function SchoolpageView() {
             Top
           </Typography>
         </IconButton>
+        {reviewsOpen && (<ReviewsModal
+          name={schoolName}
+          onClose={() => handleOpenReviewsModal(false)}
+          user={username}
+          role={role}
+          uid={auth.currentUser.uid}
+          verified={verified}
+        />)}
 {/*Save School Button*/}
         <Tooltip title="Save School">
           <IconButton sx={{

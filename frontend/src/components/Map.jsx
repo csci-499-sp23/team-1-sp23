@@ -27,10 +27,14 @@ import Stats from "./Stats";
 import HomeIcon from "@mui/icons-material/Home";
 import MapIcon from "@mui/icons-material/Map";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import {FaEquals} from "react-icons/fa/index.js";
 
 import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
+import { Typography } from "@mui/material";
 
 const containerStyle = {
   borderRadius: 8,
@@ -426,12 +430,17 @@ class Map extends Component {
             ) : null}
           </Stack>
 
-          <Box sx={{ width: "100%", height: "100%" }}>
+          <Box>
             <Grid container sx={{ display: "flex", flexDirection: "column" }}>
               {/* Upper navbar + search + bourough selections */}
-              <Grid
+             <Grid
                 item
-                sx={{ backgroundColor: "transparent", height: "10vh" }}
+                sx={{ 
+                  backgroundColor: "transparent", 
+                  height: {xs: "1vh", md: "10vh"},
+                  zIndex: { xs: 1, md: 100 },
+                  display: {xs: this.state.card ? "none" : "block" , md: "block"}
+                }}
               >
                 <AppBar
                   elevation={0}
@@ -492,6 +501,7 @@ class Map extends Component {
                             xs: "auto",
                             md: "100%",
                           },
+
                         }}
                         renderInput={(params) => {
                           return (
@@ -519,10 +529,10 @@ class Map extends Component {
                       {/* FILTERS */}
                       <Stack
                         direction="row"
-                        spacing={2}
+                        spacing={3}
                         sx={{
                           m: {
-                            xs: 9,
+                            xs: 0,
                             md: 1,
                           },
                           p: { xs: 0, md: 1 },
@@ -599,6 +609,7 @@ class Map extends Component {
                   </Toolbar>
                 </AppBar>
               </Grid>
+              
 
               {/* MIDDLE CONTENT */}
               <Grid
@@ -639,7 +650,8 @@ class Map extends Component {
                     xs: 0,
                     sm: 0, 
                     md: "100%"
-                  }
+                  },
+                  mr: 2,
                 }}
                   container
                   spacing={4}>
@@ -671,11 +683,11 @@ class Map extends Component {
                   "&::-webkit-scrollbar-track": {
                     m: 2
                   },
-                  maxHeight: "100%",
-                  height: "auto"
+                  ml: this.state.selectedSecondMarker ? 2 : 0,
+                  display: {xs: "none", md: "block"}
                 }}>
                   <Grid item xs={12} sx={{
-                    width: "100%",
+                    width: {xs: "auto", md: "100%"},
                   }}>
                     <InfoCard
                       school={this.state.school}
@@ -692,6 +704,183 @@ class Map extends Component {
                   </Grid>
                 </Grid>)}
 
+                {/* COMPARISON INFO */}
+
+                {(this.state.selectedSecondMarker && this.state.compareSchool) && (<Grid continer>
+                  <Grid item xs={12} sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    m: 1
+                  }}>
+
+                    {/* COMPARING # OF AP COURSES */}
+                    {(this.state.school.advancedplacement_courses != null || "" ? this.state.school.advancedplacement_courses.split(',').length : 0) >
+                      (this.state.comparedSchool.advancedplacement_courses != null || "" ? this.state.comparedSchool.advancedplacement_courses.split(',').length : 0)
+                      ?
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowLeftIcon sx={{ color: "#33D391", fontSize: "5.9rem" }} />
+                        <Typography variant="body2"sx={{fontSize: "1rem", fontWeight: "500"}}>More AP Courses</Typography>
+                      </Box>
+                      :
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowRightIcon sx={{ color: "#f94144", fontSize: "5.9rem" }} />
+                        <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>More AP Courses</Typography>
+                      </Box>}
+
+
+                    {/* COMPARING # OF LANGAUGE COURSES */}
+                    {(this.state.school.language_classes != null ? this.state.school.language_classes.split(',').length : 0) >
+                      (this.state.comparedSchool.language_classes != null ? this.state.comparedSchool.language_classes.split(',').length : 0) ?
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowLeftIcon sx={{ color: "#33D391", fontSize: "5.9rem" }} />
+                        <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>More Language Courses</Typography>
+                      </Box>
+                      :
+                      (this.state.school.language_classes != null ? this.state.school.language_classes.split(',').length : 0) ==
+                        (this.state.comparedSchool.language_classes != null ? this.state.comparedSchool.language_classes.split(',').length : 0) ?
+                        <Box sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#222222",
+                          borderRadius: "11px",
+                          backgroundColor: "rgba(55, 55, 55, 0.05)",
+                          height: "160px",
+                          width: "160px",
+                          textAlign: "center"
+                        }}>
+                            <FaEquals size={38}  color="#ffc658" /> 
+                            <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>Same Amount of Language Courses</Typography>
+                        </Box>
+                        : <Box sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: "11px",
+                          backgroundColor: "rgba(55, 55, 55, 0.05)",
+                          color: "#222222",
+                          height: "160px",
+                          width: "160px",
+                          textAlign: "center"
+                        }}>
+                          <ArrowRightIcon sx={{ color: "#f94144", fontSize: "5.9rem" }} />
+                          <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>More Language Courses</Typography>
+                        </Box>}
+
+                    {/* COMPARING GRADUATION RATE */}
+                    {(this.state.school.graduation_rate != null ? Number(this.state.school.graduation_rate) : 0) >
+                      (this.state.comparedSchool.graduation_rate != null ? Number(this.state.comparedSchool.graduation_rate) : 0) ?
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowLeftIcon sx={{ color: "#33D391", fontSize: "5.9rem" }} />
+                        <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>Higher Graduation Rate</Typography>
+                      </Box>
+                      :
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowRightIcon sx={{ color: "#f94144", fontSize: "5.9rem" }} />
+                        <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>Higher Graduation Rate</Typography>
+                      </Box>
+                    }
+
+                    {/* COMPARING ATTENDENCE RATE */}
+                    {(this.state.school.attendance_rate != null ? Number(this.state.school.attendance_rate) : 0) >
+                      (this.state.comparedSchool.attendance_rate != null ? Number(this.state.comparedSchool.attendance_rate) : 0) ?
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowLeftIcon sx={{ color: "#33D391", fontSize: "5.9rem" }} />
+                        <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>Higher Attendence Rate</Typography>
+                      </Box>
+                      :
+                      <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#222222",
+                        borderRadius: "11px",
+                        backgroundColor: "rgba(55, 55, 55, 0.05)",
+
+                        height: "160px",
+                        width: "160px",
+                        textAlign: "center"
+                      }}>
+                        <ArrowRightIcon sx={{ color: "#f94144", fontSize: "5.9rem" }} />
+                        <Typography variant="body2" sx={{fontSize: "1rem", fontWeight: "500"}}>Higher Attendence Rate</Typography>
+                      </Box>}
+
+                  </Grid>
+                </Grid>)}
+
                 {/* COMPARE SCHOOL CARD */}
 
                 {(this.state.selectedSecondMarker && this.state.compareSchool) && (<Grid continer sx={{
@@ -699,6 +888,7 @@ class Map extends Component {
                   "&::-webkit-scrollbar-track": {
                     m: 2
                   },
+                  ml: 2
                 }}>
                   <Grid item xs={12} sx={{
                     width: "100%",
@@ -729,7 +919,11 @@ class Map extends Component {
                     },
                     width: { xs: "auto", md: "100%" },
                     maxHeight: "100%",
-                    // height: { xs: 400, md: "auto" },
+                    height: { xs: 600, md: "auto" },
+                    display: {
+                      xs: this.state.card ? "none" : "block",
+                      md: "block"
+                    }
                   }}
                 >
                   <MapLoader>
@@ -786,6 +980,7 @@ class Map extends Component {
                           />
                         );
                       })}
+
                       {this.state.advanceFilters && (
                         <AdvanceFilters
                           handleClose={() => this.handleAdvanceFilterOpen(false)}
@@ -796,6 +991,25 @@ class Map extends Component {
                     </GoogleMap>
                   </MapLoader>
                 </Grid>
+                {this.state.card && (
+                  <Box sx={{
+                    display: { xs: "block", md: "none" }
+                  }}>
+                    <InfoCard
+                      school={this.state.school}
+                      key={this.state.school + "2031"}
+                      updateDirOpts={this.handleDirections}
+                      handleDirPanel={this.handleDirectionsPanel}
+                      opened={this.state.directionsRenderer}
+                      {...this.state.dirOpts}
+                      goToSchool={this.goToNearbySchool}
+                      mobileClose={this.showCard}
+                      compareSchool={this.compareOpen}
+                      compareOpened={this.state.selectedSecondMarker}
+                    />
+                  </Box>
+                )}
+
               </Grid>
             </Grid>
           </Box>

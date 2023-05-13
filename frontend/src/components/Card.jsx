@@ -450,13 +450,18 @@ class InfoCard extends Component {
       <>
         <Card
           sx={{
-            maxWidth: { xs: "100vw", sm: 400, md: this.props.compareOpened ? 1900 : 1100 },
-            maxHeight: "100%",
-            zIndex: 100,
+            maxWidth: { xs: "100%", sm: 400, md: this.props.compareOpened ? 1900 : 1100 },
+            maxHeight: {xs:"90vh", md: "100%"},
+            zIndex: 5,
+            postion: {
+              xs: "absolute", 
+              md: "relative"
+            },
+            top: 0,
+            left: 0,
             height: "100%",
+            width: {xs: "100vw", md:"100%"},
             overflowY: "auto",
-            m: 2,
-            width: "100%"
           }}
           onScroll={this.scrollListener}
         >
@@ -486,7 +491,7 @@ class InfoCard extends Component {
                 },
                 position: "sticky",
                 top: 0,
-                // zIndex: 999,
+                zIndex: 999,
                 p: 2,
                 backgroundColor: "white",
               }}
@@ -975,12 +980,13 @@ class InfoCard extends Component {
                   </Typography>
                   <Box
                     sx={{
-                      maxWidth: { xs: "100vw", sm: 350, md: this.props.compareOpened ? 550 : 350 },
+                      maxWidth: { xs: "92vw", sm: 350, md: this.props.compareOpened ? 520 : 370 },
                       display: "flex",
                       overflowX: "auto",
                       whiteSpace: "nowrap",
                       textAlign: "center",
                       width: "100%",
+                      postion: "relative",
                     }}
                     onMouseEnter={this.handleMouseEnter}
                     onMouseLeave={this.handleMouseLeave}
@@ -988,16 +994,22 @@ class InfoCard extends Component {
                   >
                     {this.state.scrollLeft &&
                       this.state.currentScrollPos !== 0 && (
+                      <Box sx={{
+                        postion: "relative",
+                        height: "auto"
+                      }}>
                         <IconButton
                           color="primary"
                           sx={{
                             borderRadius: "50%",
                             height: 40,
                             width: 40,
-                            // position: "absolute",
-                            // left: 0,
-                            mt: 8,
-                            zIndex: 3,
+                            position: "absolute",
+                            top: "70%",
+                            right: 0,
+                            left: "40%",
+                            bottom: 0,
+                            zIndex: 999,
                             backgroundColor: "white",
                             color: "#222222",
                             cursor: "pointer",
@@ -1009,6 +1021,7 @@ class InfoCard extends Component {
                         >
                           <KeyboardArrowLeftIcon />
                         </IconButton>
+                      </Box>
                       )}
 
                     {this.state.nearbySchools.map((data, key) => {
@@ -1052,27 +1065,35 @@ class InfoCard extends Component {
                       );
                     })}
                     {this.state.scrollRight && !this.state.setscrolEnd && (
-                      <IconButton
-                        aria-label="right"
-                        color="primary"
-                        sx={{
-                          borderRadius: "50%",
-                          height: 40,
-                          width: 40,
-                          // position: "absolute",
-                          // right: 0,
-                          mt: 8,
-                          zIndex: 3,
-                          backgroundColor: "white",
-                          color: "#222222",
-                          cursor: "pointer",
-                          "&:hover": { backgroundColor: "#fffffa" },
-                          boxShadow: "0px 4px 9px 4px rgba(0.1, 0.1, 0.1, .2)",
-                        }}
-                        onClick={() => this.moveHorizontally(100)}
-                      >
-                        <KeyboardArrowRightIcon />
-                      </IconButton>
+                      <Box sx={{
+                        postion: "relative",
+                        height: "auto"
+                      }}>
+
+                        <IconButton
+                          aria-label="right"
+                          color="primary"
+                          sx={{
+                            borderRadius: "50%",
+                            height: 40,
+                            width: 40,
+                            zIndex: 999,
+                            position: "absolute",
+                            top: "70%",
+                            right: 0,
+                            left: "59%",
+                            bottom: 0,
+                            backgroundColor: "white",
+                            color: "#222222",
+                            cursor: "pointer",
+                            "&:hover": { backgroundColor: "#fffffa" },
+                            boxShadow: "0px 4px 9px 4px rgba(0.1, 0.1, 0.1, .2)",
+                          }}
+                          onClick={() => this.moveHorizontally(100)}
+                        >
+                          <KeyboardArrowRightIcon />
+                        </IconButton>
+                      </Box>
                     )}
                   </Box>
 
@@ -1114,7 +1135,7 @@ class InfoCard extends Component {
                     justifyContent="center"
                     sx={{ display: "flex", flexDirection: "row" }}
                   >
-                    <Grid item xs={12} sm container>
+                    <Grid item xs={12} sm container sx={{width: {xs:"92vw", md: "100%"}}}>
                       <Grid
                         item
                         xs={12}
@@ -1694,10 +1715,10 @@ class InfoCard extends Component {
             sx={{
               maxWidth: { xs: "100vw", sm: 400, md: 400 },
               maxHeight: "100%",
-              // zIndex: 999,
-              // position: "absolute",
-              // top: 0,
-              // left: 0,
+              zIndex: 999,
+              position: "absolute",
+              top: 0,
+              left: 0,
               height: "100%",
               width: "100%",
               overflowY: "auto",
