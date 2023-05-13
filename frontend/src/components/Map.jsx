@@ -651,6 +651,7 @@ class Map extends Component {
                           ? "none"
                           : "flex",
                     },
+                    mr: 2,
                     width: {
                       xs: 0,
                       sm: 0,

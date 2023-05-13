@@ -16,9 +16,9 @@ import { doc, collection, updateDoc, onSnapshot } from "firebase/firestore";
 import { IoLocationOutline } from "react-icons/io5/index.js"
 import StarIcon from '@mui/icons-material/Star';
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark"
 
 import { Typography } from "@mui/material";
-
 
 function MapCard({ school, loading, openCard, goToSchool, savedSchools, saveSchool }) {
 
