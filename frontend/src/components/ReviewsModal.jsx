@@ -27,7 +27,6 @@ class ReviewsModal extends Component {
         today.getFullYear();
 
     this.state = {
-      modal: true,
       review: "",
       buttonDisable: true,
       stars: 0,
@@ -94,7 +93,7 @@ class ReviewsModal extends Component {
           ...base,
           user: this.props.user,
           role: this.props.role,
-          verified: this.props.verified,
+          verified: this.props.verified ? "Not verified user" : "Verified User",
         });
 
         await updateDoc(doc(db, "users", this.props.uid), {
@@ -107,6 +106,7 @@ class ReviewsModal extends Component {
       } else {
         this.handleSnackbarOpen();
       }
+      this.props.onClose();
     } else {
       alert("Invalid Input");
     }
@@ -118,7 +118,7 @@ class ReviewsModal extends Component {
         <Box
           sx={{
             zIndex: 1000,
-            position: "absolute",
+            position: "fixed",
             left: "50%",
             top: "50%",
             transform: "translate(-50%, -50%)",
