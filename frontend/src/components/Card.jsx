@@ -24,7 +24,6 @@ import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -173,8 +172,8 @@ class InfoCard extends Component {
       .every((q) =>
         new RegExp(
           "\b(highschool)\b|\b(.edu)\b|(highschool)" +
-            q +
-            "\b(highschool)\b|\b(.edu)\b|(highschool)"
+          q +
+          "\b(highschool)\b|\b(.edu)\b|(highschool)"
         ).test(email)
       );
   };
@@ -276,7 +275,7 @@ class InfoCard extends Component {
     this.setState({
       compareInfo: true,
     });
-    this.props.compareSchool(bool)
+    this.props.compareSchool(bool);
   };
 
   handleBookmarkRemoveOpen = () => {
@@ -518,7 +517,6 @@ class InfoCard extends Component {
               >
                 <Typography
                   variant="h6"
-                  component="div"
                   sx={{ fontWeight: 500, textAlign: "center", maxWidth: "75%" }}
                   noWrap
                   textOverflow="ellipsis"
@@ -611,7 +609,10 @@ class InfoCard extends Component {
                     </Tooltip>
 
                     <Tooltip title="Compare">
-                      <IconButton size="large" onClick={() => this.handleCompareInfoOpen(true)}>
+                      <IconButton
+                        size="large"
+                        onClick={() => this.handleCompareInfoOpen(true)}
+                      >
                         <CompareArrowsIcon />
                       </IconButton>
                     </Tooltip>
@@ -669,8 +670,8 @@ class InfoCard extends Component {
                       sx={{ display: "flex", alignItems: "center" }}
                     >
                       {this.props.school.psal_sports_boys ||
-                      this.props.school.psal_sports_girls ||
-                      this.props.school.extracurricular_activities != null ? (
+                        this.props.school.psal_sports_girls ||
+                        this.props.school.extracurricular_activities != null ? (
                         <CheckIcon fontSize="small" color="success" />
                       ) : (
                         <CloseIcon fontSize="small" color="error" />
@@ -684,7 +685,7 @@ class InfoCard extends Component {
                       textOverflow="ellipsis"
                     >
                       {this.props.school.school_accessibility ==
-                      "Fully Accessible" ? (
+                        "Fully Accessible" ? (
                         <CheckIcon fontSize="small" color="success" />
                       ) : (
                         <CloseIcon fontSize="small" color="error" />
@@ -1770,12 +1771,41 @@ class InfoCard extends Component {
                   </ToggleButton>
                 </ToggleButtonGroup>
 
-                <Box sx={{ mt: 5 }}>
-                  <Typography>From:</Typography>
-                  <Autocomplete
-                    onLoad={this.onLoad}
-                    onPlaceChanged={this.onPlaceChanged}
-                  >
+                  <Box sx={{ mt: 5 }}>
+                    <Typography>From:</Typography>
+                    <Autocomplete
+                      onLoad={this.onLoad}
+                      onPlaceChanged={this.onPlaceChanged}
+                    >
+                      <Paper
+                        component="form"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          mt: { xs: 1, sm: 1, md: 1 },
+                          p: 1,
+                          outline: "1px solid",
+                        }}
+                      >
+                        <InputBase
+                          sx={{ ml: 1, flex: 1 }}
+                          placeholder="Please enter your starting position"
+                          inputProps={{ "aria-label": "search google maps" }}
+                          onChange={(e) => {
+                            if (this.props.send)
+                              this.props.updateDirOpts("send", false);
+                            this.props.updateDirOpts("origin", e.target.value);
+                          }}
+                          onKeyPress={(e) => {
+                            e.key === "Enter" && e.preventDefault();
+                          }}
+                        />
+                      </Paper>
+                    </Autocomplete>
+                  </Box>
+
+                  <Box sx={{ mt: 2 }}>
+                    <Typography>To:</Typography>
                     <Paper
                       component="form"
                       sx={{
@@ -1788,98 +1818,142 @@ class InfoCard extends Component {
                     >
                       <InputBase
                         sx={{ ml: 1, flex: 1 }}
-                        placeholder="Please enter your starting position"
-                        inputProps={{ "aria-label": "search google maps" }}
-                        onChange={(e) => {
-                          if (this.props.send)
-                            this.props.updateDirOpts("send", false);
-                          this.props.updateDirOpts("origin", e.target.value);
+                        inputProps={{
+                          "aria-label": "search google maps",
+                          readOnly: true,
                         }}
-                        onKeyPress={(e) => {
-                          e.key === "Enter" && e.preventDefault();
-                        }}
+                        value={this.props.school.school_name}
                       />
                     </Paper>
-                  </Autocomplete>
-                </Box>
-
-                <Box sx={{ mt: 2 }}>
-                  <Typography>To:</Typography>
-                  <Paper
-                    component="form"
+                  </Box>
+                  <Button
+                    sx={{ mt: 2 }}
+                    variant="contained"
+                    onClick={() => this.props.updateDirOpts("send", true)}
+                  >
+                    Get Directions
+                  </Button>
+                  <Box
                     sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      mt: { xs: 1, sm: 1, md: 1 },
-                      p: 1,
-                      outline: "1px solid",
+                      mt: 3,
                     }}
                   >
-                    <InputBase
-                      sx={{ ml: 1, flex: 1 }}
-                      inputProps={{
-                        "aria-label": "search google maps",
-                        readOnly: true,
-                      }}
-                      value={this.props.school.school_name}
-                    />
-                  </Paper>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                      Distance
+                      <Typography
+                        variant="h4"
+                        component="span"
+                        sx={{ display: "block" }}
+                      >
+                        {this.props.dist}
+                      </Typography>
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                      Commute Time
+                      <Typography
+                        variant="h4"
+                        component="span"
+                        sx={{ display: "block" }}
+                      >
+                        {this.props.time}
+                      </Typography>
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                      Transit Information
+                      <Typography
+                        variant="h6"
+                        component="span"
+                        sx={{ display: "block", mt: 1 }}
+                      >
+                        Subway:{" "}
+                        <Typography>{this.props.school.subway}</Typography>
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        component="span"
+                        sx={{ display: "block", mt: 1 }}
+                      >
+                        Subway: <Typography>{this.props.school.bus}</Typography>
+                      </Typography>
+                    </Typography>
+                  </Box>
                 </Box>
-                <Button
-                  sx={{ mt: 2 }}
-                  variant="contained"
-                  onClick={() => this.props.updateDirOpts("send", true)}
-                >
-                  Get Directions
-                </Button>
-                <Box
-                  sx={{
-                    mt: 3,
-                  }}
-                >
-                  <Typography variant="body1" sx={{ mt: 2 }}>
-                    Distance
-                    <Typography
-                      variant="h4"
-                      component="span"
-                      sx={{ display: "block" }}
-                    >
-                      {this.props.dist}
-                    </Typography>
-                  </Typography>
-                  <Typography variant="body1" sx={{ mt: 2 }}>
-                    Commute Time
-                    <Typography
-                      variant="h4"
-                      component="span"
-                      sx={{ display: "block" }}
-                    >
-                      {this.props.time}
-                    </Typography>
-                  </Typography>
-                  <Typography variant="body1" sx={{ mt: 2 }}>
-                    Transit Information
-                    <Typography
-                      variant="h6"
-                      component="span"
-                      sx={{ display: "block", mt: 1 }}
-                    >
-                      Subway:{" "}
-                      <Typography>{this.props.school.subway}</Typography>
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      component="span"
-                      sx={{ display: "block", mt: 1 }}
-                    >
-                      Subway: <Typography>{this.props.school.bus}</Typography>
-                    </Typography>
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
+        </Card>
+
+        {this.state.profile && (
+          <Stats
+            onClose={() => this.setState({ profile: false })}
+            school={this.props.school.dbn}
+            schoolName={this.props.school.school_name}
+          />
         )}
+
+        {this.state.modal && (
+          <ReviewsModal
+            name={this.props.school.school_name}
+            onClose={() => this.setState({ modal: false })}
+            user={this.state.username}
+            role={this.state.role}
+            uid={this.state.uid}
+            verified={this.state.verified}
+          />
+        )}
+
+        {/* SNACKBARS THEIR POSITIONS DONT MATTER SO IM PUTTING THEM OUT HERE */}
+        <Snackbar
+          open={this.state.directionError}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+          sx={{ zIndex: 10000 }}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="error">
+            You need to select an origin and destination!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={this.state.snackbarOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+          sx={{ zIndex: 10000 }}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="warning">
+            You need to be logged in to do that!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={this.state.snackbarSuccessOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="success">
+            Saved school!
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={this.state.compareInfo}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="info">
+            Click on another marker to compare schools
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={this.state.removedOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+        >
+          <Alert onClose={this.handleSnackbarClose} severity="error">
+            Removed Bookmark
+          </Alert>
+        </Snackbar>
       </>
     );
   }
