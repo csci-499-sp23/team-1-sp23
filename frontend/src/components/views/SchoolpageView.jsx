@@ -1502,7 +1502,7 @@ function SchoolpageView() {
             </Box>
 {/*Student Success*/}
             <Box id="studentSuccess" className="middle-container academics">
-              <h3>Student Outcomes</h3>
+              <h3>Academics</h3>
               <h2>Student Success</h2>
               <div style={{ display: 'inline-flex', alignItems: 'center' }}>
               <h4 style={{ marginTop: "10px" }}>Attendance</h4>
@@ -1512,7 +1512,7 @@ function SchoolpageView() {
                   </IconButton>
                 </Tooltip>
               </div>
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper}>    
                 <Table>
                   <TableBody>
                     {studentAttendance && (
@@ -1806,7 +1806,7 @@ function SchoolpageView() {
                 </TableBody>
               </Table>
             </Box>
-
+{/*User Ratings*/}
             <Box id="ratings" className="middle-container academics">
               <h3>Reviews</h3>
               <h2>User Ratings</h2>
