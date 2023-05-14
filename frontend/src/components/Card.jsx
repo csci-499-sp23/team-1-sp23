@@ -176,7 +176,6 @@ class InfoCard extends Component {
     this.setState({
       webResults: data,
     });
-    console.log("updating");
   };
 
   badVerificationMethod = (email, query) => {
