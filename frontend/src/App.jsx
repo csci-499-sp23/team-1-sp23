@@ -26,10 +26,6 @@ const App = () => {
           <Route path=":place" element={<Card />} />
         </Route>
         <Route path="/profile" element={<ProfileContainer />} />
-        <Route
-          path="/neighborhood/:neighborhood"
-          element={<NeighborhoodContainer />}
-        />
         <Route path="/school/:schoolName" element={<SchoolpageContainer />} />
       </Routes>
     </div>

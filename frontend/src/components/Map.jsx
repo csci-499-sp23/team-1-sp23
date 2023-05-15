@@ -134,6 +134,16 @@ class Map extends Component {
         });
       }
     });
+
+    if (this.props.location.state && this.props.location.state.stats) {
+      const { longitude, latitude, school, card } = this.props.location.state;
+      this.setState({
+        card: card,
+        openStatsPage: true,
+      });
+      this.goToNearbySchool(longitude, latitude, school);
+    }
+
     if (this.props.location.state && this.props.location.state.longitude) {
       const { longitude, latitude, school, card } = this.props.location.state;
       this.setState({
@@ -626,7 +636,7 @@ class Map extends Component {
                 }}
               >
                 {/* STATS AND USER LIST */}
-                {this.props.openStatsPage && (
+                {this.state.openStatsPage && (
                   <Stats
                     onClose={() => this.setState({ openStatsPage: false })}
                     school={this.props.location.state.dbn}
@@ -730,7 +740,6 @@ class Map extends Component {
                         mobileClose={this.showCard}
                         compareSchool={this.compareOpen}
                         compareOpened={this.state.selectedSecondMarker}
-                        webResults={this.state.webResults}
                       />
                     </Grid>
                   </Grid>
