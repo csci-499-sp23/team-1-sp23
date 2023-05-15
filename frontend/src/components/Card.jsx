@@ -1152,7 +1152,7 @@ class InfoCard extends Component {
                       width: "100%",
                     }}
                   >
-                    {this.state.webResults != null ? (
+                    {this.state.webResults != null && this.state.webResults.items != null ? (
                       this.state.webResults.items
                         .slice(0, 3)
                         .map((result, key) => (
@@ -1729,7 +1729,7 @@ class InfoCard extends Component {
           {this.props.opened && (
             <Card
               sx={{
-                maxWidth: { xs: "100vw", sm: 400, md: 400 },
+                maxWidth: { xs: "100vw", sm: 400, md: 420 },
                 maxHeight: "100%",
                 zIndex: 999,
                 position: "absolute",

@@ -199,18 +199,6 @@ class Stats extends Component {
 
 
                         <Box>
-                            <ToggleButtonGroup value={this.state.category} onChange={this.handleCategoryChange} exclusive sx={{pr: 4}}>
-                                <ToggleButton value="English Proficient">
-                                    English Proficient
-                                </ToggleButton>
-                                <ToggleButton value="Former ELL">
-                                    Former ELL
-                                </ToggleButton>
-                                <ToggleButton value="ELL">
-                                    ELL
-                                </ToggleButton>
-                            </ToggleButtonGroup>
-
                             <FormControl sx={{ pr: 4 }}>
                             <InputLabel id="simple-select-label">Exam Type</InputLabel>
                             <Select
