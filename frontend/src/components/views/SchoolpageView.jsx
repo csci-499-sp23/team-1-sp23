@@ -1020,9 +1020,20 @@ function SchoolpageView() {
 {/*SCHOOL PROFILE*/}
 {/*Overview*/}
             <Box id="overview" className="middle-container school-profile">
-              <h3>School Profile</h3>
-              <h2>Overview</h2>
-              <p>{school?.overview_paragraph}</p>
+            <h3>School Profile</h3>
+                <h2>Overview</h2>
+              <div className="school-image">
+                <img
+                  src={`/public/school-images/${school?.dbn}.png`}
+                  alt={`School image for ${school?.school_name}`}
+                  title={school?.school_name}
+                  className="circular-image"
+                />
+                <div className="school-name">{school?.school_name}</div> {/* add school name */}
+              </div>
+              <div className="school-details">
+                <p>{school?.overview_paragraph}</p>
+              </div>
             </Box>
 {/*Schedule and Contact*/}
             <Box id="schedule-contact-info" className="middle-container school-profile">
