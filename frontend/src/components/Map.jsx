@@ -35,6 +35,7 @@ import { routerPass } from "./routerPass";
 import { MapLoader } from "./MapLoader";
 import MAutocomplete from "@mui/material/Autocomplete";
 import { Typography } from "@mui/material";
+import { FullLoading } from "./Loading";
 
 const containerStyle = {
   borderRadius: 8,
@@ -78,10 +79,20 @@ class Map extends Component {
       activeFilters: [...boroughs],
       searchQuery: null,
       center: {
-        lat: this.props.searchParamsHook.searchParams.get('latitude') != null ? Number(this.props.searchParamsHook.searchParams.get('latitude')) : 40.740977,
-        lng: this.props.searchParamsHook.searchParams.get('longitude') != null ? Number(this.props.searchParamsHook.searchParams.get('longitude')) : -73.95467,
+        lat:
+          this.props.searchParamsHook.searchParams.get("latitude") != null
+            ? Number(this.props.searchParamsHook.searchParams.get("latitude"))
+            : 40.740977,
+        lng:
+          this.props.searchParamsHook.searchParams.get("longitude") != null
+            ? Number(this.props.searchParamsHook.searchParams.get("longitude"))
+            : -73.95467,
       },
-      zoom: (this.props.searchParamsHook.searchParams.get('latitude') &&  this.props.searchParamsHook.searchParams.get('latitude')) ? 17 : 11,
+      zoom:
+        this.props.searchParamsHook.searchParams.get("latitude") &&
+        this.props.searchParamsHook.searchParams.get("latitude")
+          ? 17
+          : 11,
       saveList: false,
       neighborhood: [],
       apCourses: [],
@@ -135,8 +146,12 @@ class Map extends Component {
       }
     });
 
-    if (this.props.searchParamsHook.searchParams.get('school')) {
-      fetch(`https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${this.props.searchParamsHook.searchParams.get('school')}`)
+    if (this.props.searchParamsHook.searchParams.get("school")) {
+      fetch(
+        `https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${this.props.searchParamsHook.searchParams.get(
+          "school"
+        )}`
+      )
         .then((response) => response.json())
         .then((data) => {
           this.setState({
@@ -144,42 +159,58 @@ class Map extends Component {
             // card: true, not sure why its crashing when it fetches the school
             loading: false,
           });
-        })
+        });
     }
 
-    if (this.props.searchParamsHook.searchParams.get('borough')) {
+    if (this.props.searchParamsHook.searchParams.get("borough")) {
       this.setState({
         activeFilters:
-          this.props.searchParamsHook.searchParams.get('borough') != null ? this.props.searchParamsHook.searchParams.get('borough').split(',') :  [...boroughs],
-      })
+          this.props.searchParamsHook.searchParams.get("borough") != null
+            ? this.props.searchParamsHook.searchParams.get("borough").split(",")
+            : [...boroughs],
+      });
     }
 
-    if (this.props.searchParamsHook.searchParams.get('neighborhood')) {
+    if (this.props.searchParamsHook.searchParams.get("neighborhood")) {
       this.setState({
         neighborhood:
-          this.props.searchParamsHook.searchParams.get('neighborhood') != null ? this.props.searchParamsHook.searchParams.get('neighborhood').split(',') : [],
-      })
+          this.props.searchParamsHook.searchParams.get("neighborhood") != null
+            ? this.props.searchParamsHook.searchParams
+                .get("neighborhood")
+                .split(",")
+            : [],
+      });
     }
 
-    if (this.props.searchParamsHook.searchParams.get('apCourse')) {
+    if (this.props.searchParamsHook.searchParams.get("apCourse")) {
       this.setState({
         apCourses:
-          this.props.searchParamsHook.searchParams.get('apCourse') != null ? this.props.searchParamsHook.searchParams.get('apCourse').split(',') : [],
-      })
+          this.props.searchParamsHook.searchParams.get("apCourse") != null
+            ? this.props.searchParamsHook.searchParams
+                .get("apCourse")
+                .split(",")
+            : [],
+      });
     }
 
-    if (this.props.searchParamsHook.searchParams.get('language')) {
+    if (this.props.searchParamsHook.searchParams.get("language")) {
       this.setState({
         languageCourse:
-          this.props.searchParamsHook.searchParams.get('language') != null ? this.props.searchParamsHook.searchParams.get('language').split(',') : [],
-      })
+          this.props.searchParamsHook.searchParams.get("language") != null
+            ? this.props.searchParamsHook.searchParams
+                .get("language")
+                .split(",")
+            : [],
+      });
     }
 
-    if (this.props.searchParamsHook.searchParams.get('sports')) {
+    if (this.props.searchParamsHook.searchParams.get("sports")) {
       this.setState({
         sports:
-          this.props.searchParamsHook.searchParams.get('sports') != null ? this.props.searchParamsHook.searchParams.get('sports').split(',') : [],
-      })
+          this.props.searchParamsHook.searchParams.get("sports") != null
+            ? this.props.searchParamsHook.searchParams.get("sports").split(",")
+            : [],
+      });
     }
 
     if (this.props.location.state && this.props.location.state.stats) {
@@ -298,7 +329,7 @@ class Map extends Component {
         school: school,
         zoom: 17,
       });
-      // this.startDirections(school);
+      this.startDirections(school);
     } else {
       this.setState({
         center: {
@@ -440,6 +471,8 @@ class Map extends Component {
         currentPage: number,
       });
     };
+
+    if (this.state.loading) return <FullLoading />;
 
     return (
       <>
@@ -667,16 +700,15 @@ class Map extends Component {
                         <Button
                           variant="contained"
                           onClick={() => {
-                            this.props.searchParamsHook.setSearchParams({})
+                            this.props.searchParamsHook.setSearchParams({});
                             this.setState({
                               activeFilters: [...boroughs],
                               neighborhood: [],
                               apCourses: [],
                               languageCourse: [],
                               sports: [],
-                            })
-                          }
-                          }
+                            });
+                          }}
                           sx={{
                             backgroundColor: "#ffffff",
                             color: "#256fd4",
@@ -793,9 +825,9 @@ class Map extends Component {
 
                 {/* MIDDLE POP UP CARD */}
 
-                {(!this.state.loading && this.state.card) && (
+                {!this.state.loading && this.state.card && (
                   <Grid
-                    continer
+                    container
                     sx={{
                       overflowY: "scroll",
                       "&::-webkit-scrollbar-track": {
@@ -832,7 +864,7 @@ class Map extends Component {
 
                 {this.state.selectedSecondMarker &&
                   this.state.compareSchool && (
-                    <Grid continer>
+                    <Grid container>
                       <Grid
                         item
                         xs={12}
@@ -1126,7 +1158,7 @@ class Map extends Component {
                 {this.state.selectedSecondMarker &&
                   this.state.compareSchool && (
                     <Grid
-                      continer
+                      container
                       sx={{
                         overflowY: "scroll",
                         "&::-webkit-scrollbar-track": {
@@ -1144,7 +1176,7 @@ class Map extends Component {
                       >
                         <InfoCard
                           school={this.state.comparedSchool}
-                          key={this.state.school + "2031"}
+                          key={this.state.school + "2032"}
                           updateDirOpts={this.handleDirections}
                           handleDirPanel={this.handleDirectionsPanel}
                           opened={this.state.directionsRenderer}
@@ -1186,7 +1218,7 @@ class Map extends Component {
                         this.showCard(false, null);
                         this.showComparisonCard(false, null);
                         this.handleDirectionsPanel(false);
-                        this.props.searchParamsHook.setSearchParams({})
+                        this.props.searchParamsHook.setSearchParams({});
                       }}
                       onZoomChanged={() => {
                         if (this.map && !this.state.directionsRenderer) {
@@ -1223,7 +1255,7 @@ class Map extends Component {
                                 school: school.school_name,
                                 latitude: Number(school.latitude),
                                 longitude: Number(school.longitude),
-                              })
+                              });
                             }}
                           />
                         );
@@ -1249,7 +1281,7 @@ class Map extends Component {
                   >
                     <InfoCard
                       school={this.state.school}
-                      key={this.state.school + "2031"}
+                      key={this.state.school + "2033"}
                       updateDirOpts={this.handleDirections}
                       handleDirPanel={this.handleDirectionsPanel}
                       opened={this.state.directionsRenderer}
