@@ -155,9 +155,8 @@ class Map extends Component {
         .then((response) => response.json())
         .then((data) => {
           this.setState({
-            school: data,
-            // card: true, not sure why its crashing when it fetches the school
-            loading: false,
+            school: data.at(0),
+            card: true,
           });
         });
     }

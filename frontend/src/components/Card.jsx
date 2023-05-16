@@ -944,7 +944,7 @@ class InfoCard extends Component {
                         <Grid item>
                           <Rating
                             name="read-only"
-                            value={this.state.avg}
+                            value={parseInt(this.state.avg)}
                             readOnly
                             size="small"
                           />
@@ -1367,7 +1367,7 @@ class InfoCard extends Component {
 
                         <Rating
                           name="read-only"
-                          value={this.state.avg}
+                          value={parseInt(this.state.avg)}
                           readOnly
                           precision={0.1}
                           size="small"
