@@ -6,7 +6,9 @@ import {
   Tab,
   Tabs,
   Typography,
-  Grid
+  Grid,
+  Button,
+  Link
 } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, doc, getDoc, onSnapshot, updateDoc, FieldValue, deleteDoc } from "firebase/firestore";
@@ -200,6 +202,20 @@ export default function ProfileView() {
   };
 
   const SavedSchool = ({ schoolName }) => {
+    const [dbn, setDbn] = React.useState("");
+
+    React.useEffect(() => {
+      const fetchSchoolData = async () => {
+        const response = await fetch(
+          `https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${schoolName}`
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          setDbn(data[0].dbn);
+        }
+      };
+      fetchSchoolData();
+    }, [schoolName]);
     return (
       <Box sx={{ my: 5, borderRadius: "1rem" }}>
         <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
@@ -217,19 +233,18 @@ export default function ProfileView() {
             <Box
               sx={{
                 height: "auto",
-                width: { xs: "8rem", md: "12rem" },
+                width: { xs: "9.4rem", md: "9.4rem" },
               }}
             >
               <img
-                src="https://i.insider.com/5cb4fb6faefeef24780d8ac5?width=600&format=jpeg&auto=webp"
+                src={`/school-images/${dbn}.png`}
                 alt="school"
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  display: "block",
-                  borderTopRightRadius: "0.5rem",
-                  borderBottomRightRadius: "0.5rem",
+                  marginTop: "10px",
+                  marginLeft: "-10px",
+                  padding: "1px",
                 }}
+                className="school-image" 
               />
             </Box>
           </Box>
