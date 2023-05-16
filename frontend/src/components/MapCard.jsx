@@ -30,8 +30,7 @@ function MapCard({
 }) {
   const [open, setOpen] = React.useState(false);
   const [stars, setStars] = React.useState([]);
-  const [searchParams, setSearchParams] = useSearchParams()
-
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSnackbarOpen = (bool) => {
     setOpen(bool);
@@ -42,7 +41,6 @@ function MapCard({
   };
 
   const getReviews = () => {
-    console.log("getting reviews");
     const schoolRef = collection(db, `school/${school.school_name}/reviews`);
     onSnapshot(schoolRef, (docSnap) => {
       const stars = [];
@@ -88,7 +86,7 @@ function MapCard({
       school: school.school_name,
       latitude: Number(school.latitude),
       longitude: Number(school.longitude),
-    })
+    });
   };
 
   if (loading) {
@@ -138,8 +136,7 @@ function MapCard({
             )}
           </IconButton>
         </Box>
-        <Typography
-          variant="subtitle1"
+        <Box
           sx={{
             display: "flex",
             alignItems: "center",
@@ -164,10 +161,9 @@ function MapCard({
               })
               .join(" ")}
           </Typography>
-        </Typography>
+        </Box>
 
-        <Typography
-          variant="body1"
+        <Box
           sx={{
             display: "flex",
             alignItems: "center",
@@ -177,7 +173,11 @@ function MapCard({
             mb: 1,
           }}
         >
-          <Button variant="contained" sx={{ height: 30, overflow: "hidden" }}>
+          <Button
+            variant="contained"
+            sx={{ height: 30, overflow: "hidden" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <Link
               to={`/school/${school.school_name}`}
               state={{ school: school }}
@@ -202,7 +202,7 @@ function MapCard({
                 : 0.0}
             </Typography>
           </Box>
-        </Typography>
+        </Box>
       </CardContent>
       <Snackbar
         open={open}

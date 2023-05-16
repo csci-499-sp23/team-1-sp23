@@ -24,7 +24,6 @@ import InputBase from "@mui/material/InputBase";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 import LanguageIcon from "@mui/icons-material/Language";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -134,7 +133,6 @@ class InfoCard extends Component {
   };
 
   getReviews = () => {
-    console.log("getting reviews");
     const schoolRef = collection(
       db,
       `school/${this.props.school.school_name}/reviews`
@@ -946,7 +944,7 @@ class InfoCard extends Component {
                         <Grid item>
                           <Rating
                             name="read-only"
-                            value={this.state.avg}
+                            value={parseInt(this.state.avg)}
                             readOnly
                             size="small"
                           />
@@ -1152,7 +1150,8 @@ class InfoCard extends Component {
                       width: "100%",
                     }}
                   >
-                    {this.state.webResults != null && this.state.webResults.items != null ? (
+                    {this.state.webResults != null &&
+                    this.state.webResults.items != null ? (
                       this.state.webResults.items
                         .slice(0, 3)
                         .map((result, key) => (
@@ -1368,7 +1367,7 @@ class InfoCard extends Component {
 
                         <Rating
                           name="read-only"
-                          value={this.state.avg}
+                          value={parseInt(this.state.avg)}
                           readOnly
                           precision={0.1}
                           size="small"
