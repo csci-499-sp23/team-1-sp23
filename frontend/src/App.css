@@ -503,3 +503,15 @@
   text-transform: none;
 }
 
+.single-card-per-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+@media (max-width: 1000px) {
+  .single-card-per-row {
+    grid-template-columns: 1fr;
+  }
+}
