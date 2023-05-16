@@ -40,6 +40,7 @@ import {
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import StarIcon from '@mui/icons-material/Star';
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -72,6 +73,9 @@ import DemographicCharts from "../DemographicCharts";
 import QualityCharts from "../QualityCharts"
 import hoverDescriptions  from "../hoverDescriptions";
 import ReviewsModal from "../ReviewsModal";
+
+
+
 
 function SchoolpageView() {
   const location = useLocation();
@@ -889,6 +893,39 @@ function SchoolpageView() {
                 <span style={{ marginLeft: '0.4em' }}>Contact Info</span>
               </Button>
             </Typography>
+            <Button onClick={handleRatingsClick} className="rating-button" width="150px">
+              <Box
+                className="schoolpage-subtitle"
+                sx={{
+                  marginLeft: "1in",
+                  width: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'rgb(42, 45, 65)',
+                  borderRadius: 4,
+                  px: 1,
+                  py: 1
+                }}
+              >
+                <Rating
+                  name="read-only"
+                  readOnly
+                  precision={0.5}
+                  defaultValue={0.0}
+                  value={stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0}
+                  size="small"
+                  sx={{
+                    fontSize: "14px",
+                  }}
+                  emptyIcon={<StarIcon sx={{ color: "#194973" }} fontSize="inherit" />}
+                />
+                <Typography variant="subtitle1" sx={{ color: 'common.white', ml: 1, fontSize: "12px" }}>
+                  {`${stars.length} ${stars.length === 1 ? "review" : "reviews"}`}
+                </Typography>
+              </Box>
+            </Button>
+
           </Box>
 {/*SUB HEADER*/}
           <Box sx={{ bgcolor: '#255478', py: 1.3 }} id="subheader-container">
@@ -1004,14 +1041,10 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleSupportServicesClick}>
                 Support Services
               </ListItemButton>
-            </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
-            <List>
               <ListItemButton sx={{ pl: 0 }} onClick={handleRatingsClick}>
-                User Ratings
+                Reviews
               </ListItemButton>
             </List>
-
           </Box>
         </Grid>
 {/*MIDDLE CONTAINER*/}
@@ -1020,8 +1053,8 @@ function SchoolpageView() {
 {/*SCHOOL PROFILE*/}
 {/*Overview*/}
             <Box id="overview" className="middle-container school-profile">
-            <h3>School Profile</h3>
-                <h2>Overview</h2>
+              <h3>School Profile</h3>
+              <h2>Overview</h2>
               <div className="school-image">
                 <img
                   src={`/public/school-images/${school?.dbn}.png`}
@@ -1817,10 +1850,10 @@ function SchoolpageView() {
                 </TableBody>
               </Table>
             </Box>
-{/*User Ratings*/}
+{/*Reviews*/}
             <Box id="ratings" className="middle-container academics">
-              <h3>Reviews</h3>
-              <h2>User Ratings</h2>
+              <h3>Environment</h3>
+              <h2>Reviews</h2>
               <Grid container spacing={3} sx={{display: "flex", flexDirection: "row"}}>
                 <Grid item sx={{
                   width: {xs:"100%", md:220},
