@@ -40,6 +40,7 @@ import {
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import StarIcon from '@mui/icons-material/Star';
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -889,6 +890,39 @@ function SchoolpageView() {
                 <span style={{ marginLeft: '0.4em' }}>Contact Info</span>
               </Button>
             </Typography>
+            <Button onClick={handleRatingsClick} className="rating-button" width="150px">
+              <Box
+                className="schoolpage-subtitle"
+                sx={{
+                  marginLeft: "1in",
+                  width: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'rgb(42, 45, 65)',
+                  borderRadius: 4,
+                  px: 1,
+                  py: 1
+                }}
+              >
+                <Rating
+                  name="read-only"
+                  readOnly
+                  precision={0.5}
+                  defaultValue={0.0}
+                  value={stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0}
+                  size="small"
+                  sx={{
+                    fontSize: "14px",
+                  }}
+                  emptyIcon={<StarIcon sx={{ color: "#194973" }} fontSize="inherit" />}
+                />
+                <Typography variant="subtitle1" sx={{ color: 'common.white', ml: 1, fontSize: "12px" }}>
+                  {`${stars.length} ${stars.length === 1 ? "review" : "reviews"}`}
+                </Typography>
+              </Box>
+            </Button>
+
           </Box>
 {/*SUB HEADER*/}
           <Box sx={{ bgcolor: '#255478', py: 1.3 }} id="subheader-container">
@@ -1004,14 +1038,10 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleSupportServicesClick}>
                 Support Services
               </ListItemButton>
-            </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>Reviews</Typography>
-            <List>
               <ListItemButton sx={{ pl: 0 }} onClick={handleRatingsClick}>
-                User Ratings
+                Reviews
               </ListItemButton>
             </List>
-
           </Box>
         </Grid>
 {/*MIDDLE CONTAINER*/}
@@ -1022,7 +1052,18 @@ function SchoolpageView() {
             <Box id="overview" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Overview</h2>
-              <p>{school?.overview_paragraph}</p>
+              <div className="school-image">
+                <img
+                  src={`/school-images/${school?.dbn}.png`}
+                  alt={`School image for ${school?.school_name}`}
+                  title={school?.school_name}
+                  className="circular-image"
+                />
+                <div className="school-name">{school?.school_name}</div> {/* add school name */}
+              </div>
+              <div className="school-details">
+                <p>{school?.overview_paragraph}</p>
+              </div>
             </Box>
 {/*Schedule and Contact*/}
             <Box id="schedule-contact-info" className="middle-container school-profile">
@@ -1502,7 +1543,7 @@ function SchoolpageView() {
             </Box>
 {/*Student Success*/}
             <Box id="studentSuccess" className="middle-container academics">
-              <h3>Student Outcomes</h3>
+              <h3>Academics</h3>
               <h2>Student Success</h2>
               <div style={{ display: 'inline-flex', alignItems: 'center' }}>
               <h4 style={{ marginTop: "10px" }}>Attendance</h4>
@@ -1512,7 +1553,7 @@ function SchoolpageView() {
                   </IconButton>
                 </Tooltip>
               </div>
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper}>    
                 <Table>
                   <TableBody>
                     {studentAttendance && (
@@ -1806,10 +1847,10 @@ function SchoolpageView() {
                 </TableBody>
               </Table>
             </Box>
-
+{/*Reviews*/}
             <Box id="ratings" className="middle-container academics">
-              <h3>Reviews</h3>
-              <h2>User Ratings</h2>
+              <h3>Environment</h3>
+              <h2>Reviews</h2>
               <Grid container spacing={3} sx={{display: "flex", flexDirection: "row"}}>
                 <Grid item sx={{
                   width: {xs:"100%", md:220},
