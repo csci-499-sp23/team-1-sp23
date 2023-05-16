@@ -14,7 +14,7 @@ import {
   ListItemIcon,
   IconButton,
   Tooltip,
-  Table,
+  Table, 
   TableBody,
   TableRow,
   TableCell,
@@ -25,7 +25,7 @@ import {
   Divider,
   Avatar,
   Rating,
-  LinearProgress,
+  LinearProgress
 } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import {
@@ -38,105 +38,40 @@ import {
   School,
 } from "@mui/icons-material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import StarIcon from "@mui/icons-material/Star";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import StarIcon from '@mui/icons-material/Star';
 
 import { auth, db } from "../../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
-  getDoc,
-  doc,
-  updateDoc,
-  onSnapshot,
-  collection,
-  arrayUnion,
-} from "firebase/firestore";
+    getDoc,
+    doc,
+    updateDoc,
+    onSnapshot,
+    collection,
+    arrayUnion
+  } from "firebase/firestore";
 
 import NavBar from "./NavBar";
 import Iframe from "react-iframe";
-import {
-  MdInfoOutline,
-  MdOutlineAccessible,
-  MdSportsScore,
-  MdSportsRugby,
-  MdCelebration,
-  MdSportsGymnastics,
-  MdOutlineSportsHandball,
-  MdOutlinePalette,
-  MdOutlineHistoryEdu,
-  MdOutlineQueryStats,
-  MdOutlinePsychology,
-  MdOutlineComputer,
-  MdOutlineAccountBalance,
-} from "react-icons/md/index.js";
-import {
-  GiJumpingRope,
-  GiHighPunch,
-  GiFencer,
-  GiTennisRacket,
-  GiCricketBat,
-  GiSprint,
-  GiMeshBall,
-  GiRunningShoe,
-  GiBaseballBat,
-  GiArchiveResearch,
-  GiSpikedDragonHead,
-  GiSpain,
-  GiFrance,
-  GiItalia,
-  GiJapan,
-  GiBookPile,
-  GiGears,
-  GiMusicalScore,
-  GiIonicColumn,
-  GiClayBrick,
-  GiPaintBrush,
-  GiBlackBook,
-  GiQuillInk,
-  GiEarthAmerica,
-  GiCastle,
-  GiUsaFlag,
-} from "react-icons/gi/index.js";
-import { SlGraduation, SlCalculator } from "react-icons/sl/index.js";
-import { BiDna, BiSwim, BiAtom, BiMagnet } from "react-icons/bi/index.js";
-import {
-  TbMathFunction,
-  TbMap2,
-  TbBallVolleyball,
-} from "react-icons/tb/index.js";
-import {
-  HiCodeBracket,
-  HiBeaker,
-  HiOutlineCurrencyDollar,
-} from "react-icons/hi2/index.js";
-import { RiGovernmentLine } from "react-icons/ri/index.js";
-import { FaMoneyBillWave, FaPiedPiperHat } from "react-icons/fa/index.js";
-import { SiMoleculer } from "react-icons/si/index.js";
-import { GoComment } from "react-icons/go/index.js";
-import {
-  IoAmericanFootball,
-  IoTennisballOutline,
-  IoBaseballOutline,
-  IoAmericanFootballOutline,
-  IoFootballOutline,
-  IoGolfOutline,
-  IoBasketballOutline,
-  IoBowlingBallOutline,
-} from "react-icons/io5/index.js";
-import {
-  FaArrowUp,
-  FaMinusCircle,
-  FaCheckCircle,
-  FaExclamationTriangle,
-  FaRunning,
-  FaTableTennis,
-} from "react-icons/fa/index.js";
+import { MdInfoOutline, MdOutlineAccessible, MdSportsScore, MdSportsRugby, MdCelebration, MdSportsGymnastics, MdOutlineSportsHandball, MdOutlinePalette, MdOutlineHistoryEdu, MdOutlineQueryStats, MdOutlinePsychology, MdOutlineComputer, MdOutlineAccountBalance } from 'react-icons/md/index.js';
+import { GiJumpingRope, GiHighPunch, GiFencer, GiTennisRacket, GiCricketBat, GiSprint, GiMeshBall, GiRunningShoe, GiBaseballBat, GiArchiveResearch, GiSpikedDragonHead, GiSpain, GiFrance, GiItalia, GiJapan, GiBookPile, GiGears, GiMusicalScore, GiIonicColumn, GiClayBrick, GiPaintBrush, GiBlackBook, GiQuillInk, GiEarthAmerica, GiCastle, GiUsaFlag } from 'react-icons/gi/index.js';
+import { SlGraduation, SlCalculator } from 'react-icons/sl/index.js';
+import { BiDna, BiSwim, BiAtom, BiMagnet } from 'react-icons/bi/index.js';
+import { TbMathFunction, TbMap2, TbBallVolleyball } from 'react-icons/tb/index.js';
+import { HiCodeBracket, HiBeaker, HiOutlineCurrencyDollar } from 'react-icons/hi2/index.js';
+import { RiGovernmentLine } from 'react-icons/ri/index.js';
+import { FaMoneyBillWave, FaPiedPiperHat } from 'react-icons/fa/index.js';
+import { SiMoleculer } from 'react-icons/si/index.js';
+import { GoComment } from 'react-icons/go/index.js';
+import { IoAmericanFootball, IoTennisballOutline, IoBaseballOutline, IoAmericanFootballOutline, IoFootballOutline,IoGolfOutline, IoBasketballOutline, IoBowlingBallOutline} from 'react-icons/io5/index.js'
+import { FaArrowUp, FaMinusCircle, FaCheckCircle, FaExclamationTriangle, FaRunning, FaTableTennis } from 'react-icons/fa/index.js'
 
 import HorizontalScoreBar from "../HorizontalScoreBar";
 import DemographicCharts from "../DemographicCharts";
-import QualityCharts from "../QualityCharts";
-import hoverDescriptions from "../hoverDescriptions";
+import QualityCharts from "../QualityCharts"
+import hoverDescriptions  from "../hoverDescriptions";
 import ReviewsModal from "../ReviewsModal";
 
 function SchoolpageView() {
@@ -166,161 +101,149 @@ function SchoolpageView() {
   const [pupilCounselorRatio, setPupilCounselorRatio] = React.useState([]);
 
   const [graduationData, setGraduationData] = React.useState([]);
-
+  
   const [userReviews, setReviewsData] = React.useState([]);
   const [stars, setStarsData] = React.useState([]);
   const [reviewCounts, setReviewCounts] = React.useState({});
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
 
-  const [tab, setTab] = React.useState(0);
+  const [tab, setTab] = React.useState(0)
 
-  {
-    /*Regent Exams Data*/
-  }
+  {/*Regent Exams Data*/}
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/2h3w-9uj9.json?school_dbn=${schoolDbn}&year=2019`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setTestScores(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
         });
-    }
+    };
   }, [school]);
 
-  {
-    /*AP Exams Data*/
-  }
+  {/*AP Exams Data*/}
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/9ct9-prf9.json?dbn=${schoolDbn}`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setAPScores(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
         });
-    }
+    };
   }, [school]);
 
-  {
-    /*SAT Data*/
-  }
+  {/*SAT Data*/}
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/f9bf-2cp4.json?dbn=${schoolDbn}`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setSatScores(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
         });
-    }
+    };
   }, [school]);
 
-  {
-    /*Demographic Snapshot 2020-2021*/
-  }
+  {/*Demographic Snapshot 2020-2021*/}
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/vmmu-wj3w.json?dbn=${schoolDbn}&year=2020-21`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setDemographInfo(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
         });
-    }
+    };
   }, [school]);
 
-  {
-    /*2017-2018 School Quality Report - High School*/
-  }
-  React.useEffect(() => {
+   {/*2017-2018 School Quality Report - High School*/}
+   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/7c8x-xds8.json?dbn=${schoolDbn}`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setQualityInfo(data);
         })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [school]);
+         .catch(error => {
+           console.error(error);
+         });
+     };
+   }, [school]);
 
-  {
-    /*Students to Teacher Ratio*/
-  }
+
+  {/*Students to Teacher Ratio*/ }
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/bqym-t9p9.json?dbn=${schoolDbn}`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setPupilTeacherRatio(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
         });
-    }
+    };
   }, [school]);
 
-  {
-    /*Students to Guidance Counselor Ratio*/
-  }
+  {/*Students to Guidance Counselor Ratio*/ }
   React.useEffect(() => {
     const schoolDbn = school?.dbn;
     if (schoolDbn) {
       const url = `https://data.cityofnewyork.us/resource/yphg-6fug.json?dbn=${schoolDbn}`;
       fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setPupilCounselorRatio(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
         });
-    }
+    };
   }, [school]);
 
-  {
-    /*Graduation Data for the class of 2015 (graduating in June of 2019*/
-  }
-  React.useEffect(() => {
-    const schoolDbn = school?.dbn;
-    if (schoolDbn) {
-      const url = `https://data.cityofnewyork.us/resource/3vje-du8p.json?dbn=${schoolDbn}&cohort_year=2015&cohort=4%20year%20June`;
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          setGraduationData(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [school]);
+    {/*Graduation Data for the class of 2015 (graduating in June of 2019*/ }
+    React.useEffect(() => {
+      const schoolDbn = school?.dbn;
+      if (schoolDbn) {
+        const url = `https://data.cityofnewyork.us/resource/3vje-du8p.json?dbn=${schoolDbn}&cohort_year=2015&cohort=4%20year%20June`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            setGraduationData(data);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      };
+    }, [school]);
 
   // GET SCHOOL REVIEWS
   React.useEffect(() => {
-    const schoolRef = collection(db, `school/${schoolName}/reviews`);
+    const schoolRef = collection(
+      db,
+      `school/${schoolName}/reviews`
+    );
 
     onSnapshot(schoolRef, (docSnap) => {
       const toAdd = [];
@@ -334,15 +257,13 @@ function SchoolpageView() {
           return null;
         }
       });
-      setReviewsData(toAdd);
-      setStarsData(stars);
-      countReviews(stars);
+      setReviewsData(toAdd)
+      setStarsData(stars)
+      countReviews(stars)
     });
-  }, []);
+  }, [])
 
-  {
-    /*Login*/
-  }
+  {/*Login*/ }
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -356,11 +277,12 @@ function SchoolpageView() {
             setRole(docSnap.data().role);
             setSavedSchools(docSnap.data().saved_schools);
             setReviews(docSnap.data().reviews);
-            setVerified(docSnap.data().verified);
+            setVerified(docSnap.data().verified)
           } else {
             console.log("document does not exist");
           }
-        });
+        })
+
       } else {
         console.log("not logged in");
       }
@@ -390,12 +312,11 @@ function SchoolpageView() {
 
   const apClasses = splittingByComma(school?.advancedplacement_courses);
   const langClasses = splittingByComma(school?.language_classes);
-  const extracurricularClubs = splittingByComma(
-    school?.extracurricular_activities
-  );
-  const boysSports = splittingByComma(school?.psal_sports_boys);
-  const girlsSports = splittingByComma(school?.psal_sports_girls);
-  const coedSports = splittingByComma(school?.psal_sports_coed);
+  const extracurricularClubs = splittingByComma(school?.extracurricular_activities)
+  const boysSports = splittingByComma(school?.psal_sports_boys)
+  const girlsSports = splittingByComma(school?.psal_sports_girls)
+  const coedSports = splittingByComma(school?.psal_sports_coed)
+
 
   const iconsForAP = {
     "AP Art History": GiPaintBrush,
@@ -438,55 +359,55 @@ function SchoolpageView() {
   };
 
   const iconsForLang = {
-    Arabic: "AR",
-    Bengali: "BN",
-    Spanish: "ES",
-    French: "FR",
-    Italian: "IT",
-    German: "DE",
-    Japanese: "JA",
-    Latin: "LA",
-    Mandarin: "ZH",
-    Korean: "KO",
-    "American Sign Language": "ASL",
-    Greek: "EL",
-    Hebrew: "IW",
-    Hindi: "HI",
-    "Haitian Creole": "HT",
-    Polish: "PL",
-    Portuguese: "PT",
-    Punjabi: "PA",
-    Russian: "RU",
-    Urdu: "UR",
+    'Arabic': 'AR',
+    'Bengali': 'BN',
+    'Spanish': 'ES',
+    'French': 'FR',
+    'Italian': 'IT',
+    'German': 'DE',
+    'Japanese': 'JA',
+    'Latin': 'LA',
+    'Mandarin': 'ZH',
+    'Korean': 'KO',
+    'American Sign Language': 'ASL',
+    'Greek': 'EL',
+    'Hebrew': 'IW',
+    'Hindi': 'HI',
+    'Haitian Creole': 'HT',
+    'Polish': 'PL',
+    'Portuguese': 'PT',
+    'Punjabi': 'PA',
+    'Russian': 'RU',
+    'Urdu': 'UR'
   };
 
   const iconsForSports = {
-    Badminton: GiTennisRacket,
-    Baseball: IoBaseballOutline,
-    Basketball: IoBasketballOutline,
-    Bowling: IoBowlingBallOutline,
-    "Cross Country": FaRunning,
-    Cricket: GiCricketBat,
-    Fencing: GiFencer,
-    "Flag Football": IoAmericanFootballOutline,
-    Football: IoAmericanFootball,
-    Golf: IoGolfOutline,
-    Gymnastics: MdSportsGymnastics,
-    Handball: MdOutlineSportsHandball,
-    "Indoor Track": GiSprint,
-    Lacrosse: GiMeshBall,
-    "Outdoor Track": GiRunningShoe,
-    Soccer: IoFootballOutline,
-    Softball: GiBaseballBat,
-    Stunt: MdCelebration,
-    Swimming: BiSwim,
-    "Table Tennis": FaTableTennis,
-    Tennis: IoTennisballOutline,
-    Volleyball: TbBallVolleyball,
-    Wrestling: GiHighPunch,
-    Rugby: MdSportsRugby,
-    "Double Dutch": GiJumpingRope,
-  };
+    'Badminton': GiTennisRacket,
+    'Baseball': IoBaseballOutline,
+    'Basketball' : IoBasketballOutline,
+    'Bowling' : IoBowlingBallOutline,
+    'Cross Country': FaRunning, 
+    'Cricket': GiCricketBat,
+    'Fencing': GiFencer,
+    'Flag Football': IoAmericanFootballOutline,
+    'Football': IoAmericanFootball,
+    'Golf': IoGolfOutline,
+    'Gymnastics': MdSportsGymnastics,
+    'Handball': MdOutlineSportsHandball,
+    'Indoor Track': GiSprint,
+    'Lacrosse': GiMeshBall,
+    'Outdoor Track': GiRunningShoe,
+    'Soccer': IoFootballOutline,
+    'Softball': GiBaseballBat,
+    'Stunt': MdCelebration,
+    'Swimming': BiSwim,
+    'Table Tennis': FaTableTennis,
+    'Tennis': IoTennisballOutline,
+    'Volleyball': TbBallVolleyball,
+    'Wrestling': GiHighPunch, 
+    'Rugby' : MdSportsRugby,
+    'Double Dutch' : GiJumpingRope,
+  }
   const getSportIcon = (sport) => {
     return iconsForSports[sport.trim()] || MdSportsScore;
   };
@@ -503,12 +424,11 @@ function SchoolpageView() {
   const [showAllAPs, setShowAllAps] = useState(false);
   const visibleAPs = showAllAPs ? apClasses : apClasses.slice(0, 5);
 
+  
   const [showAllClubs, setShowClubs] = useState(false);
-  const visibleClubs = showAllClubs
-    ? extracurricularClubs
-    : extracurricularClubs.slice(0, 8);
+  const visibleClubs = showAllClubs ? extracurricularClubs : extracurricularClubs.slice(0, 8);
 
-  const CommentIcon = ({ languageAbbreviation }) => (
+  const CommentIcon =({ languageAbbreviation }) => (
     <div style={{ position: "relative", top: "7px" }}>
       <GoComment size={28} />
       <div
@@ -528,111 +448,114 @@ function SchoolpageView() {
   );
 
   const handleContactInfoClick = () => {
-    const contactInfo = document.getElementById("schedule-contact-info");
-    contactInfo.scrollIntoView({ behavior: "smooth" });
-  };
+    const contactInfo = document.getElementById('schedule-contact-info');
+    contactInfo.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleAddressClick = () => {
-    const address = document.getElementById("navigation");
-    address.scrollIntoView({ behavior: "smooth" });
-  };
+    const address = document.getElementById('navigation');
+    address.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleOverviewClick = () => {
-    const overview = document.getElementById("overview");
-    overview.scrollIntoView({ behavior: "smooth" });
-  };
+    const overview = document.getElementById('overview');
+    overview.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleOpportunitiesClick = () => {
-    const opportunities = document.getElementById("aca-opportunities");
-    opportunities.scrollIntoView({ behavior: "smooth" });
-  };
+    const opportunities = document.getElementById('aca-opportunities');
+    opportunities.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleAPCoursesClick = () => {
-    const apCourses = document.getElementById("aca-apCourses");
-    apCourses.scrollIntoView({ behavior: "smooth" });
-  };
+    const apCourses = document.getElementById('aca-apCourses');
+    apCourses.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleLanguageClick = () => {
-    const languageCourses = document.getElementById("aca-languages");
-    languageCourses.scrollIntoView({ behavior: "smooth" });
-  };
+    const languageCourses = document.getElementById('aca-languages');
+    languageCourses.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleProgramsClick = () => {
-    const programs = document.getElementById("aca-programs");
-    programs.scrollIntoView({ behavior: "smooth" });
-  };
+    const programs = document.getElementById('aca-programs');
+    programs.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleTestScoresClick = () => {
-    const programs = document.getElementById("aca-testscores");
-    programs.scrollIntoView({ behavior: "smooth" });
-  };
+    const programs = document.getElementById('aca-testscores');
+    programs.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleClubsClick = () => {
-    const clubs = document.getElementById("clubs");
-    clubs.scrollIntoView({ behavior: "smooth" });
-  };
+    const clubs = document.getElementById('clubs');
+    clubs.scrollIntoView({ behavior: 'smooth' });
+  }
   const handleSportsClick = () => {
-    const sports = document.getElementById("sports");
-    sports.scrollIntoView({ behavior: "smooth" });
-  };
+    const sports = document.getElementById('sports')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleDemographicsClick = () => {
-    const sports = document.getElementById("demographics");
-    sports.scrollIntoView({ behavior: "smooth" });
-  };
+    const sports = document.getElementById('demographics')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleQualityFeedbackClick = () => {
-    const sports = document.getElementById("qualityFeedback");
-    sports.scrollIntoView({ behavior: "smooth" });
-  };
+    const sports = document.getElementById('qualityFeedback')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleSupportServicesClick = () => {
-    const sports = document.getElementById("supportservices");
-    sports.scrollIntoView({ behavior: "smooth" });
-  };
+    const sports = document.getElementById('supportservices')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleRatingsClick = () => {
-    const ratings = document.getElementById("ratings");
-    ratings.scrollIntoView({ behavior: "smooth" });
-  };
+    const ratings = document.getElementById('ratings')
+    ratings.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleSuccessClick = () => {
-    const sports = document.getElementById("studentSuccess");
-    sports.scrollIntoView({ behavior: "smooth" });
-  };
+    const sports = document.getElementById('studentSuccess')
+    sports.scrollIntoView({ behavior: 'smooth' });
+  }
 
-  const handleTabChange = (e, value) => {
-    setTab(value);
-  };
+  const handleTabChange = (e, value) => { 
+    setTab(value)
+  }
 
   const handleOpenReviewsModal = (bool) => {
-    setReviewsOpen(bool);
-  };
+    setReviewsOpen(bool)
+  }
 
   const TabPanel = ({ children, value, index }) => {
     return value === index && children;
   };
+  
 
   const handleSave = () => {
     if (auth.currentUser != null || undefined) {
-      if (!savedSchools.includes(school.school_name)) {
+      if(!savedSchools.includes(school.school_name)) {
         const docRef = doc(db, "users", auth.currentUser.uid);
         return updateDoc(docRef, {
           saved_schools: arrayUnion(school.school_name),
         });
-      } else {
-        const docRef = doc(db, "users", auth.currentUser.uid);
+      }
+      else {
+        const docRef = doc(db, 'users', auth.currentUser.uid)
         const removedSchool = savedSchools.filter(
-          (remove) => remove !== school.school_name
-        );
+          remove => remove !== school.school_name
+        )
         return updateDoc(docRef, {
-          saved_schools: removedSchool,
-        });
+          saved_schools: removedSchool
+        })
       }
     } else {
       console.log("you are not logged in!");
     }
   };
+  
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -641,246 +564,165 @@ function SchoolpageView() {
     });
   };
 
-  window.addEventListener("scroll", function () {
-    const headerHeight =
-      document.getElementById("header-container").offsetHeight;
-    const subheaderHeight = document.getElementById(
-      "subheader-container"
-    ).offsetHeight;
+  window.addEventListener('scroll', function () {
+    const headerHeight = document.getElementById('header-container').offsetHeight;
+    const subheaderHeight = document.getElementById('subheader-container').offsetHeight;
     const totalHeaderHeight = headerHeight + subheaderHeight;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     if (scrollTop > totalHeaderHeight + 10) {
-      document
-        .querySelector(".left-container")
-        .classList.add("fixed-left-container");
-      document.getElementById("scroll-to-top").classList.remove("hidden");
+      document.querySelector('.left-container').classList.add('fixed-left-container');
+      document.getElementById('scroll-to-top').classList.remove('hidden');
     } else {
-      document
-        .querySelector(".left-container")
-        .classList.remove("fixed-left-container");
-      document.getElementById("scroll-to-top").classList.add("hidden");
+      document.querySelector('.left-container').classList.remove('fixed-left-container');
+      document.getElementById('scroll-to-top').classList.add('hidden');
     }
   });
 
-  const isInternational = school?.international === "1";
-  const isSpecialized = school?.specialized === "1";
+
+  const isInternational = school?.international === "1"; 
+  const isSpecialized = school?.specialized === "1"; 
   const isTransfer = school?.transfer === "1";
   const isPTech = school?.ptech === "1";
   const isEarlyCollege = school?.earlycollege === "1";
 
-  const algebraRegentsScores = testScores.filter((score) => {
+  const algebraRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Common Core Algebra" && score.category === "ELL"
-      );
+      return score.regents_exam === "Common Core Algebra" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Common Core Algebra" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Common Core Algebra" && score.category === "English Proficient";
     }
   });
   const algebraMeanScore = algebraRegentsScores[0]?.mean_score;
-
-  const algebra2RegentsScores = testScores.filter((score) => {
+ 
+  const algebra2RegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Common Core Algebra2" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "Common Core Algebra2" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Common Core Algebra2" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Common Core Algebra2" && score.category === "English Proficient";
     }
   });
   const algebra2MeanScore = algebra2RegentsScores[0]?.mean_score;
 
-  const englishRegentsScores = testScores.filter((score) => {
+  const englishRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Common Core English" && score.category === "ELL"
-      );
+      return score.regents_exam === "Common Core English" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Common Core English" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Common Core English" && score.category === "English Proficient";
     }
   });
   const englishMeanScore = englishRegentsScores[0]?.mean_score;
 
-  const geometryRegentsScores = testScores.filter((score) => {
+  const geometryRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Common Core Geometry" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "Common Core Geometry" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Common Core Geometry" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Common Core Geometry" && score.category === "English Proficient";
     }
   });
   const geometryMeanScore = geometryRegentsScores[0]?.mean_score;
 
-  const globalhistoryRegentsScores = testScores.filter((score) => {
+  const globalhistoryRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Global History and Geography" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "Global History and Geography" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Global History and Geography" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Global History and Geography" && score.category === "English Proficient";
     }
   });
   const globalhistoryMeanScore = globalhistoryRegentsScores[0]?.mean_score;
 
-  const livingEnvironRegentsScores = testScores.filter((score) => {
+  const livingEnvironRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Living Environment" && score.category === "ELL"
-      );
+      return score.regents_exam === "Living Environment" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Living Environment" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Living Environment" && score.category === "English Proficient";
     }
   });
   const livingEnvironMeanScore = livingEnvironRegentsScores[0]?.mean_score;
 
-  const chemistryRegentsScores = testScores.filter((score) => {
+  const chemistryRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Physical Settings/Chemistry" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "Physical Settings/Chemistry" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Physical Settings/Chemistry" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Physical Settings/Chemistry" && score.category === "English Proficient";
     }
   });
   const chemistryMeanScore = chemistryRegentsScores[0]?.mean_score;
 
-  const earthScienceRegentsScores = testScores.filter((score) => {
+  const earthScienceRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Physical Settings/Earth Science" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "Physical Settings/Earth Science" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Physical Settings/Earth Science" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Physical Settings/Earth Science" && score.category === "English Proficient";
     }
   });
   const earthScienceMeanScore = earthScienceRegentsScores[0]?.mean_score;
 
-  const physicsRegentsScores = testScores.filter((score) => {
+  const physicsRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "Physical Settings/Physics" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "Physical Settings/Physics" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Physical Settings/Physics" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Physical Settings/Physics" && score.category === "English Proficient";
     }
   });
   const physicsMeanScore = physicsRegentsScores[0]?.mean_score;
 
-  const USHistoryRegentsScores = testScores.filter((score) => {
+  const USHistoryRegentsScores = testScores.filter(score => {
     if (isInternational) {
-      return (
-        score.regents_exam === "U.S. History and Government" &&
-        score.category === "ELL"
-      );
+      return score.regents_exam === "U.S. History and Government" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "U.S. History and Government" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "U.S. History and Government" && score.category === "English Proficient";
     }
   });
   const USHistoryMeanScore = USHistoryRegentsScores[0]?.mean_score;
 
-  const spanishRegentsScores = testScores.filter((score) => {
+  const spanishRegentsScores = testScores.filter(score => {
     if (isInternational) {
       return score.regents_exam === "Spanish" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Spanish" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Spanish" && score.category === "English Proficient";
     }
   });
   const spanishMeanScore = spanishRegentsScores[0]?.mean_score;
 
-  const frenchRegentsScores = testScores.filter((score) => {
+  const frenchRegentsScores = testScores.filter(score => {
     if (isInternational) {
       return score.regents_exam === "French" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "French" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "French" && score.category === "English Proficient";
     }
   });
   const frenchMeanScore = frenchRegentsScores[0]?.mean_score;
 
-  const chineseRegentsScores = testScores.filter((score) => {
+  const chineseRegentsScores = testScores.filter(score => {
     if (isInternational) {
       return score.regents_exam === "Chinese" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Chinese" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Chinese" && score.category === "English Proficient";
     }
   });
   const chineseMeanScore = chineseRegentsScores[0]?.mean_score;
 
-  const italianRegentsScores = testScores.filter((score) => {
+  const italianRegentsScores = testScores.filter(score => {
     if (isInternational) {
       return score.regents_exam === "Italian" && score.category === "ELL";
     } else {
-      return (
-        score.regents_exam === "Italian" &&
-        score.category === "English Proficient"
-      );
+      return score.regents_exam === "Italian" && score.category === "English Proficient";
     }
   });
   const italianMeanScore = italianRegentsScores[0]?.mean_score;
-
+  
   const apExamsPassed = apScores[0]?.num_of_ap_exams_passed;
   const apTotalExams = apScores[0]?.num_of_ap_total_exams_taken;
   const apTestTakers = apScores[0]?.num_of_ap_test_takers;
 
-  const apPassRate = Math.round(
-    (Number(apExamsPassed) / Number(apTotalExams)) * 100
-  );
-  const apEnrollment = Math.round(
-    (Number(apTestTakers) / Number(school?.total_students)) * 100
-  );
+  const apPassRate = Math.round((Number(apExamsPassed) / Number(apTotalExams)) * 100); 
+  const apEnrollment = Math.round((Number(apTestTakers) / Number(school?.total_students)) * 100);
 
   const satCriticalReading = satScores[0]?.sat_critical_reading_avg_score;
-  const satWriting = satScores[0]?.sat_writing_avg_score;
+  const satWriting = satScores[0]?.sat_writing_avg_score
   const satMath = satScores[0]?.sat_math_avg_score;
-
-  const satNewReading = Math.round(
-    (Number(satCriticalReading) + Number(satWriting)) / 2
-  );
+  
+  const satNewReading = Math.round((Number(satCriticalReading) + Number(satWriting)) / 2);
   const satTotal = Math.round(satMath) + satNewReading;
 
   const satScoresAvailable = !(
@@ -900,42 +742,27 @@ function SchoolpageView() {
       nativeAmericanPercentage: demographicInfo[0]?.native_american_1,
       missingRacePercentage: demographicInfo[0]?.missing_race_ethnicity_data_1,
       multiRacePercentage: demographicInfo[0]?.multi_racial_1,
-    },
-  ];
+    }
+  ]
 
   const accessibilityStatus = school?.school_accessibility;
   const ellPrograms = splittingBySemiColon(school?.ell_programs);
-  const ellPercentage = Math.round(
-    demographicInfo[0]?.english_language_learners_1 * 100
-  );
+  const ellPercentage = Math.round(demographicInfo[0]?.english_language_learners_1 * 100);
   const povertyPercentage = demographicInfo[0]?.poverty_1;
   const economicNeedPercentage = demographicInfo[0]?.economic_need_index;
 
-  const studentAttendance = formatValue(
-    (parseFloat(qualityInfo[0]?.student_attendance_rate) * 100).toFixed(1)
-  );
-  const chronicAbsence = formatValue(
-    (parseFloat(qualityInfo[0]?.percent_of_students) * 100).toFixed(1)
-  );
-  const teacherAttendance = formatValue(
-    (parseFloat(qualityInfo[0]?.teacher_attendance_rate) * 100).toFixed(1)
-  );
+  const studentAttendance = formatValue((parseFloat(qualityInfo[0]?.student_attendance_rate) * 100).toFixed(1));
+  const chronicAbsence = formatValue((parseFloat(qualityInfo[0]?.percent_of_students) * 100).toFixed(1));
+  const teacherAttendance = formatValue((parseFloat(qualityInfo[0]?.teacher_attendance_rate) * 100).toFixed(1));
 
-  const teacherExperience = formatValue(
-    (parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1)
-  );
-  const principalExperience = formatValue(
-    Math.round(qualityInfo[0]?.years_of_principal_experience)
-  );
+  const teacherExperience = formatValue((parseFloat(qualityInfo[0]?.percent_of_teachers_with) * 100).toFixed(1));
+  const principalExperience = formatValue(Math.round(qualityInfo[0]?.years_of_principal_experience));
 
-  const pupilToteacherRatio = Math.round(
-    pupilTeacherRatio[0]?.school_pupil_teacher_ratio
-  );
-  const pupilTocounselorRatio = Math.round(
-    pupilCounselorRatio[0]?.enrollment_and_ratios_ratio_1
-  );
+  const pupilToteacherRatio = (Math.round(pupilTeacherRatio[0]?.school_pupil_teacher_ratio));
+  const pupilTocounselorRatio = (Math.round(pupilCounselorRatio[0]?.enrollment_and_ratios_ratio_1));
 
-  const grads = graduationData[0]?.grads_1;
+
+  const grads = graduationData[0]?.grads_1; 
   const regentsGrads = graduationData[0]?.total_regents_of_cohort;
   const advancedRegentsGrads = graduationData[0]?.advanced_regents_of_cohort;
   const localGrads = graduationData[0]?.local_of_cohort;
@@ -944,72 +771,32 @@ function SchoolpageView() {
 
   const quality = [
     {
-      rigorousInstruction: (
-        parseFloat(qualityInfo[0]?.rigorous_instruction_percent) * 100
-      ).toFixed(1),
-      collaborativeTeachers: (
-        parseFloat(qualityInfo[0]?.collaborative_teachers_percent) * 100
-      ).toFixed(1),
-      supportiveEnvironment: (
-        parseFloat(qualityInfo[0]?.supportive_environment_percent) * 100
-      ).toFixed(1),
-      effectiveLeadership: (
-        parseFloat(qualityInfo[0]?.effective_school_leadership_1) * 100
-      ).toFixed(1),
-      strongFamilyTies: (
-        parseFloat(qualityInfo[0]?.strong_family_community_ties_1) * 100
-      ).toFixed(1),
-      trustPercentage: (
-        parseFloat(qualityInfo[0]?.trust_percent_positive) * 100
-      ).toFixed(1),
-    },
-  ];
+      rigorousInstruction: (parseFloat(qualityInfo[0]?.rigorous_instruction_percent) * 100).toFixed(1),
+      collaborativeTeachers: (parseFloat(qualityInfo[0]?.collaborative_teachers_percent) * 100).toFixed(1),
+      supportiveEnvironment: (parseFloat(qualityInfo[0]?.supportive_environment_percent) * 100).toFixed(1),
+      effectiveLeadership: (parseFloat(qualityInfo[0]?.effective_school_leadership_1) * 100).toFixed(1),
+      strongFamilyTies: (parseFloat(qualityInfo[0]?.strong_family_community_ties_1) * 100).toFixed(1),
+      trustPercentage: (parseFloat(qualityInfo[0]?.trust_percent_positive) * 100).toFixed(1),
+    }
+  ]
 
   const iconsForAccessibility = {
-    "Fully Accessible": () => (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <MdOutlineAccessible
-          style={{ color: "blue", fontSize: "50px", marginRight: "5px" }}
-        />
-        <FaCheckCircle
-          style={{
-            color: "black",
-            backgroundColor: "#00CC00",
-            marginRight: "5px",
-            padding: "5px",
-            borderRadius: "50%",
-          }}
-        />
+    'Fully Accessible': () => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <MdOutlineAccessible style={{ color: 'blue', fontSize: '50px', marginRight: '5px' }} />
+        <FaCheckCircle style={{ color: 'black', backgroundColor: '#00CC00', marginRight: '5px', padding: '5px', borderRadius: '50%' }} />
       </div>
     ),
-    "Partially Accessible": () => (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <MdOutlineAccessible
-          style={{ color: "blue", fontSize: "50px", marginRight: "5px" }}
-        />
-        <FaExclamationTriangle
-          style={{
-            color: "black",
-            backgroundColor: "yellow",
-            padding: "5px",
-            borderRadius: "50%",
-          }}
-        />
+    'Partially Accessible': () => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <MdOutlineAccessible style={{ color: 'blue', fontSize: '50px', marginRight: '5px' }} />
+        <FaExclamationTriangle style={{ color: 'black', backgroundColor: 'yellow', padding: '5px', borderRadius: '50%' }} />
       </div>
     ),
-    "Not Accessible": () => (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <MdOutlineAccessible
-          style={{ color: "blue", fontSize: "50px", marginRight: "5px" }}
-        />
-        <FaMinusCircle
-          style={{
-            color: "black",
-            backgroundColor: "red",
-            padding: "5px",
-            borderRadius: "50%",
-          }}
-        />
+    'Not Accessible': () => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <MdOutlineAccessible style={{ color: 'blue', fontSize: '50px', marginRight: '5px' }} />
+        <FaMinusCircle style={{ color: 'black', backgroundColor: 'red', padding: '5px', borderRadius: '50%' }} />
       </div>
     ),
   };
@@ -1018,9 +805,11 @@ function SchoolpageView() {
 
   const countReviews = (arr) => {
     for (const num of arr) {
-      reviewCounts[num] = reviewCounts[num] ? reviewCounts[num] + 1 : 1;
+      reviewCounts[num] = reviewCounts[num]
+        ? reviewCounts[num] + 1
+        : 1;
     }
-  };
+  }
 
   const Label = ({ text, backcolor, color }) => {
     return (
@@ -1041,11 +830,11 @@ function SchoolpageView() {
 
   return (
     <>
-      <NavBar loggedIn={loggedIn} handleLogout={handleLogout} />
-      <Grid container sx={{ width: "100%" }}>
+      <NavBar loggedIn={loggedIn} handleLogout={handleLogout}/>
+      <Grid container sx={{width: "100%"}}>
         <Grid item xs={12} sm={12} md={12} id="header-container">
-          {/*MAIN HEADER*/}
-          <Box sx={{ bgcolor: "#194973", py: 3.5 }}>
+{/*MAIN HEADER*/}
+          <Box sx={{ bgcolor: '#194973', py: 3.5 }}>
             <Typography
               variant="h4"
               component="h1"
@@ -1074,53 +863,46 @@ function SchoolpageView() {
                   component="span"
                   sx={{
                     marginLeft: -1,
-                    verticalAlign: "middle",
-                    fontFamily: "Arial",
+                    verticalAlign: 'middle',
+                    fontFamily: 'Arial',
                     marginRight: 1,
                     fontSize: 30,
-                    color: "common.white",
+                    color: 'common.white',
                   }}
                 >
                   <LocationOn />
                 </Box>
-                <span>{school?.location.split("(")[0].trim()}</span>
+                <span>{school?.location.split('(')[0].trim()}</span>
               </Button>
-              <Button
-                className="contact-info-button"
-                onClick={handleContactInfoClick}
-              >
+              <Button className="contact-info-button" onClick={handleContactInfoClick}>
                 <Box
                   component="span"
                   sx={{
-                    verticalAlign: "middle",
-                    marginLeft: "1em",
-                    fontFamily: "Arial",
+                    verticalAlign: 'middle',
+                    marginLeft: '1em',
+                    fontFamily: 'Arial',
                     fontSize: 30,
-                    color: "common.white",
+                    color: 'common.white',
                   }}
                 >
                   <Phone />
                 </Box>
-                <span style={{ marginLeft: "0.4em" }}>Contact Info</span>
+                <span style={{ marginLeft: '0.4em' }}>Contact Info</span>
               </Button>
             </Typography>
-            <Button
-              onClick={handleRatingsClick}
-              className="rating-button"
-              width="150px"
-            >
+            <Button onClick={handleRatingsClick} className="rating-button" width="150px">
               <Box
                 className="schoolpage-subtitle"
                 sx={{
                   marginLeft: "1in",
-                  width: "150px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  bgcolor: "rgb(42, 45, 65)",
+                  width: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'rgb(42, 45, 65)',
                   borderRadius: 4,
                   px: 1,
-                  py: 1,
+                  py: 1
                 }}
               >
                 <Rating
@@ -1128,32 +910,22 @@ function SchoolpageView() {
                   readOnly
                   precision={0.5}
                   defaultValue={0.0}
-                  value={
-                    stars.length != 0
-                      ? stars.reduce((a, b) => a + b).toFixed(1) / stars.length
-                      : 0.0
-                  }
+                  value={stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0}
                   size="small"
                   sx={{
                     fontSize: "14px",
                   }}
-                  emptyIcon={
-                    <StarIcon sx={{ color: "#194973" }} fontSize="inherit" />
-                  }
+                  emptyIcon={<StarIcon sx={{ color: "#194973" }} fontSize="inherit" />}
                 />
-                <Typography
-                  variant="subtitle1"
-                  sx={{ color: "common.white", ml: 1, fontSize: "12px" }}
-                >
-                  {`${stars.length} ${
-                    stars.length === 1 ? "review" : "reviews"
-                  }`}
+                <Typography variant="subtitle1" sx={{ color: 'common.white', ml: 1, fontSize: "12px" }}>
+                  {`${stars.length} ${stars.length === 1 ? "review" : "reviews"}`}
                 </Typography>
               </Box>
             </Button>
+
           </Box>
-          {/*SUB HEADER*/}
-          <Box sx={{ bgcolor: "#255478", py: 1.3 }} id="subheader-container">
+{/*SUB HEADER*/}
+          <Box sx={{ bgcolor: '#255478', py: 1.3 }} id="subheader-container">
             <Typography
               variant="subtitle2"
               component="div"
@@ -1188,18 +960,10 @@ function SchoolpageView() {
               </span>
               <span style={{ marginLeft: "6em" }}>
                 {isSpecialized && (
-                  <Label
-                    text="Specialized"
-                    backcolor="#DAFBE2"
-                    color="#177F3C"
-                  />
+                  <Label text="Specialized" backcolor="#DAFBE2" color="#177F3C" />
                 )}
                 {isInternational && (
-                  <Label
-                    text="International"
-                    backcolor="#FBEFFE"
-                    color="#8655DC"
-                  />
+                  <Label text="International" backcolor="#FBEFFE" color="#8655DC" />
                 )}
                 {isTransfer && (
                   <Label text="Transfer" backcolor="#FFF8C7" color="#9A6711" />
@@ -1208,17 +972,13 @@ function SchoolpageView() {
                   <Label text="P-Tech" backcolor="#FFF1E5" color="#BD4C09" />
                 )}
                 {isEarlyCollege && (
-                  <Label
-                    text="Early College"
-                    backcolor="#FFEFF7"
-                    color="#C03987"
-                  />
+                  <Label text="Early College" backcolor="#FFEFF7" color="#C03987" />
                 )}
               </span>
             </Typography>
           </Box>
         </Grid>
-        {/*LEFT CONTAINER*/}
+{/*LEFT CONTAINER*/}
         <Grid item xs={12} sm={12} md={2}>
           <Box className="left-container">
             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -1231,10 +991,7 @@ function SchoolpageView() {
               <ListItemButton sx={{ pl: 0 }} onClick={handleContactInfoClick}>
                 Schedule and Contact
               </ListItemButton>
-              <ListItemButton
-                sx={{ pl: 0, marginBottom: "-20px" }}
-                onClick={handleAddressClick}
-              >
+              <ListItemButton sx={{ pl: 0, marginBottom: "-20px" }} onClick={handleAddressClick}>
                 Navigation
               </ListItemButton>
             </List>
@@ -1261,9 +1018,7 @@ function SchoolpageView() {
                 Student Success
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Extracurricular Activities
-            </Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Extracurricular Activities</Typography>
             <List>
               <ListItemButton sx={{ pl: 0 }} onClick={handleClubsClick}>
                 Clubs
@@ -1272,23 +1027,15 @@ function SchoolpageView() {
                 Sports
               </ListItemButton>
             </List>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Environment
-            </Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>Environment</Typography>
             <List>
               <ListItemButton sx={{ pl: 0 }} onClick={handleDemographicsClick}>
                 Student Demographics
               </ListItemButton>
-              <ListItemButton
-                sx={{ pl: 0 }}
-                onClick={handleQualityFeedbackClick}
-              >
+              <ListItemButton sx={{ pl: 0 }} onClick={handleQualityFeedbackClick}>
                 Quality and Feedback
               </ListItemButton>
-              <ListItemButton
-                sx={{ pl: 0 }}
-                onClick={handleSupportServicesClick}
-              >
+              <ListItemButton sx={{ pl: 0 }} onClick={handleSupportServicesClick}>
                 Support Services
               </ListItemButton>
               <ListItemButton sx={{ pl: 0 }} onClick={handleRatingsClick}>
@@ -1297,11 +1044,11 @@ function SchoolpageView() {
             </List>
           </Box>
         </Grid>
-        {/*MIDDLE CONTAINER*/}
+{/*MIDDLE CONTAINER*/}
         <Grid item xs={12} sm={12} md={8}>
           <Box className="middle-container-wrapper">
-            {/*SCHOOL PROFILE*/}
-            {/*Overview*/}
+{/*SCHOOL PROFILE*/}
+{/*Overview*/}
             <Box id="overview" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Overview</h2>
@@ -1312,18 +1059,14 @@ function SchoolpageView() {
                   title={school?.school_name}
                   className="circular-image"
                 />
-                <div className="school-name">{school?.school_name}</div>{" "}
-                {/* add school name */}
+                <div className="school-name">{school?.school_name}</div> {/* add school name */}
               </div>
               <div className="school-details">
                 <p>{school?.overview_paragraph}</p>
               </div>
             </Box>
-            {/*Schedule and Contact*/}
-            <Box
-              id="schedule-contact-info"
-              className="middle-container school-profile"
-            >
+{/*Schedule and Contact*/}
+            <Box id="schedule-contact-info" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Schedule and Contact Information</h2>
               <h4>Campus Address</h4>
@@ -1400,31 +1143,22 @@ function SchoolpageView() {
                     </a>
                   </ListItem>
                   <ListItem>
-                    <a
-                      href={`mailto:${school?.school_email}`}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#16A1DD",
-                        fontWeight: "bold",
-                        textDecoration: "none",
-                      }}
-                    >
-                      <Email sx={{ fontSize: "1.5rem", pr: "15px" }} />
+                    <a href={`mailto:${school?.school_email}`} style={{ display: 'flex', alignItems: 'center', color: '#16A1DD', fontWeight: 'bold', textDecoration: 'none' }}>
+                      <Email sx={{ fontSize: '1.5rem', pr: '15px' }} />
                       School's Email
                     </a>
                   </ListItem>
                 </Box>
               </Box>
             </Box>
-            {/*Navigation*/}
+{/*Navigation*/}
             <Box id="navigation" className="middle-container school-profile">
               <h3>School Profile</h3>
               <h2>Navigation</h2>
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}
                 state={{ latitude, longitude, school }}
-                style={{ color: "#16A1DD" }}
+                style={{color: "#16A1DD" }}
               >
                 {school?.location.split("(")[0].trim()}
               </Link>
@@ -1454,27 +1188,16 @@ function SchoolpageView() {
                 />
               </div>
               <Link
-                to={`/map/${encodeURIComponent(school.school_name)}`}
+                to={`/map/${encodeURIComponent(school.school_name)}`}   
                 state={{ latitude, longitude, school }}
-                style={{
-                  marginTop: "20px",
-                  color: "#16A1DD",
-                  textDecoration: "underline",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                }}
+                style={{ marginTop: "20px", color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
               >
-                <h4 style={{ marginRight: "0.5rem" }}>
-                  More Map and Direction Information here
-                </h4>
-                <ArrowForwardIosIcon
-                  style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }}
-                />
+                <h4 style={{ marginRight: "0.5rem" }}>More Map and Direction Information here</h4>
+                <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
             </Box>
-            {/*ACADEMICS*/}
-            {/*Academic Opportunities*/}
+{/*ACADEMICS*/}
+{/*Academic Opportunities*/ }
             <Box id="aca-opportunities" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Academic Opportunities</h2>
@@ -1547,13 +1270,13 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
-            {/*AP Courses*/}
+{/*AP Courses*/}
             <Box id="aca-apCourses" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Advanced Placement (AP) Courses</h2>
               <List>
-                {visibleAPs.map((course, i) => (
-                  <ListItem key={course + i}>
+                {visibleAPs.map((course) => (
+                  <ListItem key={course}>
                     <ListItemIcon>
                       {React.createElement(getAPclassesIcon(course))}
                     </ListItemIcon>
@@ -1574,32 +1297,28 @@ function SchoolpageView() {
                 </Box>
               )}
             </Box>
-            {/*Language Courses*/}
+{/*Language Courses*/}
             <Box id="aca-languages" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Language Courses</h2>
               <Grid container spacing={2}>
-                {langClasses.length !== 0 || undefined ? (
-                  langClasses.map((course) => (
-                    <Grid key={course} item xs={6} sm={3}>
-                      <Box display="flex" alignItems="center">
-                        <ListItemIcon>
-                          <CommentIcon
-                            languageAbbreviation={getLangclassesIcon(course)}
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary={course.trim()} />
-                      </Box>
-                    </Grid>
-                  ))
-                ) : (
-                  <Grid item xs={6} sm={12}>
-                    <Typography>No langauge classes available</Typography>
+                {langClasses.length !== 0 || undefined ? langClasses.map((course) => (
+                  <Grid key={course} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      <ListItemIcon>
+                        <CommentIcon
+                          languageAbbreviation={getLangclassesIcon(course)}
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={course.trim()} />
+                    </Box>
                   </Grid>
-                )}
+                )) : <Grid item xs={6} sm={12}>
+                  <Typography >No langauge classes available</Typography>
+                </Grid>}
               </Grid>
             </Box>
-            {/*Programs Offered*/}
+{/*Programs Offered*/}
             <Box id="aca-programs" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Programs/Concentrations Offered</h2>
@@ -1676,300 +1395,183 @@ function SchoolpageView() {
                 )}
               </List>
             </Box>
-            {/*Test Scores*/}
+{/*Test Scores*/}
             <Box id="aca-testscores" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Test Scores</h2>
-              <div style={{ display: "inline-flex", alignItems: "center" }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center' }}>
                 <h4>Regents Exams</h4>
-                <Tooltip
-                  title={hoverDescriptions["RegentsDescrip"].description}
-                  arrow
-                  placement="right"
-                >
-                  <IconButton
-                    className="info-icon"
-                    style={{ marginLeft: "-2px", paddingBottom: "8px" }}
-                  >
+                <Tooltip title={hoverDescriptions['RegentsDescrip'].description} arrow placement="right">
+                  <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
                     <MdInfoOutline />
                   </IconButton>
                 </Tooltip>
               </div>
               <Table sx={{ width: "100%" }}>
                 <TableBody>
-                  {algebraMeanScore && algebraMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Algebra I"
-                      value={Math.round(algebraMeanScore)}
-                      stateAverage={73}
-                    />
-                  )}
-                  {algebra2MeanScore && algebra2MeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Algebra II"
-                      value={Math.round(algebra2MeanScore)}
-                      stateAverage={76}
-                    />
-                  )}
-                  {geometryMeanScore && geometryMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Geometry"
-                      value={Math.round(geometryMeanScore)}
-                      stateAverage={73}
-                    />
-                  )}
-                  {englishMeanScore && englishMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="English"
-                      value={Math.round(englishMeanScore)}
-                      stateAverage={77}
-                    />
-                  )}
-                  {globalhistoryMeanScore && globalhistoryMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Global History"
-                      value={Math.round(globalhistoryMeanScore)}
-                      stateAverage={73}
-                    />
-                  )}
-                  {USHistoryMeanScore && USHistoryMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="U.S. History"
-                      value={Math.round(USHistoryMeanScore)}
-                      stateAverage={78}
-                    />
-                  )}
-                  {livingEnvironMeanScore && livingEnvironMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Living Environment"
-                      value={Math.round(livingEnvironMeanScore)}
-                      stateAverage={75}
-                    />
-                  )}
-                  {earthScienceMeanScore && earthScienceMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Earth Science"
-                      value={Math.round(earthScienceMeanScore)}
-                      stateAverage={74}
-                    />
-                  )}
-                  {chemistryMeanScore && chemistryMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Chemistry"
-                      value={Math.round(chemistryMeanScore)}
-                      stateAverage={73}
-                    />
-                  )}
-                  {physicsMeanScore && physicsMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Physics"
-                      value={Math.round(physicsMeanScore)}
-                      stateAverage={78}
-                    />
-                  )}
+                  {algebraMeanScore && algebraMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Algebra I" value={Math.round(algebraMeanScore)} stateAverage={73} />
+                  }
+                  {algebra2MeanScore && algebra2MeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Algebra II" value={Math.round(algebra2MeanScore)} stateAverage={76} />
+                  }
+                  {geometryMeanScore && geometryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Geometry" value={Math.round(geometryMeanScore)} stateAverage={73} />
+                  }
+                  {englishMeanScore && englishMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="English" value={Math.round(englishMeanScore)} stateAverage={77} />
+                  }
+                  {globalhistoryMeanScore && globalhistoryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Global History" value={Math.round(globalhistoryMeanScore)} stateAverage={73} />
+                  }
+                  {USHistoryMeanScore && USHistoryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="U.S. History" value={Math.round(USHistoryMeanScore)} stateAverage={78} />
+                  }
+                  {livingEnvironMeanScore && livingEnvironMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Living Environment" value={Math.round(livingEnvironMeanScore)} stateAverage={75} />
+                  }
+                  {earthScienceMeanScore && earthScienceMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Earth Science" value={Math.round(earthScienceMeanScore)} stateAverage={74} />
+                  }
+                  {chemistryMeanScore && chemistryMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Chemistry" value={Math.round(chemistryMeanScore)} stateAverage={73} />
+                  }
+                  {physicsMeanScore && physicsMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Physics" value={Math.round(physicsMeanScore)} stateAverage={78} />
+                  }
                 </TableBody>
               </Table>
               {((spanishMeanScore && spanishMeanScore !== "s") ||
                 (frenchMeanScore && frenchMeanScore !== "s") ||
                 (italianMeanScore && italianMeanScore !== "s") ||
                 (chineseMeanScore && chineseMeanScore !== "s")) && (
-                <div style={{ display: "inline-flex", alignItems: "center" }}>
-                  <h4>Language (LOTE) Exams</h4>
-                  <Tooltip
-                    title={hoverDescriptions["LOTEDescrip"].description}
-                    arrow
-                    placement="right"
-                  >
-                    <IconButton
-                      className="info-icon"
-                      style={{ marginLeft: "-2px", paddingBottom: "8px" }}
-                    >
-                      <MdInfoOutline />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-              )}
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <h4>Language (LOTE) Exams</h4>
+                    <Tooltip title={hoverDescriptions['LOTEDescrip'].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                )}
 
               <Table sx={{ width: "100%" }}>
                 <TableBody>
-                  {spanishMeanScore && spanishMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Spanish"
-                      value={Math.round(spanishMeanScore)}
-                    />
-                  )}
-                  {frenchMeanScore && frenchMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="French"
-                      value={Math.round(frenchMeanScore)}
-                    />
-                  )}
-                  {italianMeanScore && italianMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Italian"
-                      value={Math.round(italianMeanScore)}
-                    />
-                  )}
-                  {chineseMeanScore && chineseMeanScore !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Chinese"
-                      value={Math.round(chineseMeanScore)}
-                    />
-                  )}
+                  {spanishMeanScore && spanishMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Spanish" value={Math.round(spanishMeanScore)} />
+                  }
+                  {frenchMeanScore && frenchMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="French" value={Math.round(frenchMeanScore)} />
+                  }
+                  {italianMeanScore && italianMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Italian" value={Math.round(italianMeanScore)} />
+                  }
+                  {chineseMeanScore && chineseMeanScore !== "s" &&
+                    <HorizontalScoreBar examName="Chinese" value={Math.round(chineseMeanScore)} />
+                  }
                 </TableBody>
               </Table>
 
               {((apTestTakers && apTestTakers !== "s") ||
                 (apExamsPassed && apExamsPassed !== "s") ||
                 (apTotalExams && apTotalExams !== "s")) && (
-                <div style={{ display: "inline-flex", alignItems: "center" }}>
-                  <h4>Advanced Placement Exams</h4>
-                  <Tooltip
-                    title={hoverDescriptions["APDescrip"].description}
-                    arrow
-                    placement="right"
-                  >
-                    <IconButton
-                      className="info-icon"
-                      style={{ marginLeft: "-2px", paddingBottom: "8px" }}
-                    >
-                      <MdInfoOutline />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-              )}
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <h4>Advanced Placement Exams</h4>
+                    <Tooltip title={hoverDescriptions['APDescrip'].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                )}
               <Table>
                 <TableBody>
                   <TableRow>
-                    {apExamsPassed &&
-                      apExamsPassed !== "s" &&
-                      apTotalExams &&
-                      apTotalExams !== "s" && (
-                        <TableCell sx={{ border: "none" }}>
-                          <Typography variant="body1">
-                            AP Exam Pass Rate
-                          </Typography>
-                          <Typography variant="h2">{apPassRate}%</Typography>
-                        </TableCell>
-                      )}
+                    {apExamsPassed && apExamsPassed !== "s" && apTotalExams && apTotalExams !== "s" && (
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">AP Exam Pass Rate</Typography>
+                        <Typography variant="h2">{apPassRate}%</Typography>
+                      </TableCell>
+                    )}
                     {apTestTakers && apTestTakers !== "s" && (
-                      <TableCell sx={{ border: "none" }}>
-                        <Typography variant="body1">
-                          AP Exam Enrollment
-                        </Typography>
+                      <TableCell sx={{ border: 'none' }}>
+                        <Typography variant="body1">AP Exam Enrollment</Typography>
                         <Typography variant="h2">~{apEnrollment}%</Typography>
                       </TableCell>
                     )}
                   </TableRow>
                 </TableBody>
               </Table>
-              {satScoresAvailable &&
-                satCriticalReading != null &&
-                satWriting != null &&
-                satMath != null && (
-                  <div>
-                    <div
-                      style={{ display: "inline-flex", alignItems: "center" }}
-                    >
-                      <h4>SAT Scores</h4>
-                      <Tooltip
-                        title={hoverDescriptions["SATDescrip"].description}
-                        arrow
-                        placement="right"
-                      >
-                        <IconButton
-                          className="info-icon"
-                          style={{ marginLeft: "-2px", paddingBottom: "8px" }}
-                        >
-                          <MdInfoOutline />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                    <Table>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell sx={{ border: "none" }}>
-                            <Typography variant="body1">Average SAT</Typography>
-                            <Typography variant="h2">{satTotal}</Typography>
-                          </TableCell>
-                          <TableCell sx={{ border: "none" }}>
-                            <Typography variant="body1">Math</Typography>
-                            <Typography variant="h2">{satMath}</Typography>
-                          </TableCell>
-                          <TableCell sx={{ border: "none" }}>
-                            <Typography variant="body1">Verbal</Typography>
-                            <Typography variant="h2">
-                              {satNewReading}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
+              {satScoresAvailable && satCriticalReading != null && satWriting != null && satMath != null && (
+                <div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <h4>SAT Scores</h4>
+                    <Tooltip title={hoverDescriptions['SATDescrip'].description} arrow placement="right">
+                      <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '8px' }}>
+                        <MdInfoOutline />
+                      </IconButton>
+                    </Tooltip>
                   </div>
-                )}
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ border: 'none' }}>
+                          <Typography variant="body1">Average SAT</Typography>
+                          <Typography variant="h2">{satTotal}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ border: 'none' }}>
+                          <Typography variant="body1">Math</Typography>
+                          <Typography variant="h2">{satMath}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ border: 'none' }}>
+                          <Typography variant="body1">Verbal</Typography>
+                          <Typography variant="h2">{satNewReading}</Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
               <Link
                 to={`/map/${encodeURIComponent(school.school_name)}`}
                 state={{ latitude, longitude, school, dbn, schoolName, stats }}
-                style={{
-                  color: "#16A1DD",
-                  textDecoration: "underline",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                }}
+                style={{ color: "#16A1DD", textDecoration: "underline", display: "flex", alignItems: "center", justifyContent: "flex-end" }}
               >
-                <h4 style={{ marginRight: "0.5rem" }}>
-                  More about {school?.school_name}'s Test Scores
-                </h4>
-                <ArrowForwardIosIcon
-                  style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }}
-                />
+                <h4 style={{ marginRight: "0.5rem" }}>More about {school?.school_name}'s Test Scores</h4>
+                <ArrowForwardIosIcon style={{ fontSize: "0.9rem", marginLeft: "-0.5rem" }} />
               </Link>
             </Box>
-            {/*Student Success*/}
+{/*Student Success*/}
             <Box id="studentSuccess" className="middle-container academics">
               <h3>Academics</h3>
               <h2>Student Success</h2>
-              <div style={{ display: "inline-flex", alignItems: "center" }}>
-                <h4 style={{ marginTop: "10px" }}>Attendance</h4>
-                <Tooltip
-                  title={hoverDescriptions["Attendance"].description}
-                  arrow
-                  placement="right"
-                >
-                  <IconButton
-                    className="info-icon"
-                    style={{ marginLeft: "-4px", paddingBottom: "0px" }}
-                  >
+              <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <h4 style={{ marginTop: "10px" }}>Attendance</h4>
+              <Tooltip title={hoverDescriptions['Attendance'].description} arrow placement="right">
+                  <IconButton className="info-icon" style={{ marginLeft: '-4px', paddingBottom: '0px' }}>
                     <MdInfoOutline />
                   </IconButton>
                 </Tooltip>
               </div>
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper}>    
                 <Table>
                   <TableBody>
                     {studentAttendance && (
                       <TableRow>
                         <TableCell>Student Attendance</TableCell>
-                        <TableCell align="right">
-                          {studentAttendance}%
-                        </TableCell>
+                        <TableCell align="right">{studentAttendance}%</TableCell>
                       </TableRow>
                     )}
                     {chronicAbsence && (
                       <TableRow>
-                        <TableCell>
-                          Percentage of Students Chronically Absent
-                        </TableCell>
+                        <TableCell>Percentage of Students Chronically Absent</TableCell>
                         <TableCell align="right">{chronicAbsence}%</TableCell>
                       </TableRow>
                     )}
                     {teacherAttendance && (
                       <TableRow>
                         <TableCell>Teacher Attendance</TableCell>
-                        <TableCell align="right">
-                          {teacherAttendance}%
-                        </TableCell>
+                        <TableCell align="right">{teacherAttendance}%</TableCell>
                       </TableRow>
                     )}
                   </TableBody>
@@ -1978,106 +1580,67 @@ function SchoolpageView() {
               <h4 style={{ marginTop: "10px" }}>Graduation</h4>
               <Table sx={{ width: "100%" }}>
                 <TableBody>
-                  {grads && grads !== "s" && (
-                    <HorizontalScoreBar
-                      examName="4-year high school graduation"
-                      value={Math.round(grads)}
-                      stateAverage={83}
-                    />
-                  )}
-                  {regentsGrads && regentsGrads !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Regents Diploma"
-                      value={Math.round(regentsGrads)}
-                      stateAverage={76}
-                    />
-                  )}
-                  {advancedRegentsGrads && advancedRegentsGrads !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Advanced Regents Diploma"
-                      value={Math.round(advancedRegentsGrads)}
-                      stateAverage={34}
-                    />
-                  )}
-                  {localGrads && localGrads !== "s" && (
-                    <HorizontalScoreBar
-                      examName="Local Diploma"
-                      value={Math.round(localGrads)}
-                      stateAverage={6.7}
-                    />
-                  )}
-                  {stillEnrolled && stillEnrolled !== "s" && (
-                    <HorizontalScoreBar
-                      examName="% Still Enrolled"
-                      value={Math.round(stillEnrolled)}
-                      stateAverage={17.4}
-                    />
-                  )}
-                  {dropOut && dropOut !== "s" && (
-                    <HorizontalScoreBar
-                      examName="% Drop Out"
-                      value={Math.round(dropOut)}
-                      stateAverage={6.1}
-                    />
-                  )}
+                  {grads && grads !== "s" &&
+                    <HorizontalScoreBar examName="4-year high school graduation" value={Math.round(grads)} stateAverage={83} />
+                  }
+                  {regentsGrads && regentsGrads !== "s" &&
+                    <HorizontalScoreBar examName="Regents Diploma" value={Math.round(regentsGrads)} stateAverage={76} />
+                  }
+                  {advancedRegentsGrads && advancedRegentsGrads !== "s" &&
+                    <HorizontalScoreBar examName="Advanced Regents Diploma" value={Math.round(advancedRegentsGrads)} stateAverage={34} />
+                  }
+                  {localGrads && localGrads !== "s" &&
+                    <HorizontalScoreBar examName="Local Diploma" value={Math.round(localGrads)} stateAverage={6.7} />
+                  }
+                  {stillEnrolled && stillEnrolled !== "s" &&
+                    <HorizontalScoreBar examName="% Still Enrolled" value={Math.round(stillEnrolled)} stateAverage={17.4} />
+                  }
+                  {dropOut && dropOut !== "s" &&
+                    <HorizontalScoreBar examName="% Drop Out" value={Math.round(dropOut)} stateAverage={6.1} />
+                  }
                 </TableBody>
               </Table>
-              {school?.college_career_rate &&
-                school?.college_career_rate !== "s" && (
-                  <h4 style={{ marginTop: "10px" }}>College Enrollment</h4>
-                )}
+              {school?.college_career_rate && school?.college_career_rate !== "s" &&
+                <h4 style={{ marginTop: "10px" }}>College Enrollment</h4>
+              }
               <Table sx={{ width: "100%" }}>
                 <TableBody>
-                  {school?.college_career_rate &&
-                    school?.college_career_rate !== "s" && (
-                      <HorizontalScoreBar
-                        examName="Post-Secondary Enrollment"
-                        value={Math.round(school?.college_career_rate * 100)}
-                      />
-                    )}
+                  {school?.college_career_rate && school?.college_career_rate !== "s" &&
+                    <HorizontalScoreBar examName="Post-Secondary Enrollment" value={Math.round(school?.college_career_rate * 100)} />
+                  }
                 </TableBody>
               </Table>
             </Box>
-            {/*EXTRACURRICULAR ACTIVITIES*/}
-            {/*Clubs*/}
+{/*EXTRACURRICULAR ACTIVITIES*/}
+{/*Clubs*/}
             <Box id="clubs" className="middle-container academics">
               <h3>Extracurricular Activities</h3>
               <h2>Clubs</h2>
               <Grid container spacing={2}>
-                {visibleClubs.length !== 0 ? (
-                  visibleClubs.map((club) => (
-                    <Grid key={club} item xs={6} sm={3}>
-                      <Box display="flex" alignItems="center">
-                        <ListItemText primary={club.trim()} />
-                      </Box>
-                    </Grid>
-                  ))
-                ) : (
+                {visibleClubs.length !== 0 ? visibleClubs.map((club) => (<Grid key={club} item xs={6} sm={3}>
+                  <Box display="flex" alignItems="center">
+                    <ListItemText primary={club.trim()} />
+                  </Box>
+                </Grid>)) :
                   <Grid item xs={6} sm={3}>
                     <Box display="flex" alignItems="center">
                       <ListItemText primary="No clubs available" />
-                    </Box>
-                  </Grid>
-                )}
+                    </Box></Grid>}
               </Grid>
-              {!showAllClubs && extracurricularClubs.length > 8 && (
+              {(!showAllClubs && extracurricularClubs.length > 8) && (
                 <Box display="flex" justifyContent="center" sx={{ m: 3 }}>
                   <Button
                     variant="outlined"
                     onClick={() => setShowClubs(true)}
                     color="primary"
-                    style={{
-                      color: "#16A1DD",
-                      borderColor: "#16A1DD",
-                      margin: 1,
-                    }}
+                    style={{ color: "#16A1DD", borderColor: "#16A1DD", margin: 1 }}
                   >
                     Show all {extracurricularClubs.length} Clubs
                   </Button>
                 </Box>
               )}
             </Box>
-            {/*Sports*/}
+{/*Sports*/}
             <Box id="sports" className="middle-container academics">
               <h3>Extracurricular Activities</h3>
               <h2>Sports</h2>
@@ -2091,76 +1654,70 @@ function SchoolpageView() {
                 <Tab sx={{ fontWeight: "500", mx: 2 }} label="Coed" />
                 <Tab sx={{ fontWeight: "500", ml: 2 }} label="Boys" />
               </Tabs>
-              <TabPanel value={0} index={tab}>
+              <TabPanel
+                value={0}
+                index={tab}
+              >
                 <Grid container spacing={2}>
-                  {girlsSports.length !== 0 ? (
-                    girlsSports.map((sport) => (
-                      <Grid key={sport} item xs={6} sm={3}>
-                        <Box display="flex" alignItems="center">
-                          {React.createElement(getSportIcon(sport))}
-                          <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
-                        </Box>
-                      </Grid>
-                    ))
-                  ) : (
+                  {girlsSports.length !== 0 ? girlsSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      {React.createElement(getSportIcon(sport))}
+                      <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
+                    </Box>
+                  </Grid>)) :
                     <Grid item xs={6} sm={3}>
                       <Box display="flex" alignItems="center">
                         <ListItemText primary="No girls sports available" />
                       </Box>
-                    </Grid>
-                  )}
+                    </Grid>}
                 </Grid>
               </TabPanel>
-              <TabPanel value={1} index={tab}>
+              <TabPanel
+                value={1}
+                index={tab}
+              >
                 <Grid container spacing={2}>
-                  {coedSports.length !== 0 ? (
-                    coedSports.map((sport) => (
-                      <Grid key={sport} item xs={6} sm={3}>
-                        <Box display="flex" alignItems="center">
-                          {React.createElement(getSportIcon(sport))}
-                          <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
-                        </Box>
-                      </Grid>
-                    ))
-                  ) : (
+                  {coedSports.length !== 0 ? coedSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      {React.createElement(getSportIcon(sport))}
+                      <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
+                    </Box>
+                  </Grid>)) :
                     <Grid item xs={6} sm={3}>
                       <Box display="flex" alignItems="center">
                         <ListItemText primary="No coed sports available" />
                       </Box>
-                    </Grid>
-                  )}
+                    </Grid>}
                 </Grid>
               </TabPanel>
-              <TabPanel value={2} index={tab}>
+              <TabPanel
+                value={2}
+                index={tab}
+              >
                 <Grid container spacing={2}>
-                  {boysSports.length !== 0 ? (
-                    boysSports.map((sport) => (
-                      <Grid key={sport} item xs={6} sm={3}>
-                        <Box display="flex" alignItems="center">
-                          {React.createElement(getSportIcon(sport))}
-                          <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
-                        </Box>
-                      </Grid>
-                    ))
-                  ) : (
+                  {boysSports.length !== 0 ? boysSports.map((sport) => (<Grid key={sport} item xs={6} sm={3}>
+                    <Box display="flex" alignItems="center">
+                      {React.createElement(getSportIcon(sport))}
+                      <ListItemText sx={{ ml: 1 }} primary={sport.trim()} />
+                    </Box>
+                  </Grid>)) :
                     <Grid item xs={6} sm={3}>
                       <Box display="flex" alignItems="center">
                         <ListItemText primary="No boys sports available" />
                       </Box>
-                    </Grid>
-                  )}
+                    </Grid>}
                 </Grid>
               </TabPanel>
             </Box>
-            {/*ENVIRONMENT*/}
-            {/*Student Demographics*/}
+{/*ENVIRONMENT*/}
+{/*Student Demographics*/}
             <Box id="demographics" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Student Demographics</h2>
               <h4>Student Diversity</h4>
               <DemographicCharts demographics={demographics} />
             </Box>
-            {/*Quality and Feedback */}
+{/*Quality and Feedback */}
             <Box id="qualityFeedback" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Quality and Feedback</h2>
@@ -2168,24 +1725,18 @@ function SchoolpageView() {
               <TableContainer component={Paper}>
                 <Table>
                   <TableBody>
-                    {typeof pupilToteacherRatio === "number" &&
-                      !isNaN(pupilToteacherRatio) && (
-                        <TableRow>
-                          <TableCell>Students per Teacher</TableCell>
-                          <TableCell align="right">
-                            {pupilToteacherRatio}:1
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    {typeof pupilTocounselorRatio === "number" &&
-                      !isNaN(pupilTocounselorRatio) && (
-                        <TableRow>
-                          <TableCell>Students per Counselor</TableCell>
-                          <TableCell align="right">
-                            {pupilTocounselorRatio}:1
-                          </TableCell>
-                        </TableRow>
-                      )}
+                    {typeof pupilToteacherRatio === "number" && !isNaN(pupilToteacherRatio) && (
+                      <TableRow>
+                        <TableCell>Students per Teacher</TableCell>
+                        <TableCell align="right">{pupilToteacherRatio}:1</TableCell>
+                      </TableRow>
+                    )}
+                    {typeof pupilTocounselorRatio === "number" && !isNaN(pupilTocounselorRatio) &&(
+                      <TableRow>
+                        <TableCell>Students per Counselor</TableCell>
+                        <TableCell align="right">{pupilTocounselorRatio}:1</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -2195,303 +1746,176 @@ function SchoolpageView() {
                   <TableBody>
                     {teacherExperience && !isNaN(teacherExperience) && (
                       <TableRow>
-                        <TableCell>
-                          Percent of Teachers with 3 or More Years of Experience
-                        </TableCell>
-                        <TableCell align="right">
-                          {teacherExperience}%
-                        </TableCell>
+                        <TableCell>Percent of Teachers with 3 or More Years of Experience</TableCell>
+                        <TableCell align="right">{teacherExperience}%</TableCell>
                       </TableRow>
                     )}
-                    {principalExperience &&
-                      typeof principalExperience === "number" &&
-                      !isNaN(principalExperience) && (
-                        <TableRow>
-                          <TableCell>Principal's Years of Experience</TableCell>
-                          <TableCell align="right">
-                            ~{principalExperience} years
-                          </TableCell>
-                        </TableRow>
-                      )}
+                    {principalExperience && typeof principalExperience === "number" && !isNaN(principalExperience) && (
+                      <TableRow>
+                        <TableCell>Principal's Years of Experience</TableCell>
+                        <TableCell align="right">~{principalExperience} years</TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <h4 style={{ marginTop: "10px" }}>
-                School-wide survey of Teachers, Students, & Parents
-              </h4>
+              <h4 style={{marginTop: "10px"}}>School-wide survey of Teachers, Students, & Parents</h4>
               <QualityCharts quality={quality} />
             </Box>
-            {/*Support Services*/}
+{/*Support Services*/}
             <Box id="supportservices" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Support Services</h2>
+              
+                <h4>English Language Learners</h4>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', display: 'relative', alignItems: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Typography variant="body1">ELL Programs</Typography>
+                          <Tooltip title={hoverDescriptions['ELLPrograms'].description} arrow placement="right">
+                            <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                              <MdInfoOutline />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                        <ul style={{ listStyle: 'disc', paddingLeft: '1rem' }}>
+                          {ellPrograms.map((program) => (
+                            <li key={program}>{program}</li>
+                          ))}
+                        </ul>
+                      </TableCell>
 
-              <h4>English Language Learners</h4>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell
-                      sx={{
-                        border: "none",
-                        display: "relative",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <Typography variant="body1">ELL Programs</Typography>
-                        <Tooltip
-                          title={hoverDescriptions["ELLPrograms"].description}
-                          arrow
-                          placement="right"
-                        >
-                          <IconButton
-                            className="info-icon"
-                            style={{
-                              marginLeft: "-2px",
-                              paddingBottom: "12px",
-                            }}
-                          >
-                            <MdInfoOutline />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <ul style={{ listStyle: "disc", paddingLeft: "1rem" }}>
-                        {ellPrograms.map((program) => (
-                          <li key={program}>{program}</li>
-                        ))}
-                      </ul>
-                    </TableCell>
+                      <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography variant="body1">ELL Students</Typography>
+                        <Typography variant="h2">{`${ellPercentage}%`}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
 
-                    <TableCell
-                      sx={{
-                        border: "none",
-                        display: "relative",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography variant="body1">ELL Students</Typography>
-                      <Typography variant="h2">{`${ellPercentage}%`}</Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                <h4>Economic Indices</h4>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Typography variant="body1">Eligible for Free/Reduced Lunch Program</Typography>
+                          <Tooltip title={hoverDescriptions['FreeReducedLunch'].description} arrow placement="top">
+                            <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                              <MdInfoOutline />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                        <Typography variant="h2">{povertyPercentage}</Typography>
+                      </TableCell>
 
-              <h4>Economic Indices</h4>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell
-                      sx={{
-                        border: "none",
-                        display: "relative",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <Typography variant="body1">
-                          Eligible for Free/Reduced Lunch Program
-                        </Typography>
-                        <Tooltip
-                          title={
-                            hoverDescriptions["FreeReducedLunch"].description
-                          }
-                          arrow
-                          placement="top"
-                        >
-                          <IconButton
-                            className="info-icon"
-                            style={{
-                              marginLeft: "-2px",
-                              paddingBottom: "12px",
-                            }}
-                          >
-                            <MdInfoOutline />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <Typography variant="h2">{povertyPercentage}</Typography>
-                    </TableCell>
-
-                    <TableCell
-                      sx={{
-                        border: "none",
-                        display: "relative",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <Typography variant="body1">
-                          Economic Need Index
-                        </Typography>
-                        <Tooltip
-                          title={hoverDescriptions["economicIndex"].description}
-                          arrow
-                          placement="top"
-                        >
-                          <IconButton
-                            className="info-icon"
-                            style={{
-                              marginLeft: "-2px",
-                              paddingBottom: "12px",
-                            }}
-                          >
-                            <MdInfoOutline />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <Typography variant="h2">
-                        {economicNeedPercentage}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                      <TableCell sx={{ border: 'none', display: 'relative', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Typography variant="body1">Economic Need Index</Typography>
+                          <Tooltip title={hoverDescriptions['economicIndex'].description} arrow placement="top">
+                            <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
+                              <MdInfoOutline />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                        <Typography variant="h2">{economicNeedPercentage}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
 
               <h4>Accessibility</h4>
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell
-                      sx={{
-                        border: "none",
-                        height: "100px",
-                        display: "relative",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <Typography variant="body1">
+                    <TableCell sx={{ border: 'none', height: '100px', display: 'relative', alignItems: 'center' }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Typography variant="body1" >
                           {accessibilityStatus}
                         </Typography>
-                        <Tooltip
-                          title={
-                            hoverDescriptions[accessibilityStatus].description
-                          }
-                          arrow
-                          placement="right"
-                        >
-                          <IconButton
-                            className="info-icon"
-                            style={{
-                              marginLeft: "-2px",
-                              paddingBottom: "12px",
-                            }}
-                          >
+                        <Tooltip title={hoverDescriptions[accessibilityStatus].description} arrow placement="right">
+                          <IconButton className="info-icon" style={{ marginLeft: '-2px', paddingBottom: '12px' }}>
                             <MdInfoOutline />
                           </IconButton>
                         </Tooltip>
                       </div>
-                      <IconAccessibility
-                        style={{
-                          fontSize: "3rem",
-                          position: "absolute",
-                          bottom: 0,
-                        }}
-                      />
+                      <IconAccessibility style={{ fontSize: '3rem', position: 'absolute', bottom: 0 }} />
                     </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </Box>
-            {/*Reviews*/}
+{/*Reviews*/}
             <Box id="ratings" className="middle-container academics">
               <h3>Environment</h3>
               <h2>Reviews</h2>
-              <Grid
-                container
-                spacing={3}
-                sx={{ display: "flex", flexDirection: "row" }}
-              >
-                <Grid
-                  item
-                  sx={{
-                    width: { xs: "100%", md: 220 },
-                    height: 220,
-                  }}
-                >
-                  <Card
-                    elevation={1}
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontSize: "4.3rem",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {stars.length != 0
-                        ? stars.reduce((a, b) => a + b).toFixed(1) /
-                          stars.length
-                        : 0.0}
-                    </Typography>
-                    <Rating
-                      name="read-only"
+              <Grid container spacing={3} sx={{display: "flex", flexDirection: "row"}}>
+                <Grid item sx={{
+                  width: {xs:"100%", md:220},
+                  height: 220,
+                }}>
+                  <Card elevation={1} sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column"
+                  }}>
+                    <Typography variant="h5" sx={{
+                      fontSize: "4.3rem",
+                      fontWeight: "500"
+                    }}>{stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0}</Typography>
+                    <Rating name="read-only"
                       readOnly
                       precision={0.5}
                       defaultValue={0.0}
                       value={
-                        stars.length != 0
-                          ? stars.reduce((a, b) => a + b).toFixed(1) /
-                            stars.length
-                          : 0.0
+                        stars.length != 0 ? (stars.reduce((a, b) => a + b)).toFixed(1) / stars.length : 0.0
                       }
-                      size="small"
-                    />
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: "400",
-                      }}
-                    >
-                      {stars.length} reviews
-                    </Typography>
+                      size="small" />
+                    <Typography variant="body2" sx={{
+                      fontWeight: "400"
+                    }}>{stars.length} reviews</Typography>
                   </Card>
                 </Grid>
 
                 <Grid item>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    sx={{
-                      display: { xs: "none", md: "flex" },
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Grid
-                      item
+                <Grid container justifyContent="center" sx={{ display: {xs:"none", md:"flex"}, flexDirection: "column" }}>
+
+                    <Grid item
                       xs={12}
                       display="flex"
                       flexDirection="row"
-                      alignItems="center"
-                    >
-                      <Typography sx={{ mr: 1, fontWeight: "500" }}>
-                        5
-                      </Typography>
+                      alignItems="center">
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>5</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
-                          reviewCounts[5] == null || undefined
-                            ? 0
-                            : reviewCounts[5]
+                          reviewCounts[5] == null || undefined ? 0 : reviewCounts[5]
+                        }
+                        sx={{
+                          height: 10,
+                          borderRadius: 5,
+                          width: {
+                            xs: "100%",
+                            md: 500,
+                          },
+                        }}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center">
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>4</Typography>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          reviewCounts[4] == null || undefined ? 0 : reviewCounts[4]
                         }
                         sx={{
                           height: 10,
@@ -2504,22 +1928,15 @@ function SchoolpageView() {
                       />
                     </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
+                    <Grid item xs={12}
                       display="flex"
                       flexDirection="row"
-                      alignItems="center"
-                    >
-                      <Typography sx={{ mr: 1, fontWeight: "500" }}>
-                        4
-                      </Typography>
+                      alignItems="center">
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>3</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
-                          reviewCounts[4] == null || undefined
-                            ? 0
-                            : reviewCounts[4]
+                          reviewCounts[3] == null || undefined ? 0 : reviewCounts[3]
                         }
                         sx={{
                           height: 10,
@@ -2532,22 +1949,15 @@ function SchoolpageView() {
                       />
                     </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
+                    <Grid item xs={12}
                       display="flex"
                       flexDirection="row"
-                      alignItems="center"
-                    >
-                      <Typography sx={{ mr: 1, fontWeight: "500" }}>
-                        3
-                      </Typography>
+                      alignItems="center">
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>2</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
-                          reviewCounts[3] == null || undefined
-                            ? 0
-                            : reviewCounts[3]
+                          reviewCounts[2] == null || undefined ? 0 : reviewCounts[2]
                         }
                         sx={{
                           height: 10,
@@ -2560,22 +1970,15 @@ function SchoolpageView() {
                       />
                     </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
+                    <Grid item xs={12}
                       display="flex"
                       flexDirection="row"
-                      alignItems="center"
-                    >
-                      <Typography sx={{ mr: 1, fontWeight: "500" }}>
-                        2
-                      </Typography>
+                      alignItems="center">
+                      <Typography sx={{ mr: 1, fontWeight: "500" }}>1</Typography>
                       <LinearProgress
                         variant="determinate"
                         value={
-                          reviewCounts[2] == null || undefined
-                            ? 0
-                            : reviewCounts[2]
+                          reviewCounts[1] == null || undefined ? 0 : reviewCounts[1]
                         }
                         sx={{
                           height: 10,
@@ -2588,50 +1991,13 @@ function SchoolpageView() {
                       />
                     </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                    >
-                      <Typography sx={{ mr: 1, fontWeight: "500" }}>
-                        1
-                      </Typography>
-                      <LinearProgress
-                        variant="determinate"
-                        value={
-                          reviewCounts[1] == null || undefined
-                            ? 0
-                            : reviewCounts[1]
-                        }
-                        sx={{
-                          height: 10,
-                          borderRadius: 5,
-                          width: {
-                            xs: "100%",
-                            md: 500,
-                          },
-                        }}
-                      />
-                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
+              
+              <Button variant="contained" sx={{mt: 5, width: "100%"}} onClick={() => auth.currentUser ? handleOpenReviewsModal(true) : alert("You need to be logged in")}>Write a review</Button>
 
-              <Button
-                variant="contained"
-                sx={{ mt: 5, width: "100%" }}
-                onClick={() =>
-                  auth.currentUser
-                    ? handleOpenReviewsModal(true)
-                    : alert("You need to be logged in")
-                }
-              >
-                Write a review
-              </Button>
-
-              {userReviews.length != 0 ? (
+              {userReviews.length != 0 ?
                 <Box sx={{ p: 4 }}>
                   {userReviews.map((data, key) => (
                     <>
@@ -2644,11 +2010,7 @@ function SchoolpageView() {
                       >
                         <Grid
                           item
-                          sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
+                          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
                         >
                           <Avatar>{data.user[0]}</Avatar>
                           <Box
@@ -2695,30 +2057,24 @@ function SchoolpageView() {
                     </>
                   ))}
                 </Box>
-              ) : (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mt: 4,
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: "600",
-                    }}
-                  >
-                    No reviews for this school yet!
-                  </Typography>
+                :
+                <Box sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mt: 4
+                }}>
+                  <Typography sx={{
+                    fontWeight: "600"
+                  }}>No reviews for this school yet!</Typography>
                 </Box>
-              )}
+              }
             </Box>
 
-            {/* END OF MIDDLE CONTAINERS */}
+{/* END OF MIDDLE CONTAINERS */}
           </Box>
         </Grid>
-        {/*Scroll Up Button*/}
+{/*Scroll Up Button*/}
         <IconButton
           id="scroll-to-top"
           className="hidden"
@@ -2734,48 +2090,33 @@ function SchoolpageView() {
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          <FaArrowUp size={28} style={{ marginLeft: "-1px" }} />
-          <Typography
-            sx={{
-              display: "inline-block",
-              ml: 1,
-              fontSize: 16,
-              marginLeft: "4px",
-            }}
-          >
+          <FaArrowUp size={28} style={{ marginLeft: '-1px' }} />
+          <Typography sx={{ display: "inline-block", ml: 1, fontSize: 16, marginLeft: '4px' }}>
             Top
           </Typography>
         </IconButton>
-        {reviewsOpen && (
-          <ReviewsModal
-            name={schoolName}
-            onClose={() => handleOpenReviewsModal(false)}
-            user={username}
-            role={role}
-            uid={auth.currentUser.uid}
-            verified={verified}
-          />
-        )}
-        {/*Save School Button*/}
+        {reviewsOpen && (<ReviewsModal
+          name={schoolName}
+          onClose={() => handleOpenReviewsModal(false)}
+          user={username}
+          role={role}
+          uid={auth.currentUser.uid}
+          verified={verified}
+        />)}
+{/*Save School Button*/}
         <Tooltip title="Save School">
-          <IconButton
-            sx={{
-              position: "fixed",
-              bottom: -25,
-              right: -25,
-              backgroundColor: "#f1f1f1",
-              borderRadius: "50%",
-              m: 5,
-              p: 1.3,
-              "&:hover": { backgroundColor: "white" },
-            }}
-            onClick={() => handleSave()}
-          >
-            {savedSchools.includes(school.school_name) ? (
-              <BookmarkIcon sx={{ color: "#2196f3", fontSize: "2.3rem" }} />
-            ) : (
-              <BookmarkBorderIcon sx={{ fontSize: "2.3rem" }} />
-            )}
+          <IconButton sx={{
+            position: "fixed",
+            bottom: -25,
+            right: -25,
+            backgroundColor: "#f1f1f1",
+            borderRadius: "50%",
+            m: 5,
+            p: 1.3,
+            "&:hover": { backgroundColor: "white" },
+          }}
+            onClick={() => handleSave()}>
+            {savedSchools.includes(school.school_name) ? <BookmarkIcon sx={{ color: "#2196f3", fontSize: "2.3rem" }} /> : <BookmarkBorderIcon sx={{ fontSize: "2.3rem" }} />}
           </IconButton>
         </Tooltip>
       </Grid>
@@ -2792,3 +2133,4 @@ function formatValue(value) {
 }
 
 export default SchoolpageView;
+
