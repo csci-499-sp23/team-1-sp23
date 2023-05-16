@@ -8,7 +8,6 @@ import {
   Typography,
   Grid,
   Button,
-  Link
 } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, doc, getDoc, onSnapshot, updateDoc, FieldValue, deleteDoc } from "firebase/firestore";
@@ -19,7 +18,6 @@ import Avatar from "@mui/material/Avatar";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ArticleIcon from "@mui/icons-material/Article";
 import { useNavigate } from 'react-router-dom';
 
 import EditModal from '../EditModal'
@@ -88,7 +86,7 @@ export default function ProfileView() {
           updateDoc(docRef, {
             reviews: removedReview
           })
-          
+
         }
       }
       else {
@@ -127,7 +125,7 @@ export default function ProfileView() {
     }
   }
 
-  const goToSchoolOnMap = async(school) => {
+  const goToSchoolOnMap = async (school) => {
     const response = await fetch(`https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${school}`);
     const data = await response.json();
     navigate(`/map/${school}`, { state: { school: data[0], latitude: Number(data[0].latitude), longitude: Number(data[0].longitude) } });
@@ -150,18 +148,33 @@ export default function ProfileView() {
     datePosted,
   }) => {
     const [open, setOpen] = React.useState(false)
+    const [dbn, setDbn] = React.useState("");
+    const imageUrl = `/school-images/${dbn}.png`;
+
+    React.useEffect(() => {
+      const fetchSchoolData = async () => {
+        const response = await fetch(
+          `https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${school}`
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          setDbn(data[0].dbn);
+        }
+      };
+      fetchSchoolData();
+    }, [school]);
+
     return (
       <>
         <Box sx={{ my: 5 }}>
           <Paper sx={{ borderRadius: "0.5rem", width: "40dvw" }} elevation={5}>
             <Box
               sx={{
-                background: `no-repeat center`,
+                background: `url(${imageUrl}) no-repeat center`,
                 backgroundSize: "cover",
                 height: "9rem",
                 borderRadius: "0.5rem 0.5rem 0 0",
               }}
-              className={"alt-school-banner"}
             />
             <Box sx={{ display: "flex", flexDirection: "column", p: 1 }}>
               <Box sx={{ mx: 1, }}>
@@ -197,7 +210,7 @@ export default function ProfileView() {
               </IconButton>
             </Box>
           </Paper>
-        </Box> 
+        </Box>
         {open && (<EditModal
           user={username}
           name={school}
@@ -227,57 +240,90 @@ export default function ProfileView() {
       };
       fetchSchoolData();
     }, [schoolName]);
+
     return (
-      <Box sx={{ my: 5, borderRadius: "1rem" }}>
-        <Paper elevation={5} sx={{ borderRadius: "0.5rem" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography
-              sx={{
-                alignSelf: "center",
-                ml: { xs: 2 },
-                fontSize: { xs: "1.25rem", md: "1.75rem" },
-              }}
-              textOverflow="ellipsis"
-            >
-              {schoolName}
-            </Typography>
+      <Grid item xs={12} md={6}>
+        <Box sx={{ my: 5, borderRadius: "1rem", width: "570px", height: "300px" }}>
+          <Paper elevation={5} sx={{ borderRadius: "0.5rem", backgroundColor: "rgb(25, 73, 114)" }}>
             <Box
               sx={{
-                height: "auto",
-                width: { xs: "9.4rem", md: "9.4rem" },
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                p: 2,
+                color: "white",
+                height: "100%",
               }}
             >
-              <img
-                src={`/school-images/${dbn}.png`}
-                alt="school"
-                style={{
-                  marginTop: "20px",
-                  marginLeft: "-10px",
-                  padding: "1px",
+              <Typography
+                sx={{
+                  width: "550px",
+                  fontSize: { xs: "1.75rem", md: "1.75rem" },
+                  mb: 1,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
-                className="school-image" 
-              />
+              >
+                {schoolName}
+              </Typography>
+              <Box
+                sx={{
+                  height: "200px",
+                  width: "570px",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  ml: -2,
+                  mb: -2,
+                }}
+              >
+                <img
+                  src={`/school-images/${dbn}.png`}
+                  alt="school"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "row", p: 1 }}>
-            <IconButton sx={{ borderRadius: 0 }} onClick={() => goToSchoolOnMap(schoolName)}>
-              <LocationOnIcon />
-            </IconButton>
-            <IconButton sx={{ borderRadius: 0 }} onClick={() => goToSchoolPage(schoolName)}>
-              <ArticleIcon />
-            </IconButton>
-            <IconButton sx={{ borderRadius: 0 }} onClick={() => removeSavedSchool(schoolName)}>
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        </Paper>
-      </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                p: 1,
+                backgroundColor: "rgb(35, 84, 119)",
+              }}
+            >
+              <IconButton sx={{ borderRadius: 0, color: "white" }} onClick={() => goToSchoolOnMap(schoolName)}>
+                <LocationOnIcon />
+              </IconButton>
+              <IconButton sx={{ borderRadius: 0, color: "white" }} onClick={() => removeSavedSchool(schoolName)}>
+                <DeleteIcon />
+              </IconButton>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ width: "8rem", marginLeft: "auto" }}
+                onClick={() => goToSchoolPage(schoolName)}
+              >
+                Learn More
+              </Button>
+            </Box>
+          </Paper>
+        </Box>
+      </Grid>
+
     );
   };
 
+
   return (
     <>
-    <Navbar loggedIn={loggedIn} handleLogout={handleLogout}/>
+      <Navbar loggedIn={loggedIn} handleLogout={handleLogout} />
       <Box
         sx={{
           minHeight: "100vh",
@@ -345,9 +391,11 @@ export default function ProfileView() {
                     You do not have any saved schools.
                   </Typography>
                 ) : (
-                  savedSchools.map((name, i) => (
-                    <SavedSchool schoolName={name} key={i} />
-                  ))
+                  <Grid container spacing={2} className="single-card-per-row">
+                    {savedSchools.map((name, i) => (
+                      <SavedSchool schoolName={name} key={i} />
+                    ))}
+                  </Grid>
                 )}
               </TabPanel>
             </Box>
