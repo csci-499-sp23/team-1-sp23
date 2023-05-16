@@ -130,20 +130,18 @@ export default function ProfileView() {
   const goToSchoolOnMap = async(school) => {
     const response = await fetch(`https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${school}`);
     const data = await response.json();
-    navigate(`/map/${school}`, {state: {school: data[0], latitude: Number(data[0].latitude), longitude: Number(data[0].longitude)}});
+    navigate(`/map/${school}`, { state: { school: data[0], latitude: Number(data[0].latitude), longitude: Number(data[0].longitude) } });
   }
 
-
   const goToSchoolPage = async (school) => {
-    console.log(school);
     const response = await fetch(
       `https://data.cityofnewyork.us/resource/23z9-6uk9.json?school_name=${school}`
     );
     const data = await response.json();
-    console.log(data);
     navigate(`/school/${encodeURIComponent(school)}`, { state: { school: data[0] } });
+    window.scrollTo(0, 0);
   };
-  
+
 
   const ReviewCard = ({
     content,
