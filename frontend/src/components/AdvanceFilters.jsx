@@ -10,7 +10,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Select from "@mui/material/Select";
 import ListSubheader from "@mui/material/ListSubheader";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams, useSearchParams } from "react-router-dom";
 
 import React from "react";
 import SchoolsData from "../schoolData";
@@ -18,6 +18,7 @@ import SchoolsData from "../schoolData";
 export default function AdvanceFilters(props) {
 
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams ();
     const Schools = SchoolsData();
     const languageArr = [];
     const boysSportArr = [];
@@ -168,17 +169,36 @@ export default function AdvanceFilters(props) {
     }
 
     const handleSearch = () => {
-        navigate(`./map/`, {
+        navigate({
+            pathname: "map",
+            search: `?${createSearchParams({
+                borough: [borough],
+                neighborhood: [neighborhood],
+                apCourse: [apCourse],
+                language: [language],
+                sports: [sports],
+            })}`,
             state: {
                 borough: borough,
                 neighborhood: neighborhood,
                 apCourse: apCourse,
                 language: language,
                 sports: sports,
-            }
-        });
+            },
+        })
     }
 
+    const handleMapSearching = () => {
+        props.setFilters(borough, neighborhood, apCourse, language, sports)
+
+        setSearchParams({
+            borough: [borough],
+            neighborhood: [neighborhood],
+            apCourse: [apCourse],
+            language: [language],
+            sports: [sports],
+        })
+    }
 
     const clearFilters = () => {
         setBorough([])
@@ -415,7 +435,7 @@ export default function AdvanceFilters(props) {
             <DialogActions>
                 <Button onClick={props.handleClose}>Cancel</Button>
                 <Button onClick={clearFilters}>Clear Filters</Button>
-                <Button onClick={() => props.mapPage ? props.setFilters(borough, neighborhood, apCourse, language, sports) : handleSearch}>Search</Button>
+                <Button onClick={() => props.mapPage ? handleMapSearching() : handleSearch()}>Search</Button>
             </DialogActions>
         </Dialog>
     )

@@ -7,6 +7,7 @@ import {
   ProfileContainer,
   NeighborhoodContainer,
   SchoolpageContainer,
+  NotFound
 } from "./components/containers";
 import Card from "./components/Card";
 import "./App.css";
@@ -20,13 +21,11 @@ const App = () => {
         <Route path="/login" element={<LoginContainer />} />
         <Route path="/map" element={<MapContainer />}>
           <Route index element={<MapContainer />} />
-          <Route path="*/filter">
-            <Route path=":borough" />
-          </Route>
           <Route path=":place" element={<Card />} />
         </Route>
         <Route path="/profile" element={<ProfileContainer />} />
         <Route path="/school/:schoolName" element={<SchoolpageContainer />} />
+        <Route path="*" element={<NotFound/>}/>
       </Routes>
     </div>
   );

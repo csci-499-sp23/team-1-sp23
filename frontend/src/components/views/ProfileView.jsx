@@ -140,7 +140,7 @@ export default function ProfileView() {
     return (
       <>
         <Box sx={{ my: 5 }}>
-          <Paper sx={{ borderRadius: "0.5rem", width: "40dvw" }} elevation={5}>
+          <Paper sx={{ borderRadius: "0.5rem", width: {xs: "100%", md:"40dvw"} }} elevation={5}>
             <Box
               sx={{
                 background: `no-repeat center`,
@@ -303,7 +303,7 @@ export default function ProfileView() {
                     </Typography>
                   ) : (
                     reviews.map((data) => (
-                      <Grid item xs={6}>
+                      <Grid item xs={12} md={6}>
                         <ReviewCard {...data} key={data.school} />
                       </Grid>
                     ))

@@ -18,6 +18,7 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 import { Typography } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
 
 function MapCard({
   school,
@@ -29,6 +30,8 @@ function MapCard({
 }) {
   const [open, setOpen] = React.useState(false);
   const [stars, setStars] = React.useState([]);
+  const [searchParams, setSearchParams] = useSearchParams()
+
 
   const handleSnackbarOpen = (bool) => {
     setOpen(bool);
@@ -81,6 +84,11 @@ function MapCard({
   const onClickEvent = () => {
     openCard(true, school);
     goToSchool(Number(school.longitude), Number(school.latitude), school);
+    setSearchParams({
+      school: school.school_name,
+      latitude: Number(school.latitude),
+      longitude: Number(school.longitude),
+    })
   };
 
   if (loading) {

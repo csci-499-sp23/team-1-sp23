@@ -1954,7 +1954,7 @@ function SchoolpageView() {
                 </Grid>
               </Grid>
               
-              <Button variant="contained" sx={{mt: 5, width: "100%"}} onClick={() => handleOpenReviewsModal(true)}>Write a review</Button>
+              <Button variant="contained" sx={{mt: 5, width: "100%"}} onClick={() => auth.currentUser ? handleOpenReviewsModal(true) : alert("You need to be logged in")}>Write a review</Button>
 
               {userReviews.length != 0 ?
                 <Box sx={{ p: 4 }}>

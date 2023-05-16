@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { GoogleMap, MarkerF, StreetViewPanorama } from "@react-google-maps/api";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -78,10 +78,10 @@ class Map extends Component {
       activeFilters: [...boroughs],
       searchQuery: null,
       center: {
-        lat: 40.740977,
-        lng: -73.95467,
+        lat: this.props.searchParamsHook.searchParams.get('latitude') != null ? Number(this.props.searchParamsHook.searchParams.get('latitude')) : 40.740977,
+        lng: this.props.searchParamsHook.searchParams.get('longitude') != null ? Number(this.props.searchParamsHook.searchParams.get('longitude')) : -73.95467,
       },
-      zoom: 11,
+      zoom: (this.props.searchParamsHook.searchParams.get('latitude') &&  this.props.searchParamsHook.searchParams.get('latitude')) ? 17 : 11,
       saveList: false,
       neighborhood: [],
       apCourses: [],
@@ -91,7 +91,7 @@ class Map extends Component {
 
       currentPage: 1,
       schoolsPerPage: 10,
-      loading: false,
+      loading: true,
       openStatsPage: false,
       compareSchool: false,
       selectedSecondMarker: false,
@@ -134,6 +134,53 @@ class Map extends Component {
         });
       }
     });
+
+    if (this.props.searchParamsHook.searchParams.get('school')) {
+      fetch(`https://data.cityofnewyork.us/resource/uq7m-95z8.json?school_name=${this.props.searchParamsHook.searchParams.get('school')}`)
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({
+            school: data,
+            // card: true, not sure why its crashing when it fetches the school
+            loading: false,
+          });
+        })
+    }
+
+    if (this.props.searchParamsHook.searchParams.get('borough')) {
+      this.setState({
+        activeFilters:
+          this.props.searchParamsHook.searchParams.get('borough') != null ? this.props.searchParamsHook.searchParams.get('borough').split(',') :  [...boroughs],
+      })
+    }
+
+    if (this.props.searchParamsHook.searchParams.get('neighborhood')) {
+      this.setState({
+        neighborhood:
+          this.props.searchParamsHook.searchParams.get('neighborhood') != null ? this.props.searchParamsHook.searchParams.get('neighborhood').split(',') : [],
+      })
+    }
+
+    if (this.props.searchParamsHook.searchParams.get('apCourse')) {
+      this.setState({
+        apCourses:
+          this.props.searchParamsHook.searchParams.get('apCourse') != null ? this.props.searchParamsHook.searchParams.get('apCourse').split(',') : [],
+      })
+    }
+
+    if (this.props.searchParamsHook.searchParams.get('language')) {
+      this.setState({
+        languageCourse:
+          this.props.searchParamsHook.searchParams.get('language') != null ? this.props.searchParamsHook.searchParams.get('language').split(',') : [],
+      })
+    }
+
+    if (this.props.searchParamsHook.searchParams.get('sports')) {
+      this.setState({
+        sports:
+          this.props.searchParamsHook.searchParams.get('sports') != null ? this.props.searchParamsHook.searchParams.get('sports').split(',') : [],
+      })
+    }
 
     if (this.props.location.state && this.props.location.state.stats) {
       const { longitude, latitude, school, card } = this.props.location.state;
@@ -589,6 +636,7 @@ class Map extends Component {
                             {boroughNames[borough]}
                           </Button>
                         ))}
+
                         <Button
                           variant="contained"
                           onClick={() =>
@@ -614,6 +662,41 @@ class Map extends Component {
                           }}
                         >
                           More options
+                        </Button>
+
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            this.props.searchParamsHook.setSearchParams({})
+                            this.setState({
+                              activeFilters: [...boroughs],
+                              neighborhood: [],
+                              apCourses: [],
+                              languageCourse: [],
+                              sports: [],
+                            })
+                          }
+                          }
+                          sx={{
+                            backgroundColor: "#ffffff",
+                            color: "#256fd4",
+                            fontWeight: 500,
+                            fontSize: 14,
+                            padding: {
+                              xs: "2px 3rem 2px 3rem",
+                              md: "2px 14px 2px 14px",
+                            },
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            borderRadius: 5,
+                            "&:hover": {
+                              backgroundColor: "#efefef",
+                              color: "#256fd4",
+                            },
+                            textTransform: "none",
+                          }}
+                        >
+                          Clear Filters
                         </Button>
                       </Stack>
                     </Stack>
@@ -710,7 +793,7 @@ class Map extends Component {
 
                 {/* MIDDLE POP UP CARD */}
 
-                {this.state.card && (
+                {(!this.state.loading && this.state.card) && (
                   <Grid
                     continer
                     sx={{
@@ -1103,7 +1186,7 @@ class Map extends Component {
                         this.showCard(false, null);
                         this.showComparisonCard(false, null);
                         this.handleDirectionsPanel(false);
-                        this.props.navHook("/map");
+                        this.props.searchParamsHook.setSearchParams({})
                       }}
                       onZoomChanged={() => {
                         if (this.map && !this.state.directionsRenderer) {
@@ -1136,16 +1219,11 @@ class Map extends Component {
                             onClick={() => {
                               this.startDirections(school);
                               this.handleComparing(school);
-                              this.props.navHook(
-                                `${encodeURIComponent(school.school_name)}`,
-                                {
-                                  state: {
-                                    school: school,
-                                    latitude: Number(school.latitude),
-                                    longitude: Number(school.longitude),
-                                  },
-                                }
-                              );
+                              this.props.searchParamsHook.setSearchParams({
+                                school: school.school_name,
+                                latitude: Number(school.latitude),
+                                longitude: Number(school.longitude),
+                              })
                             }}
                           />
                         );
