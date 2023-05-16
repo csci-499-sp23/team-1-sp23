@@ -74,9 +74,6 @@ import QualityCharts from "../QualityCharts"
 import hoverDescriptions  from "../hoverDescriptions";
 import ReviewsModal from "../ReviewsModal";
 
-
-
-
 function SchoolpageView() {
   const location = useLocation();
   const school = location.state.school;
@@ -1057,7 +1054,7 @@ function SchoolpageView() {
               <h2>Overview</h2>
               <div className="school-image">
                 <img
-                  src={`/public/school-images/${school?.dbn}.png`}
+                  src={`/school-images/${school?.dbn}.png`}
                   alt={`School image for ${school?.school_name}`}
                   title={school?.school_name}
                   className="circular-image"
