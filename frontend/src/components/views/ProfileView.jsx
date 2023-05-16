@@ -19,6 +19,7 @@ import Avatar from "@mui/material/Avatar";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ArticleIcon from "@mui/icons-material/Article";
 import { useNavigate } from 'react-router-dom';
 
 import EditModal from '../EditModal'
@@ -132,6 +133,18 @@ export default function ProfileView() {
     navigate(`/map/${school}`, {state: {school: data[0], latitude: Number(data[0].latitude), longitude: Number(data[0].longitude)}});
   }
 
+
+  const goToSchoolPage = async (school) => {
+    console.log(school);
+    const response = await fetch(
+      `https://data.cityofnewyork.us/resource/23z9-6uk9.json?school_name=${school}`
+    );
+    const data = await response.json();
+    console.log(data);
+    navigate(`/school/${encodeURIComponent(school)}`, { state: { school: data[0] } });
+  };
+  
+
   const ReviewCard = ({
     content,
     school,
@@ -240,7 +253,7 @@ export default function ProfileView() {
                 src={`/school-images/${dbn}.png`}
                 alt="school"
                 style={{
-                  marginTop: "10px",
+                  marginTop: "20px",
                   marginLeft: "-10px",
                   padding: "1px",
                 }}
@@ -251,6 +264,9 @@ export default function ProfileView() {
           <Box sx={{ display: "flex", flexDirection: "row", p: 1 }}>
             <IconButton sx={{ borderRadius: 0 }} onClick={() => goToSchoolOnMap(schoolName)}>
               <LocationOnIcon />
+            </IconButton>
+            <IconButton sx={{ borderRadius: 0 }} onClick={() => goToSchoolPage(schoolName)}>
+              <ArticleIcon />
             </IconButton>
             <IconButton sx={{ borderRadius: 0 }} onClick={() => removeSavedSchool(schoolName)}>
               <DeleteIcon />
